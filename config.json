@@ -1,0 +1,49 @@
+{
+    "name": "CTRI Tweaks",
+    "description": "Various minor project tweaks.",
+    "namespace": "UWMadison\\CTRItweaks",
+    "authors": [
+        {
+            "name": "Adam Nunez",
+            "email": "Adam.Nunez@ctri.wisc.edu",
+            "institution": "UW Madison - Center for Tobacco Research and Intervention "
+        }
+    ],
+    "permissions": [
+        "redcap_every_page_top",
+		"redcap_data_entry_form"
+    ],
+    "project-settings": [
+		{
+            "key": "hide-save-next-record",
+            "name": "Hide 'Save & Go To Next Record' on forms?",
+            "required": false,
+            "type": "checkbox"
+        },
+		{
+			"key": "hide-repeat-vars-group",
+			"name": "Hide Repeat on Reports",
+			"required": false,
+			"type": "sub_settings",
+			"repeatable": false,
+			"sub_settings":[
+				{
+					"key": "hide-repeat-vars",
+					"name": "Hide 'redcap_repeat_instrument' and 'redcap_repeat_instance' on reports?",
+					"required": false,
+					"type": "checkbox"
+				},
+				{
+					"key": "report-id-list",
+					"name": "Report IDs (comma seperated)",
+					"required": false,
+					"type": "text",
+					"default": ""
+				}
+			]
+		}
+    ],
+    "compatibility": {
+        "redcap-version-min": "8.0.3"
+    }
+}
