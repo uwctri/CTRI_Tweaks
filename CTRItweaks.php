@@ -17,7 +17,7 @@ class CTRItweaks extends AbstractExternalModule {
 			if (PAGE != 'DataExport/index.php' || $project_id == NULL || $_GET['addedit']) 
 				return;
 			// Check if the report ID is listed in the settings
-			$id_list = array_map('trim',explode(',',$this->getProjectSetting('report-id-list')));
+			$id_list = array_map('trim',explode(',',$this->getProjectSetting('report-id-list')[0]));
 			if (!in_array($_GET['report_id'],$id_list))
 				return;
 			$this->includeJs('js/hide_repeat_variables.js');
