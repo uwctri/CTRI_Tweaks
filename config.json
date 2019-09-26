@@ -14,29 +14,29 @@
         "redcap_data_entry_form"
     ],
     "project-settings": [
+		{
+            "key": "prevent-enter-submit",
+            "name": "Prevent 'enter' for clicking the 'Save & Exit Form' Button",
+            "type": "checkbox"
+        },
         {
             "key": "hide-save-next-record",
-            "name": "Hide 'Save & Go To Next Record' on forms?",
-            "required": false,
+            "name": "Hide 'Save & Go To Next Record' on forms",
             "type": "checkbox"
         },
         {
             "key": "hide-repeat-vars-group",
-            "name": "Hide Repeat on Reports",
-            "required": false,
+            "name": "Hide 'redcap_repeat_instrument', 'redcap_repeat_instance', 'redcap_event_name' on reports",
             "type": "sub_settings",
-            "repeatable": false,
             "sub_settings":[
                 {
                     "key": "hide-repeat-vars",
-                    "name": "Hide 'redcap_repeat_instrument', 'redcap_repeat_instance', 'redcap_event_name' on reports?",
-                    "required": false,
+                    "name": "Enable",
                     "type": "checkbox"
                 },
                 {
                     "key": "report-id-list",
                     "name": "Report IDs (comma seperated)",
-                    "required": false,
                     "type": "text",
                     "default": ""
                 }
