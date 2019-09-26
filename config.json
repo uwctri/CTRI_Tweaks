@@ -14,7 +14,7 @@
         "redcap_data_entry_form"
     ],
     "project-settings": [
-		{
+        {
             "key": "prevent-enter-submit",
             "name": "Prevent 'enter' for clicking the 'Save & Exit Form' Button",
             "type": "checkbox"
