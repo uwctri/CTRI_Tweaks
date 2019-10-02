@@ -12,16 +12,16 @@ class CTRItweaks extends AbstractExternalModule {
     
     public function redcap_every_page_top($project_id) {
         
-        if ( $this->getProjectSetting('hide-repeat-vars') ) {
-            // Check to see if we are on the right page, and that its not the edit report page
-            if (PAGE != 'DataExport/index.php' || $project_id == NULL || $_GET['addedit']) 
-                return;
-            // Check if the report ID is listed in the settings
-            $id_list = array_map('trim',explode(',',$this->getProjectSetting('report-id-list')[0]));
-            if (!in_array($_GET['report_id'],$id_list))
-                return;
+        // Check to see if we are on the Reports page, and that its not the edit report page
+        if (PAGE != 'DataExport/index.php' || $project_id == NULL || $_GET['addedit']) 
+            return;
+        $this->includeJs('js/hide_empty_rows.js');
+        // Check if the report ID is listed in the settings
+        $id_list = array_map('trim',explode(',',$this->getProjectSetting('report-id-list')[0]));
+        if (!in_array($_GET['report_id'],$id_list))
+            return;
+        if ( $this->getProjectSetting('hide-repeat-vars') ) 
             $this->includeJs('js/hide_repeat_variables.js');
-        }
     }
     
     public function redcap_data_entry_form() {
