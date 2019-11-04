@@ -16,8 +16,11 @@ class CTRItweaks extends AbstractExternalModule {
         
         if (PAGE == 'DataEntry/record_home.php' && $_GET['id']) {
             $event = $this->getProjectSetting('system-management-event');
-            $this->passArgument('ctriTweaksRecordHome', REDCap::getEventNames(false,false,$event));
-            $this->includeJs('js/move_event_record_home.js');
+            if ( !is_null($event) ) {
+                $this->passArgument('ctriTweaksRecordHome', REDCap::getEventNames(false,false,$event));
+                $this->includeJs('js/move_event_record_home.js');
+            }
+            return;
         }
         
         // Check to see if we are on the Reports page, and that its not the edit report page
