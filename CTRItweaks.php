@@ -4,6 +4,8 @@ namespace UWMadison\CTRItweaks;
 use ExternalModules\AbstractExternalModule;
 use ExternalModules\ExternalModules;
 
+use REDCap;
+
 class CTRItweaks extends AbstractExternalModule {
     
     public function __construct() {
@@ -11,6 +13,12 @@ class CTRItweaks extends AbstractExternalModule {
     }
     
     public function redcap_every_page_top($project_id) {
+        
+        if (PAGE == 'DataEntry/record_home.php' && $_GET['id']) {
+            $event = $this->getProjectSetting('system-management-event');
+            $this->passArgument('ctriTweaksRecordHome', REDCap::getEventNames(false,false,$event));
+            $this->includeJs('js/move_event_record_home.js');
+        }
         
         // Check to see if we are on the Reports page, and that its not the edit report page
         if (PAGE != 'DataExport/index.php' || $project_id == NULL || $_GET['addedit']) 
@@ -33,6 +41,14 @@ class CTRItweaks extends AbstractExternalModule {
     
     private function includeJs($path) {
         echo '<script src="' . $this->getUrl($path) . '"></script>';
+    }
+    
+    private function passArgument($name, $value) {
+        echo "<script>var ".$name." = ".json_encode($value).";</script>";
+    }
+    
+    private function debugToConsole($msg) { 
+        echo "<script>console.log(".json_encode($msg).")</script>";
     }
 }
 

@@ -41,6 +41,11 @@
                     "default": ""
                 }
             ]
+        },
+        {
+            "key": "system-management-event",
+            "name": "Move event on Record Home to seperate table (used for System Managment events that don't represent a visit)",
+            "type": "event-list"
         }
     ],
     "compatibility": {
