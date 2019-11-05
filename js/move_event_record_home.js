@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    var title = ctriTweaksRecordHome;
+    var title = ctriTweaksRecordHomeEvent;
     var col = $("#event_grid_table th").index($("th:contains('"+title+"')"))
 
     newTable = `

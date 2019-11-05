@@ -17,8 +17,13 @@ class CTRItweaks extends AbstractExternalModule {
         if (PAGE == 'DataEntry/record_home.php' && $_GET['id']) {
             $event = $this->getProjectSetting('system-management-event');
             if ( !is_null($event) ) {
-                $this->passArgument('ctriTweaksRecordHome', REDCap::getEventNames(false,false,$event));
+                $this->passArgument('ctriTweaksRecordHomeEvent', REDCap::getEventNames(false,false,$event));
                 $this->includeJs('js/move_event_record_home.js');
+            }
+            $forms = $this->getProjectSetting('hide-form-row')[0];
+            if ( !is_null($forms[0]) ) {
+                $this->passArgument('ctriTweaksRecordHomeForms', $forms);
+                $this->includeJs('js/hide_row_record_home.js');
             }
             return;
         }

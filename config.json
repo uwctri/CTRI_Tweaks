@@ -16,7 +16,7 @@
     "project-settings": [
         {
             "key": "prevent-enter-submit",
-            "name": "Prevent 'enter' for clicking the 'Save & Exit Form' Button",
+            "name": "Prevent 'enter' from activating the 'Save & Exit Form' Button",
             "type": "checkbox"
         },
         {
@@ -46,6 +46,19 @@
             "key": "system-management-event",
             "name": "Move event on Record Home to seperate table (used for System Managment events that don't represent a visit)",
             "type": "event-list"
+        },
+        {
+            "key": "hide-form-row-list",
+            "name": "Forms to hide on the Record Home page",
+            "type": "sub_settings",
+            "sub_settings":[
+                {
+                    "key": "hide-form-row",
+                    "name": "Form",
+                    "type": "form-list",
+                    "repeatable":true
+                }
+            ]
         }
     ],
     "compatibility": {
