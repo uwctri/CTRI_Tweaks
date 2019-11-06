@@ -11,9 +11,15 @@
     ],
     "permissions": [
         "redcap_every_page_top",
-        "redcap_data_entry_form"
+        "redcap_data_entry_form",
+        "redcap_project_home_page"
     ],
     "project-settings": [
+        {
+            "key": "project-home-alert",
+            "name": "Home page alert",
+            "type": "textarea"
+        },
         {
             "key": "prevent-enter-submit",
             "name": "Prevent 'enter' from activating the 'Save & Exit Form' Button",

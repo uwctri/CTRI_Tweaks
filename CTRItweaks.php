@@ -40,6 +40,14 @@ class CTRItweaks extends AbstractExternalModule {
             $this->includeJs('js/hide_repeat_variables.js');
     }
     
+    public function redcap_project_home_page () {
+        $text = $this->getProjectSetting('project-home-alert');
+        if ( !empty($text) ) {
+            $this->passArgument('ctriTweaksAlertText', $text);
+            $this->includeJs('js/home_page_alert.js');
+        }
+    }
+    
     public function redcap_data_entry_form() {
         if ( $this->getProjectSetting('prevent-enter-submit') )
             $this->includeJs('js/prevent_enter_submission.js');
