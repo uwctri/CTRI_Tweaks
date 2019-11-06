@@ -1,14 +1,13 @@
 $(document).ready(function () {
+    var maxCells = 5;
     var title = ctriTweaksRecordHomeEvent;
     var col = $("#event_grid_table th").index($("th:contains('"+title+"')"))
 
     newTable = `
     <div class="table-responsive">
-        <table class="table table-bordered" style="background-color:#FFFFE0;color:#000;width:max-content">
+        <table id="systemManagementTable" class="table table-bordered" style="background-color:#fcfef5;color:#000;width:max-content">
             <tbody>
-                <tr><td id="eventReformatTitle" style="text-align:center"><b>System Management</b></td></tr>
-                <tr id="eventReformatInsert" style="max-width:800px">
-                </tr>
+                <tr><td id="eventReformatTitle" style="text-align:center;background-color:#FFFFE0"><b>System Management</b></td></tr>
             </tbody>
         </table>
     </div>`.replace('System Management',title);
@@ -22,12 +21,14 @@ $(document).ready(function () {
     $("#event_grid_table td").each( function(index, el) {
         if ( index % total_col == col) {
             if ((index < ((total_row - 1)*total_col)) && !$(el).is(':empty')) {
-                $("#eventReformatInsert").append($(el).clone());
-                $("#eventReformatInsert td").last().append("<span style='margin-left:5px'>"+$(el).prev(".labelform").text()+"</span>")
-                insertionCounter++;
+                if (insertionCounter++ % maxCells == 0)
+                    $("#systemManagementTable tr").last().after("<tr></tr>");
+                $("#systemManagementTable tr").last().append($(el).clone());
+                $("#systemManagementTable tr").last().find("td").last().append("<span style='margin-left:5px'>"+$(el).prev(".labelform").text()+"</span>")
             }
             $(el).remove();
         }
     });
+    insertionCounter = insertionCounter > maxCells ? maxCells : insertionCounter;
     $("#eventReformatTitle").attr('colspan',insertionCounter);
 });
