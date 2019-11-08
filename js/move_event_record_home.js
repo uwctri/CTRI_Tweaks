@@ -11,7 +11,7 @@ $(document).ready(function () {
             </tbody>
         </table>
     </div>`.replace('System Management',title);
-    $("#event_grid_table").before(newTable);
+    $("#record_display_name").after(newTable);
     $("button[targetid='event_grid_table']").remove();
 
     var total_col = $("th").length;
