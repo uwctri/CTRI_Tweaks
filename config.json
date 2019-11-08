@@ -65,6 +65,25 @@
                     "repeatable":true
                 }
             ]
+        },
+        {
+            "key": "event-tabs",
+            "name": "Event Group Tab",
+            "type": "sub_settings",
+            "repeatable":true,
+            "sub_settings":[
+                {
+                    "key": "tab-name",
+                    "name": "Tab Name",
+                    "type": "text"
+                },
+                {
+                    "key": "tab-event",
+                    "name": "Event to include",
+                    "type": "event-list",
+                    "repeatable":true
+                }
+            ]
         }
     ],
     "compatibility": {
