@@ -25,6 +25,13 @@ class CTRItweaks extends AbstractExternalModule {
                 $this->passArgument('ctriTweaksRecordHomeForms', $forms);
                 $this->includeJs('js/hide_row_record_home.js');
             }
+            $tabnames = $this->getProjectSetting('tab-name');
+            $tabevents = $this->getProjectSetting('tab-event');
+            if ( !is_null(tabnames)[0] ) {
+                $tabevents = $this->map_event_id_to_name($tabevents);
+                $this->passArgument('ctriTweaksTabConfig', array_combine($tabnames, $tabevents));
+                $this->includeJs('js/organize_record_home_tabs.js');
+            }
             return;
         }
         
@@ -53,6 +60,15 @@ class CTRItweaks extends AbstractExternalModule {
             $this->includeJs('js/prevent_enter_submission.js');
         if ( $this->getProjectSetting('hide-save-next-record') )
             $this->includeJs('js/hide_save_next_record.js');
+    }
+    
+    private function map_event_id_to_name( $array ){
+        foreach( $array as $name => $set ) {
+            foreach( $set as $key => $event ) {
+                $array[$name][$key] = REDCap::getEventNames(false,false,$event);
+            }
+        }
+        return $array;
     }
     
     private function includeJs($path) {
