@@ -27,9 +27,12 @@ class CTRItweaks extends AbstractExternalModule {
             }
             $tabnames = $this->getProjectSetting('tab-name');
             $tabevents = $this->getProjectSetting('tab-event');
+            $tabbutton = $this->getProjectSetting('tab-event-button');
             if ( !is_null(tabnames)[0] ) {
                 $tabevents = $this->map_event_id_to_name($tabevents);
                 $this->passArgument('ctriTweaksTabConfig', array_combine($tabnames, $tabevents));
+                if ( !is_null($tabbutton) )
+                    $this->passArgument('ctriTweaksAddTabText', $tabbutton);
                 $this->includeJs('js/organize_record_home_tabs.js');
             }
             return;

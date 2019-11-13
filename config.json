@@ -67,6 +67,11 @@
             ]
         },
         {
+            "key": "tab-event-button",
+            "name": "Hide event tabs (below) by default and use a button to add them? Button text",
+            "type": "text"
+        },
+        {
             "key": "event-tabs",
             "name": "Event Group Tab",
             "type": "sub_settings",
