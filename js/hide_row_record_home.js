@@ -4,7 +4,7 @@ jQuery.expr[':'].icontains = function(a, i, m) {
 };
 
 $(document).ready(function () {
-    var instrument_list = ctriTweaksRecordHomeForms.map(s=>s.replace('_',' '));
+    var instrument_list = ctriTweaksRecordHomeForms.map(s=>s.replace(/_/g, ' '));
     $.each( instrument_list, function (_,instrument) {
         $("#event_grid_table td:icontains('"+instrument+"')").parent().remove();
     });
