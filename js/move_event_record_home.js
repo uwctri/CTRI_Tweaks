@@ -2,7 +2,7 @@ $(document).ready(function () {
     var maxCells = 5;
     var title = ctriTweaksRecordHomeEvent;
     var col = $("#event_grid_table th").index($("th:contains('"+title+"')"))
-
+    
     newTable = `
     <div class="table-responsive">
         <table id="systemManagementTable" class="table table-bordered" style="background-color:#fcfef5;color:#000;width:max-content">
@@ -14,7 +14,7 @@ $(document).ready(function () {
     $("#record_display_name").after(newTable);
     $("button[targetid='event_grid_table']").remove();
 
-    var total_col = $("th").length;
+    var total_col = $("#event_grid_table th").length;
     $("#event_grid_table th:eq("+col+")").remove();
     var total_row = $("#event_grid_table tr").length -1;
     var insertionCounter = 0;
@@ -27,8 +27,11 @@ $(document).ready(function () {
                 $("#systemManagementTable tr").last().find("td").last().append("<span style='margin-left:5px'>"+$(el).prev(".labelform").text()+"</span>")
             }
             $(el).remove();
+            console.log(el);
+            console.log("hit");
         }
     });
+    $("#systemManagementTable button.invis").remove();
     insertionCounter = insertionCounter > maxCells ? maxCells : insertionCounter;
     $("#eventReformatTitle").attr('colspan',insertionCounter);
 });
