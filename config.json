@@ -31,6 +31,16 @@
             "type": "checkbox"
         },
         {
+            "key": "system-management-event",
+            "name": "Move event on Record Home to seperate table (used for System Managment events that don't represent a visit)",
+            "type": "event-list"
+        },
+        {
+            "key": "tab-event-button",
+            "name": "Hide event tabs (configured below) by default and use a button to add them? Button text",
+            "type": "text"
+        },
+        {
             "key": "hide-repeat-vars-group",
             "name": "Hide 'redcap_repeat_instrument', 'redcap_repeat_instance', 'redcap_event_name' on reports",
             "type": "sub_settings",
@@ -43,15 +53,42 @@
                 {
                     "key": "report-id-list",
                     "name": "Report IDs (comma seperated)",
-                    "type": "text",
-                    "default": ""
+                    "type": "text"
                 }
             ]
         },
         {
-            "key": "system-management-event",
-            "name": "Move event on Record Home to seperate table (used for System Managment events that don't represent a visit)",
-            "type": "event-list"
+            "key": "write-back-from-reports-group",
+            "name": "Add Write Back Button",
+            "type": "sub_settings",
+            "repeatable":true,
+            "sub_settings":[
+                {
+                    "key": "write-back-button-text",
+                    "name": "Button text",
+                    "type": "text"
+                },
+                {
+                    "key": "write-back-warning-text",
+                    "name": "Warning modal text",
+                    "type": "text"
+                },
+                {
+                    "key": "write-back-variable",
+                    "name": "Write back field",
+                    "type": "field-list"
+                },
+                {
+                    "key": "write-back-value",
+                    "name": "Write back value",
+                    "type": "text"
+                },
+                {
+                    "key": "write-back-report",
+                    "name": "Report ID(s) (comma seperated)",
+                    "type": "text"
+                }
+            ]
         },
         {
             "key": "hide-form-row-list",
@@ -65,11 +102,6 @@
                     "repeatable":true
                 }
             ]
-        },
-        {
-            "key": "tab-event-button",
-            "name": "Hide event tabs (below) by default and use a button to add them? Button text",
-            "type": "text"
         },
         {
             "key": "event-tabs",

@@ -42,6 +42,8 @@ class CTRItweaks extends AbstractExternalModule {
         if (PAGE != 'DataExport/index.php' || $project_id == NULL || $_GET['addedit']) 
             return;
         $this->includeJs('js/hide_empty_rows.js');
+        $this->includeJs('js/report_write_back.js');
+        $this->debugToConsole($this->getProjectSetting('write-back-from-reports-group'));
         // Check if the report ID is listed in the settings
         $id_list = array_map('trim',explode(',',$this->getProjectSetting('report-id-list')[0]));
         if (!in_array($_GET['report_id'],$id_list))
@@ -72,6 +74,14 @@ class CTRItweaks extends AbstractExternalModule {
             }
         }
         return $array;
+    }
+    
+    private function load_report_write_back_settings() {
+        $this->getProjectSetting('write-back-button-text');
+        $this->getProjectSetting('write-back-warning-text');
+        $this->getProjectSetting('write-back-variable');
+        $this->getProjectSetting('write-back-value');
+        $this->getProjectSetting('write-back-report');
     }
     
     private function includeJs($path) {

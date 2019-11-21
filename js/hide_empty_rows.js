@@ -29,9 +29,9 @@ function monitorCheckBox() {
 }
 
 function placeCheckBox() {
-    if ($("#lf1").length == 1 && $("#lf1").is(':visible')) {
+    if ( $("#report_div .d-print-none").length == 2 ) {
         const load = "<div style='margin-top:10px;'><span style='margin-right:10px;font-weight:bold;'>Hide Empty Rows: </span><input type='checkbox' class='form-check-input' style='margin-left:0' id='hideEmptyRowsCheck' checked></div>";
-        $('#lf1').parent().after(load);
+        $("#report_div .d-print-none").last().append(load);
         $("#hideEmptyRowsCheck").on("change",hideEmptyRowsCheck);
         hideEmptyRowsCheck();
         monitorCheckBox();
