@@ -1,11 +1,9 @@
-var ctriTweaksWriteBackButtonText = 'Mark Records As Saved';
-var ctriTweaksWriteBackWarningText = "You are about to mark all records in this report as having been printed out and acted on. Please verify this is correct. If so then select 'Save'."
 var wbmodal = `
 <div class="modal fade" id="writeBackModal" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" >Are you sure?</h5>
+                <h5 class="modal-title" >Are you sure? (this is not yet functional)</h5>
                 <button type="button" class="close" data-dismiss="modal" >
                 <span>&times;</span>
                 </button>
@@ -19,10 +17,10 @@ var wbmodal = `
             </div>
         </div>
     </div>
-</div>`.replace('...',ctriTweaksWriteBackWarningText)
+</div>`;
 
 function perfromWriteBack() {
-    console.log("click");
+    console.log("writing "+ctriTweaksReportWriteBack[0]["value"]+" to "+ctriTweaksReportWriteBack[0]["var"]);
     $('#writeBackModal').modal('hide')
 }
 
@@ -40,9 +38,8 @@ function placeWriteBackButton() {
             <button id="wbopenmodal" class="report_btn jqbuttonmed ui-button ui-corner-all ui-widget" style="font-size:12px;" data-toggle="modal" data-target="#writeBackModal">
                 <i class="fas fa-pencil-alt fs10"></i> button text
             </button>
-        </div>`.replace('button text',ctriTweaksWriteBackButtonText);
+        </div>`.replace('button text',ctriTweaksReportWriteBack[0]["btn"]);
         $("#report_div .d-print-none").last().append(load);
-        
         monitorWBbutton();
     }
     else {
@@ -54,7 +51,9 @@ function placeWriteBackButton() {
 }
 
 $(document).ready(function () {
+    console.log( ctriTweaksReportWriteBack );
+    //Todo loop over the values sent back rather than just use 0th
     placeWriteBackButton();
-    $("#sub-nav").after(wbmodal);
+    $("#sub-nav").after(wbmodal.replace('...',ctriTweaksReportWriteBack[0]["text"]));
     $("#wbbtn").on("click",perfromWriteBack);
 });

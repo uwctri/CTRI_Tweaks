@@ -22,6 +22,8 @@ function hideEmptyRowsCheck(){
 }
 
 function monitorCheckBox() {
+    if ($('[id="hideEmptyRowsCheck"]').length > 1)
+        $('[id="hideEmptyRowsCheck"]').parent().remove();
     if ($("#hideEmptyRowsCheck").length == 0)
         placeCheckBox();
     else

@@ -25,7 +25,7 @@ class CTRItweaks extends AbstractExternalModule {
                 $this->passArgument('ctriTweaksRecordHomeForms', $forms);
                 $this->includeJs('js/hide_row_record_home.js');
             }
-            $tabnames = $this->getProjectSetting('tab-name');
+            $tabnames  = $this->getProjectSetting('tab-name');
             $tabevents = $this->getProjectSetting('tab-event');
             $tabbutton = $this->getProjectSetting('tab-event-button');
             if ( !is_null($tabnames[0]) ) {
@@ -42,13 +42,16 @@ class CTRItweaks extends AbstractExternalModule {
         if (PAGE != 'DataExport/index.php' || $project_id == NULL || $_GET['addedit']) 
             return;
         $this->includeJs('js/hide_empty_rows.js');
-        $this->includeJs('js/report_write_back.js');
-        $this->debugToConsole($this->getProjectSetting('write-back-from-reports-group'));
+        $wbSettings = $this->load_report_write_back_settings();
+        if ( !empty($wbSettings) ) {
+            $this->passArgument('ctriTweaksReportWriteBack', $wbSettings);
+            $this->includeJs('js/report_write_back.js');
+        }
         // Check if the report ID is listed in the settings
         $id_list = array_map('trim',explode(',',$this->getProjectSetting('report-id-list')[0]));
         if (!in_array($_GET['report_id'],$id_list))
             return;
-        if ( $this->getProjectSetting('hide-repeat-vars') ) 
+        if ( $this->getProjectSetting('hide-repeat-vars') )
             $this->includeJs('js/hide_repeat_variables.js');
     }
     
@@ -77,11 +80,16 @@ class CTRItweaks extends AbstractExternalModule {
     }
     
     private function load_report_write_back_settings() {
-        $this->getProjectSetting('write-back-button-text');
-        $this->getProjectSetting('write-back-warning-text');
-        $this->getProjectSetting('write-back-variable');
-        $this->getProjectSetting('write-back-value');
-        $this->getProjectSetting('write-back-report');
+        foreach( $this->getProjectSetting('write-back-button-text') as $index => $btn) {
+            $config[$index]["btn"] = $btn;
+            $config[$index]["text"] = $this->getProjectSetting('write-back-warning-text')[$index];
+            $config[$index]["var"] = $this->getProjectSetting('write-back-variable')[$index];
+            $config[$index]["value"] = $this->getProjectSetting('write-back-value')[$index];
+            $config[$index]["report"] = $this->getProjectSetting('write-back-report')[$index];
+            if( in_array(null, $config[$index]) || !in_array($_GET["report_id"], array_map('trim',explode(',', $config[$index]["report"]))) )
+                unset($config[$index]);
+        }
+        return $config;
     }
     
     private function includeJs($path) {
