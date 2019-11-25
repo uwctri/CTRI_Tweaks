@@ -7,6 +7,8 @@ $.fn.dataTable.ext.search.push(
         var min = $('#tableFilterMin').val();
         var max = $('#tableFilterMax').val();
         var target = $('#minmaxpivot').val();
+        if ( (min==="" && max==="") || target==="")
+            return true;
         var pivot = data[$("#report_table th").index($("th:contains('"+target+"')"))] || 0;
         console.log(min + " " + max + " " + pivot);
         if ( ( isNaN( min ) && isNaN( max ) ) ||
@@ -46,9 +48,12 @@ function placeInputBoxes() {
         $("#report_table th :last-child").filter('div').each( function( _, val ){
             $("#minmaxpivot").append('<option value='+$(val).text()+'>'+$(val).text()+'</option>')
         });
-        $('#tableFilterMin, #tableFilterMax, #minmaxpivot').keyup( function() {
-            $("#report_table").DataTable().draw()
-        } );
+        $('#tableFilterMin, #tableFilterMax').keyup( function() {
+            $("#report_table").DataTable().draw();
+        });
+        $('#minmaxpivot').on("change", function() {
+            $("#report_table").DataTable().draw();
+        });
     }
     else {
         if ($('#report_load_progress2').is(":visible") || $('#report_load_progress').is(":visible"))
@@ -59,5 +64,11 @@ function placeInputBoxes() {
 }
 
 $(document).ready(function () {
+    $('head').append(
+    `<style>
+        #report_div{
+            margin-right: 10px !important;  
+        }
+    </style>`);
     placeInputBoxes();
 });

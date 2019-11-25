@@ -42,6 +42,8 @@ class CTRItweaks extends AbstractExternalModule {
         if (PAGE != 'DataExport/index.php' || $project_id == NULL || $_GET['addedit']) 
             return;
         $this->includeJs('js/hide_empty_rows.js');
+        $this->includeJs('js/report_range_filter.js');
+        $this->includeJS('js/report_copy_visible.js');
         $wbSettings = $this->load_report_write_back_settings();
         if ( !empty($wbSettings) ) {
             $this->passArgument('ctriTweaksReportWriteBack', $wbSettings);
