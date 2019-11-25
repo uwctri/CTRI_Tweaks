@@ -13,14 +13,14 @@ function copyData() {
 function monitorCopyBtn() {
     if ($('[id="copyDataBtn"]').length > 1)
         $('[id="copyDataBtn"]').remove();
-    if ($("#wbopenmodal").length == 0)
-        placeCheckBox();
+    if ($("#copyDataBtn").length == 0)
+        placeCopyBtn();
     else
         setTimeout(monitorCopyBtn,1000);
 }
 
 function placeCopyBtn() {
-    if ( $("#report_div .d-print-none").length == 2 ) {
+    if ( $("#report_table_wrapper").length == 1 ) {
         var btn = '<a href="#" class="btn btn-secondary btn-sm" role="button" id="copyDataBtn"><i class="fas fa-clipboard"></i></a>'
         $("#report_table_wrapper").prepend(btn)
         $("#copyDataBtn").popover({
