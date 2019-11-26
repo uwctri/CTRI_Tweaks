@@ -27,8 +27,6 @@ $(document).ready(function () {
                 $("#systemManagementTable tr").last().find("td").last().append("<span style='margin-left:5px'>"+$(el).prev(".labelform").text()+"</span>")
             }
             $(el).remove();
-            console.log(el);
-            console.log("hit");
         }
     });
     $("#systemManagementTable button.invis").remove();

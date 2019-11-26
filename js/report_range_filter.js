@@ -1,19 +1,16 @@
-// handle dates (mdy)
-// organize ui
-// handle missing max or min value
-
 $.fn.dataTable.ext.search.push(
     function( settings, data, dataIndex ) {
         var min = $('#tableFilterMin').val();
         var max = $('#tableFilterMax').val();
-        var target = $('#minmaxpivot').val();
-        if ( (min==="" && max==="") || target==="")
-            return true;
+        var target = $('#minmaxpivot').val() || "";
         var pivot = data[$("#report_table th").index($("th:contains('"+target+"')"))] || 0;
-        console.log(min + " " + max + " " + pivot);
-        if ( ( isNaN( min ) && isNaN( max ) ) ||
-             ( isNaN( min ) && pivot <= max ) ||
-             ( min <= pivot && isNaN( max ) ) ||
+        min = isNumeric(min) ? Number(min) : min;
+        max = isNumeric(max) ? Number(max) : max;
+        pivot = isNumeric(pivot) ? Number(pivot) : pivot;
+        if ( ( min==="" && max==="" ) ||
+             ( target==="" ) ||
+             ( min==="" && pivot <= max ) ||
+             ( min <= pivot && max==="" ) ||
              ( min <= pivot && pivot <= max ) )
             return true;
         return false;
@@ -21,29 +18,31 @@ $.fn.dataTable.ext.search.push(
 );
 
 var ctriTweaksNewFilters = `
-<div class="dataTables_filter">
-    <select id="minmaxpivot">
-        <option value="" selected disabled hidden>Filter Range On...</option>
-    </select>
-</div>
-<div class="dataTables_filter">
-    <label><input type="text" placeholder="Maximum" id="tableFilterMax"></label>
-</div>
-<div class="dataTables_filter">
-    <label><input type="text" placeholder="Minimum" id="tableFilterMin"></label>
+<div id="NewFiltersGroup">
+    <div class="dataTables_filter">
+        <label><input type="text" placeholder="Maximum" id="tableFilterMax"></label>
+    </div>
+    <div class="dataTables_filter">
+        <label><input type="text" placeholder="Minimum" id="tableFilterMin"></label>
+    </div>
+    <div class="dataTables_filter">
+        <select id="minmaxpivot">
+            <option value="" selected disabled hidden>Filter Range On...</option>
+        </select>
+    </div>
 </div>`;
 
 function monitorBoxes() {
-    if ($('[id="hideEmptyRowsCheck"]').length > 1)
-        $('[id="hideEmptyRowsCheck"]').parent().remove();
-    if ($("#hideEmptyRowsCheck").length == 0)
+    if ($('[id="NewFiltersGroup"]').length > 1)
+        $('[id="NewFiltersGroup"]').remove();
+    if ($("#NewFiltersGroup").length == 0)
         placeInputBoxes();
     else
         setTimeout(monitorBoxes,1000);
 }
 
 function placeInputBoxes() {
-    if ( $("#report_div .d-print-none").length == 2 ) {
+    if ( $("#report_table_wrapper").length == 1 ) {
         $("#report_table_filter").before(ctriTweaksNewFilters);
         $("#report_table th :last-child").filter('div').each( function( _, val ){
             $("#minmaxpivot").append('<option value='+$(val).text()+'>'+$(val).text()+'</option>')
@@ -54,6 +53,7 @@ function placeInputBoxes() {
         $('#minmaxpivot').on("change", function() {
             $("#report_table").DataTable().draw();
         });
+        monitorBoxes();
     }
     else {
         if ($('#report_load_progress2').is(":visible") || $('#report_load_progress').is(":visible"))
@@ -68,6 +68,13 @@ $(document).ready(function () {
     `<style>
         #report_div{
             margin-right: 10px !important;  
+        }
+        #NewFiltersGroup{
+            display: contents;
+        }
+        #minmaxpivot{
+            margin-left: 6px;
+            height: 24px;
         }
     </style>`);
     placeInputBoxes();
