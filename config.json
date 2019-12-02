@@ -41,23 +41,6 @@
             "type": "text"
         },
         {
-            "key": "hide-repeat-vars-group",
-            "name": "Hide 'redcap_repeat_instrument', 'redcap_repeat_instance', 'redcap_event_name' on reports",
-            "type": "sub_settings",
-            "sub_settings":[
-                {
-                    "key": "hide-repeat-vars",
-                    "name": "Enable",
-                    "type": "checkbox"
-                },
-                {
-                    "key": "report-id-list",
-                    "name": "Report IDs (comma seperated)",
-                    "type": "text"
-                }
-            ]
-        },
-        {
             "key": "write-back-from-reports-group",
             "name": "Add Write Back Button",
             "type": "sub_settings",

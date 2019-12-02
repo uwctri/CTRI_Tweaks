@@ -25,15 +25,17 @@ function perfromWriteBack() {
 }
 
 function monitorWBbutton() {
+    if ($('[id="wbopenmodal"]').length > 1)
+        $('[id="wbopenmodal"]').parent().remove();
     if ($("#wbopenmodal").length == 0)
-        placeCheckBox();
+        placeWriteBackButton();
     else
-        setTimeout(monitorCheckBox,1000);
+        setTimeout(monitorWBbutton,1000);
 }
 
 function placeWriteBackButton() {
     if ( $("#report_div .d-print-none").length == 2 ) {
-        const load = `
+        var load = `
         <div style='margin-top:10px;'>
             <button id="wbopenmodal" class="report_btn jqbuttonmed ui-button ui-corner-all ui-widget" style="font-size:12px;" data-toggle="modal" data-target="#writeBackModal">
                 <i class="fas fa-pencil-alt fs10"></i> button text

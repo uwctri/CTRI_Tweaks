@@ -1,3 +1,5 @@
+//No longer used
+
 $(document).ready(function hrv() {
     // Call self until the report table is built in the dom
     if ($('#report_table').length === 0) 

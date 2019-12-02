@@ -35,26 +35,19 @@ class CTRItweaks extends AbstractExternalModule {
                     $this->passArgument('ctriTweaksAddTabText', $tabbutton);
                 $this->includeJs('js/organize_record_home_tabs.js');
             }
-            return;
         }
         
         // Check to see if we are on the Reports page, and that its not the edit report page
-        if (PAGE != 'DataExport/index.php' || $project_id == NULL || $_GET['addedit']) 
-            return;
-        $this->includeJs('js/hide_empty_rows.js');
-        $this->includeJs('js/report_range_filter.js');
-        $this->includeJS('js/report_copy_visible.js');
-        $wbSettings = $this->load_report_write_back_settings();
-        if ( !empty($wbSettings) ) {
-            $this->passArgument('ctriTweaksReportWriteBack', $wbSettings);
-            $this->includeJs('js/report_write_back.js');
+        if (PAGE == 'DataExport/index.php' && $project_id != NULL && !$_GET['addedit']){
+            $this->includeJs('js/report_hide_rows_cols.js');
+            $this->includeJs('js/report_range_filter.js');
+            $this->includeJS('js/report_copy_visible.js');
+            $wbSettings = $this->load_report_write_back_settings();
+            if ( !empty($wbSettings) ) {
+                $this->passArgument('ctriTweaksReportWriteBack', $wbSettings);
+                $this->includeJs('js/report_write_back.js');
+            }
         }
-        // Check if the report ID is listed in the settings
-        $id_list = array_map('trim',explode(',',$this->getProjectSetting('report-id-list')[0]));
-        if (!in_array($_GET['report_id'],$id_list))
-            return;
-        if ( $this->getProjectSetting('hide-repeat-vars') )
-            $this->includeJs('js/hide_repeat_variables.js');
     }
     
     public function redcap_project_home_page () {
