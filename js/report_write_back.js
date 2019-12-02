@@ -19,9 +19,54 @@ var wbmodal = `
     </div>
 </div>`;
 
+function getEventID(eventDisplayName) {
+    var r = ""
+    $.each( ctriTweaksReportWriteBack['general']['eventMap'], function(eventID, data) {
+        if( data['display'] == eventDisplayName ) {
+            r = eventID;
+            return false;
+        }
+    });
+    return r;
+}
+
 function perfromWriteBack() {
-    console.log("writing "+ctriTweaksReportWriteBack[0]["value"]+" to "+ctriTweaksReportWriteBack[0]["var"]);
-    $('#writeBackModal').modal('hide')
+    var url = new URL(window.location.href);
+    var id_index = $("#report_table th:contains('"+ctriTweaksReportWriteBack['general']['record_id']+"')").index();
+    var event_index = $("#report_table th:contains('redcap_event_name')").index();
+    var instrument_index = $("#report_table th:contains('redcap_repeat_instrument')").index();
+    var instance_index = $("#report_table th:contains('redcap_repeat_instance')").index();
+    var post_data = { 
+        'pid': Number(url.searchParams.get("pid")),
+        'write': []
+    };
+    $("#report_table tr").slice(1).each( function( index, el ) {
+        post_data['write'].push( {
+            'record': $($(el).find('td')[id_index]).text(),
+            'event': getEventID($($(el).find('td')[event_index]).text()),
+            'instrument': $($(el).find('td')[instrument_index]).text().toLowerCase(),
+            'instance': $($(el).find('td')[instance_index]).text(),
+            'varName': ctriTweaksReportWriteBack['config'][0]['var'],
+            'val': ctriTweaksReportWriteBack['config'][0]['value']
+        } );
+    });
+    console.log(post_data);
+    //Todo need to filter out writing to record/events where the var doesn't exist
+    $.ajax({
+        method: 'POST',
+        url: ctriTweaksReportWriteBack.general.post,
+        data: {obj: JSON.stringify(post_data)},
+        error: function(jqXHR, textStatus, errorThrown){ 
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+            $('#writeBackModal').modal('hide');
+        },
+        success: function(data){ 
+            console.log(data);
+            $('#writeBackModal').modal('hide');
+        }
+    });
 }
 
 function monitorWBbutton() {
@@ -40,7 +85,7 @@ function placeWriteBackButton() {
             <button id="wbopenmodal" class="report_btn jqbuttonmed ui-button ui-corner-all ui-widget" style="font-size:12px;" data-toggle="modal" data-target="#writeBackModal">
                 <i class="fas fa-pencil-alt fs10"></i> button text
             </button>
-        </div>`.replace('button text',ctriTweaksReportWriteBack[0]["btn"]);
+        </div>`.replace('button text',ctriTweaksReportWriteBack['config'][0]["btn"]);
         $("#report_div .d-print-none").last().append(load);
         monitorWBbutton();
     }
@@ -53,9 +98,9 @@ function placeWriteBackButton() {
 }
 
 $(document).ready(function () {
-    //console.log( ctriTweaksReportWriteBack );
+    console.log( ctriTweaksReportWriteBack );
     //Todo loop over the values sent back rather than just use 0th
     placeWriteBackButton();
-    $("#sub-nav").after(wbmodal.replace('...',ctriTweaksReportWriteBack[0]["text"]));
+    $("#sub-nav").after(wbmodal.replace('...',ctriTweaksReportWriteBack['config'][0]["text"]));
     $("#wbbtn").on("click",perfromWriteBack);
 });

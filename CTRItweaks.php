@@ -43,7 +43,7 @@ class CTRItweaks extends AbstractExternalModule {
             $this->includeJs('js/report_range_filter.js');
             $this->includeJS('js/report_copy_visible.js');
             $wbSettings = $this->load_report_write_back_settings();
-            if ( !empty($wbSettings) ) {
+            if ( !empty($wbSettings['config']) ) {
                 $this->passArgument('ctriTweaksReportWriteBack', $wbSettings);
                 $this->includeJs('js/report_write_back.js');
             }
@@ -74,17 +74,30 @@ class CTRItweaks extends AbstractExternalModule {
         return $array;
     }
     
+    private function getEventNameMap(){
+        foreach( REDCap::getEventNames(false) as $eventID => $display ){
+            $data[$eventID]['display'] = $display;
+        }
+        foreach( REDCap::getEventNames(true) as $eventID => $unique ){
+            $data[$eventID]['unique'] = $unique;
+        }
+        return $data;
+    }
+    
     private function load_report_write_back_settings() {
         foreach( $this->getProjectSetting('write-back-button-text') as $index => $btn) {
-            $config[$index]["btn"] = $btn;
-            $config[$index]["text"] = $this->getProjectSetting('write-back-warning-text')[$index];
-            $config[$index]["var"] = $this->getProjectSetting('write-back-variable')[$index];
-            $config[$index]["value"] = $this->getProjectSetting('write-back-value')[$index];
-            $config[$index]["report"] = $this->getProjectSetting('write-back-report')[$index];
-            if( in_array(null, $config[$index]) || !in_array($_GET["report_id"], array_map('trim',explode(',', $config[$index]["report"]))) )
-                unset($config[$index]);
+            $data['config'][$index]["btn"] = $btn;
+            $data['config'][$index]["text"] = $this->getProjectSetting('write-back-warning-text')[$index];
+            $data['config'][$index]["var"] = $this->getProjectSetting('write-back-variable')[$index];
+            $data['config'][$index]["value"] = $this->getProjectSetting('write-back-value')[$index];
+            $data['config'][$index]["report"] = $this->getProjectSetting('write-back-report')[$index];
+            if( in_array(null, $data['config'][$index]) || !in_array($_GET["report_id"], array_map('trim',explode(',', $data['config'][$index]["report"]))) )
+                unset($data['config'][$index]);
         }
-        return $config;
+        $data['general']['post'] = $this->getUrl('writeback.php');
+        $data['general']['eventMap'] = $this->getEventNameMap();
+        $data['general']['record_id'] = REDCap::getRecordIdField();
+        return $data;
     }
     
     private function includeJs($path) {

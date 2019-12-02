@@ -1,8 +1,8 @@
 function copyData() {
-    var headers = $("#report_table th :last-child").filter('div').map(function(_,value) {
+    var headers = $("#report_table th:visible :last-child").filter('div').map(function(_,value) {
         return $(value).text();
     });
-    var data = $("#report_table td").map(function(index,value) {
+    var data = $("#report_table td:visible").map(function(index,value) {
         if ( index % headers.length == 0 )
             return '\n'+$(value).text();
         return $(value).text();
@@ -45,6 +45,10 @@ $(document).ready(function () {
             color: #aaa;
             background-color: #eee;
             border-color: #eee
+        }
+        #reportCopyAlert{
+            width: 771px;
+            border-color:#ffeeba!important;
         }
     </style>`);
     placeCopyBtn();
