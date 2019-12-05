@@ -31,6 +31,11 @@
             "type": "checkbox"
         },
         {
+            "key": "lock-complete-instruments",
+            "name": "Lock (readonly, easily unlocked by user) instruments as read only when they are saved as complete?",
+            "type": "checkbox"
+        },
+        {
             "key": "system-management-event",
             "name": "Move event on Record Home to seperate table (used for System Managment events that don't represent a visit)",
             "type": "event-list"

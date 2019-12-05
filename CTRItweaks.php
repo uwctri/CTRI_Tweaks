@@ -59,6 +59,8 @@ class CTRItweaks extends AbstractExternalModule {
     }
     
     public function redcap_data_entry_form() {
+        if ( $this->getProjectSetting('lock-complete-instruments') )
+            $this->includeJs('js/data_entry_lock_complete.js');
         if ( $this->getProjectSetting('prevent-enter-submit') )
             $this->includeJs('js/prevent_enter_submission.js');
         if ( $this->getProjectSetting('hide-save-next-record') )
