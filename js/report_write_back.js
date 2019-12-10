@@ -98,7 +98,6 @@ function placeWriteBackButton() {
 }
 
 $(document).ready(function () {
-    console.log( ctriTweaksReportWriteBack );
     //Todo loop over the values sent back rather than just use 0th
     placeWriteBackButton();
     $("#sub-nav").after(wbmodal.replace('...',ctriTweaksReportWriteBack['config'][0]["text"]));

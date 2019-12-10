@@ -16,7 +16,7 @@ $(document).ready(function () {
 
     var total_col = $("#event_grid_table th").length;
     $("#event_grid_table th:eq("+col+")").remove();
-    var total_row = $("#event_grid_table tr").length -1;
+    var total_row = $("#event_grid_table tr").length -$('td:contains("Delete all data on event:")').length;
     var insertionCounter = 0;
     $("#event_grid_table td").each( function(index, el) {
         if ( index % total_col == col) {
