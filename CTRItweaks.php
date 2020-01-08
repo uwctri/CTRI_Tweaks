@@ -65,6 +65,13 @@ class CTRItweaks extends AbstractExternalModule {
             $this->includeJs('js/prevent_enter_submission.js');
         if ( $this->getProjectSetting('hide-save-next-record') )
             $this->includeJs('js/hide_save_next_record.js');
+        $this->includeJs('js/stop_autocomplete.js');
+        $this->includeJs('js/mm_dd_yyyy.js');
+    }
+    
+    public function redcap_survey_page() {
+        $this->includeJs('js/stop_autocomplete.js');
+        $this->includeJs('js/mm_dd_yyyy.js');
     }
     
     private function map_event_id_to_name( $array ){
