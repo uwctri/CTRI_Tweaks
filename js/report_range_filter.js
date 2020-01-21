@@ -33,6 +33,7 @@ function monitorBoxes() {
 
 function placeInputBoxes() {
     if ( $("#report_table_wrapper").length == 1 ) {
+        $("#report_table_filter").prepend($("#FixedTableHdrsEnable"));
         var ctriTweaksNewFilters = `
         <div id="NewFiltersGroup">  
             <div class="dataTables_filter">
