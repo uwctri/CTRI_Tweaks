@@ -1,12 +1,8 @@
-jQuery.expr[':'].icontains = function(a, i, m) {
-  return jQuery(a).text().toUpperCase()
-      .indexOf(m[3].toUpperCase()) >= 0;
-};
-
 $(document).ready(function () {
-    var instrument_list = ctriTweaksRecordHomeForms.map(s=>s.replace(/_/g, ' '));
-    $.each( instrument_list, function (_,instrument) {
-        $("#event_grid_table td:icontains('"+instrument+"')").parent().remove();
+    var instrument_list = ctriTweaksRecordHomeForms.map(s=>s.replace(/_/g, ''));
+    $("#event_grid_table td:first-child").each( function(_,el) {
+        if ( $.inArray( $(el).text().replace(/[^a-z0-9\s]/gi, '').replace(/ +?/g, '').toLowerCase(), instrument_list ) > -1)
+            $(el).parent().remove();
     });
     $("#event_grid_table tr").each( function(index, el){
         $(el).removeClass();
