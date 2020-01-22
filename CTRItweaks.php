@@ -28,7 +28,7 @@ class CTRItweaks extends AbstractExternalModule {
             $forms = $this->getProjectSetting('full-size-repeating-table');
             if ( !is_null($forms[0]) ){
                 $this->passArgument('ctriTweaksRepeatingTableFullSize', $forms);
-                $this->includeJs('js/record_home_full_size_repeating.js');
+                $this->includeJs('js/record_home_full_size_repeating_table.js');
             }
             $tabnames  = $this->getProjectSetting('tab-name');
             $tabevents = $this->getProjectSetting('tab-event');
