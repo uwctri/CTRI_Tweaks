@@ -72,6 +72,8 @@ class CTRItweaks extends AbstractExternalModule {
     public function redcap_survey_page() {
         $this->includeJs('js/stop_autocomplete.js');
         $this->includeJs('js/mm_dd_yyyy.js');
+        if ( $this->getProjectSetting('hide-send-survey-link') )
+            $this->includeJs('js/hide_send_survey_link.js');
     }
     
     private function map_event_id_to_name( $array ){

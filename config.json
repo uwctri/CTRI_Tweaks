@@ -31,6 +31,11 @@
             "type": "checkbox"
         },
         {
+            "key": "hide-send-survey-link",
+            "name": "Hide 'Send Survey Link' step on the 'Save & Return Later' survey page",
+            "type": "checkbox"
+        },
+        {
             "key": "lock-complete-instruments",
             "name": "Lock (readonly, easily unlocked by user) instruments as read only when they are saved as complete?",
             "type": "checkbox"
