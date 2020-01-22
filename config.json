@@ -12,7 +12,8 @@
     "permissions": [
         "redcap_every_page_top",
         "redcap_data_entry_form",
-        "redcap_project_home_page"
+        "redcap_project_home_page",
+        "redcap_survey_page"
     ],
     "project-settings": [
         {
