@@ -53,6 +53,12 @@ class CTRItweaks extends AbstractExternalModule {
                 $this->includeJs('js/report_write_back.js');
             }
         }
+        
+        // Check if we are on the "Save and Return Later" page of a survey
+        if ( $_GET['__return'] != NULL ){
+            if ( $this->getProjectSetting('hide-send-survey-link') )
+                $this->includeJs('js/hide_send_survey_link.js');
+        }
     }
     
     public function redcap_project_home_page () {
@@ -77,8 +83,6 @@ class CTRItweaks extends AbstractExternalModule {
     public function redcap_survey_page() {
         $this->includeJs('js/stop_autocomplete.js');
         $this->includeJs('js/mm_dd_yyyy.js');
-        if ( $this->getProjectSetting('hide-send-survey-link') )
-            $this->includeJs('js/hide_send_survey_link.js');
     }
     
     private function map_event_id_to_name( $array ){
