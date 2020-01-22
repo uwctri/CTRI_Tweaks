@@ -97,6 +97,19 @@
             ]
         },
         {
+            "key": "full-size-repeating-table-list",
+            "name": "Full width repeating instrument tables",
+            "type": "sub_settings",
+            "sub_settings":[
+                {
+                    "key": "full-size-repeating-table",
+                    "name": "Form",
+                    "type": "form-list",
+                    "repeatable":true
+                }
+            ]
+        },
+        {
             "key": "event-tabs",
             "name": "Event Group Tab",
             "type": "sub_settings",
