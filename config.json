@@ -98,8 +98,21 @@
             ]
         },
         {
+            "key": "hide-repeating-table-list",
+            "name": "Repeating instrument tables to hide on the Record Home page",
+            "type": "sub_settings",
+            "sub_settings":[
+                {
+                    "key": "hide-repeating-table",
+                    "name": "Form",
+                    "type": "form-list",
+                    "repeatable":true
+                }
+            ]
+        },
+        {
             "key": "full-size-repeating-table-list",
-            "name": "Full width repeating instrument tables",
+            "name": "Repeating instrument tables to show at full width on the Record Home page",
             "type": "sub_settings",
             "sub_settings":[
                 {

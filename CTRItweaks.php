@@ -25,6 +25,11 @@ class CTRItweaks extends AbstractExternalModule {
                 $this->passArgument('ctriTweaksRecordHomeForms', $forms);
                 $this->includeJs('js/hide_row_record_home.js');
             }
+            $forms = $this->getProjectSetting('hide-repeating-table');
+            if ( !is_null($forms[0]) ){
+                $this->passArgument('ctriTweaksHideRepeatingTable', $forms);
+                $this->includeJs('js/record_home_hide_repeating_table.js');
+            }
             $forms = $this->getProjectSetting('full-size-repeating-table');
             if ( !is_null($forms[0]) ){
                 $this->passArgument('ctriTweaksRepeatingTableFullSize', $forms);
