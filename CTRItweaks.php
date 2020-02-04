@@ -20,6 +20,11 @@ class CTRItweaks extends AbstractExternalModule {
                 $this->passArgument('ctriTweaksRecordHomeEvent', REDCap::getEventNames(false,false,$event));
                 $this->includeJs('js/move_event_record_home.js');
             }
+            $events = $this->getProjectSetting('hide-events')[0];
+            if ( !is_null($events) ) {
+                $this->passArgument('ctriTweaksHideEvents', $this->getEventNames($events));
+                $this->includeJs('js/record_home_hide_event.js');
+            }
             $forms = $this->getProjectSetting('hide-form-row')[0];
             if ( !is_null($forms[0]) ) {
                 $this->passArgument('ctriTweaksRecordHomeForms', $forms);
@@ -105,6 +110,15 @@ class CTRItweaks extends AbstractExternalModule {
         }
         foreach( REDCap::getEventNames(true) as $eventID => $unique ){
             $data[$eventID]['unique'] = $unique;
+        }
+        return $data;
+    }
+    
+    private function getEventNames( $id_list ){
+        $data = [];
+        foreach( $id_list as $index => $id ) {
+            if ( $id != "" )
+                $data[$index] = REDCap::getEventNames(false,false,$id);
         }
         return $data;
     }

@@ -98,6 +98,19 @@
             ]
         },
         {
+            "key": "hide-events-list",
+            "name": "Events to hide on the Record Home page",
+            "type": "sub_settings",
+            "sub_settings":[
+                {
+                    "key": "hide-events",
+                    "name": "Event",
+                    "type": "event-list",
+                    "repeatable":true
+                }
+            ]
+        },
+        {
             "key": "hide-repeating-table-list",
             "name": "Repeating instrument tables to hide on the Record Home page",
             "type": "sub_settings",
