@@ -22,6 +22,11 @@
             "type": "textarea"
         },
         {
+            "key": "unverified-name",
+            "name": "Rename 'Unverified' on Record Home to",
+            "type": "text"
+        },
+        {
             "key": "prevent-enter-submit",
             "name": "Prevent 'enter' from activating the 'Save & Exit Form' Button",
             "type": "checkbox"

@@ -15,6 +15,11 @@ class CTRItweaks extends AbstractExternalModule {
     public function redcap_every_page_top($project_id) {
         
         if (PAGE == 'DataEntry/record_home.php' && $_GET['id']) {
+            $name = $this->getProjectSetting('unverified-name');
+            if ( !is_null($name) ) {
+                $this->passArgument('ctriTweaksUnverifiedName', $name);
+                $this->includeJs('js/record_home_change_unverified.js');
+            }
             $event = $this->getProjectSetting('system-management-event');
             if ( !is_null($event) ) {
                 $this->passArgument('ctriTweaksRecordHomeEvent', REDCap::getEventNames(false,false,$event));
