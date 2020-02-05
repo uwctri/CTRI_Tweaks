@@ -3,8 +3,8 @@
 namespace UWMadison\CTRItweaks;
 use ExternalModules\AbstractExternalModule;
 use ExternalModules\ExternalModules;
-
 use REDCap;
+use UIState;
 
 class CTRItweaks extends AbstractExternalModule {
     
@@ -76,11 +76,15 @@ class CTRItweaks extends AbstractExternalModule {
         }
     }
     
-    public function redcap_project_home_page () {
+    public function redcap_project_home_page ($project_id ) {
         $text = $this->getProjectSetting('project-home-alert');
         if ( !empty($text) ) {
             $this->passArgument('ctriTweaksAlertText', $text);
             $this->includeJs('js/home_page_alert.js');
+        }
+        if ( $this->getProjectSetting('force-save-next-form') ) { // Done directly in php
+            if( UIState::getUIStateValue($project_id , 'form', 'submit-btn')!='savenextform' )
+                UIState::saveUIStateValue($project_id, 'form', 'submit-btn', 'savenextform');
         }
     }
     

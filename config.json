@@ -27,6 +27,11 @@
             "type": "text"
         },
         {
+            "key": "force-save-next-form",
+            "name": "Set all 'Save &...' Buttons to 'Save & Go To Next Form'",
+            "type": "checkbox"
+        },
+        {
             "key": "prevent-enter-submit",
             "name": "Prevent 'enter' from activating the 'Save & Exit Form' Button",
             "type": "checkbox"
