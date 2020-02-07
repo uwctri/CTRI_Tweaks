@@ -32,6 +32,11 @@
             "type": "checkbox"
         },
         {
+            "key": "center-instruments",
+            "name": "Center all repeating instruments on Record Home table",
+            "type": "checkbox"
+        },
+        {
             "key": "prevent-enter-submit",
             "name": "Prevent 'enter' from activating the 'Save & Exit Form' Button",
             "type": "checkbox"

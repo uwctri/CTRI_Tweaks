@@ -15,6 +15,9 @@ class CTRItweaks extends AbstractExternalModule {
     public function redcap_every_page_top($project_id) {
         
         if (PAGE == 'DataEntry/record_home.php' && $_GET['id']) {
+            if ( $this->getProjectSetting('center-instruments') ) {
+                $this->includeJs('js/record_home_center_repeating_instruments.js');
+            }
             $name = $this->getProjectSetting('unverified-name');
             if ( !is_null($name) ) {
                 $this->passArgument('ctriTweaksUnverifiedName', $name);
