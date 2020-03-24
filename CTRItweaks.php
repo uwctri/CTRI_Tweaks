@@ -6,46 +6,64 @@ use ExternalModules\ExternalModules;
 use REDCap;
 use UIState;
 
+function printToScreen($string) {
+?>
+    <script type='text/javascript'>
+       $(function() {
+          console.log(<?=json_encode($string); ?>);
+       });
+    </script>
+    <?php
+}
+
 class CTRItweaks extends AbstractExternalModule {
+    
+    private $module_prefix = 'CTRI_Tweaks';
+    private $module_global = 'CTRItweaks';
+    private $module_name = 'CTRItweaks';
     
     public function __construct() {
             parent::__construct();
     }
     
     public function redcap_every_page_top($project_id) {
+        $this->initCTRIglobal();
+        if (strpos(PAGE, 'ExternalModules/manager/project.php') !== false && $project_id != NULL)
+            $this->includeJs('js/config.js');
         
+        if ( $this->getProjectSetting('hide-survey-tools') ) 
+            $this->includeJs('js/hide_survey_distribution_tools.js');
+
         if (PAGE == 'DataEntry/record_home.php' && $_GET['id']) {
-            if ( $this->getProjectSetting('center-instruments') ) {
-                $this->includeJs('js/record_home_center_repeating_instruments.js');
-            }
+            $this->includeJs('js/record_home_always.js');
             $name = $this->getProjectSetting('unverified-name');
             if ( !is_null($name) ) {
-                $this->passArgument('ctriTweaksUnverifiedName', $name);
+                $this->passArgument('UnverifiedName', $name);
                 $this->includeJs('js/record_home_change_unverified.js');
             }
             $event = $this->getProjectSetting('system-management-event');
             if ( !is_null($event) ) {
-                $this->passArgument('ctriTweaksRecordHomeEvent', REDCap::getEventNames(false,false,$event));
-                $this->includeJs('js/move_event_record_home.js');
+                $this->passArgument('RecordHomeEvent', REDCap::getEventNames(false,false,$event));
+                $this->includeJs('js/record_home_system_event.js');
             }
             $events = $this->getProjectSetting('hide-events')[0];
             if ( !is_null($events) ) {
-                $this->passArgument('ctriTweaksHideEvents', $this->getEventNames($events));
+                $this->passArgument('HideEvents', $this->getEventNames($events));
                 $this->includeJs('js/record_home_hide_event.js');
             }
             $forms = $this->getProjectSetting('hide-form-row')[0];
             if ( !is_null($forms[0]) ) {
-                $this->passArgument('ctriTweaksRecordHomeForms', $forms);
-                $this->includeJs('js/hide_row_record_home.js');
+                $this->passArgument('RecordHomeForms', $forms);
+                $this->includeJs('js/record_home_hide_row.js');
             }
             $forms = $this->getProjectSetting('hide-repeating-table')[0];
             if ( !is_null($forms[0]) ){
-                $this->passArgument('ctriTweaksHideRepeatingTable', $forms);
+                $this->passArgument('HideRepeatingTable', $forms);
                 $this->includeJs('js/record_home_hide_repeating_table.js');
             }
             $forms = $this->getProjectSetting('full-size-repeating-table')[0];
             if ( !is_null($forms[0]) ){
-                $this->passArgument('ctriTweaksRepeatingTableFullSize', $forms);
+                $this->passArgument('RepeatingTableFullSize', $forms);
                 $this->includeJs('js/record_home_full_size_repeating_table.js');
             }
             $tabnames  = $this->getProjectSetting('tab-name');
@@ -53,10 +71,10 @@ class CTRItweaks extends AbstractExternalModule {
             $tabbutton = $this->getProjectSetting('tab-event-button');
             if ( !is_null($tabnames[0]) ) {
                 $tabevents = $this->map_event_id_to_name($tabevents);
-                $this->passArgument('ctriTweaksTabConfig', array_combine($tabnames, $tabevents));
+                $this->passArgument('TabConfig', array_combine($tabnames, $tabevents));
                 if ( !is_null($tabbutton) )
-                    $this->passArgument('ctriTweaksAddTabText', $tabbutton);
-                $this->includeJs('js/organize_record_home_tabs.js');
+                    $this->passArgument('AddTabText', $tabbutton);
+                $this->includeJs('js/record_home_sub_tabs.js');
             }
         }
         
@@ -67,22 +85,39 @@ class CTRItweaks extends AbstractExternalModule {
             $this->includeJS('js/report_copy_visible.js');
             $wbSettings = $this->load_report_write_back_settings();
             if ( !empty($wbSettings['config']) ) {
-                $this->passArgument('ctriTweaksReportWriteBack', $wbSettings);
+                $this->passArgument('ReportWriteBack', $wbSettings);
                 $this->includeJs('js/report_write_back.js');
+            }
+            if( in_array($_GET["report_id"], array_map('trim',$this->getProjectSetting('check-print-report'))) ) {
+                $this->passArgument('Check', 
+                    array(
+                        "useGlobal" => $this->getProjectSetting('use-global-check-number')[0],
+                        "checkNumber" => $this->getSystemSetting('global-check-number'),
+                        "study" => $this->getProjectSetting('check-print-study')[0],
+                        "address" => $this->getProjectSetting('check-print-address')[0],
+                        "varAmt" => $this->getProjectSetting('check-print-amt')[0],
+                        "varName" => $this->getProjectSetting('check-print-name')[0],
+                        "varMemo" => $this->getProjectSetting('check-print-memo')[0],
+                        "varAddr1" => $this->getProjectSetting('check-print-addr1')[0],
+                        "varAddr2" => $this->getProjectSetting('check-print-addr2')[0],
+                        "varAddr3" => $this->getProjectSetting('check-print-addr3')[0],
+                        )
+                );
+                $this->includeJs('js/report_add_check_print.js');
             }
         }
         
         // Check if we are on the "Save and Return Later" page of a survey
         if ( $_GET['__return'] != NULL ){
             if ( $this->getProjectSetting('hide-send-survey-link') )
-                $this->includeJs('js/hide_send_survey_link.js');
+                $this->includeJs('js/survey_hide_send_survey_link.js');
         }
     }
     
     public function redcap_project_home_page ($project_id ) {
         $text = $this->getProjectSetting('project-home-alert');
         if ( !empty($text) ) {
-            $this->passArgument('ctriTweaksAlertText', $text);
+            $this->passArgument('AlertText', $text);
             $this->includeJs('js/home_page_alert.js');
         }
         if ( $this->getProjectSetting('force-save-next-form') ) { // Done directly in php
@@ -93,18 +128,20 @@ class CTRItweaks extends AbstractExternalModule {
     
     public function redcap_data_entry_form() {
         if ( $this->getProjectSetting('lock-complete-instruments') )
-            $this->includeJs('js/data_entry_lock_complete.js');
+            $this->includeJs('js/data_entry_prevent_enter_submission.js');
         if ( $this->getProjectSetting('prevent-enter-submit') )
-            $this->includeJs('js/prevent_enter_submission.js');
+            $this->includeJs('js/data_entry_prevent_enter_submission.js');
         if ( $this->getProjectSetting('hide-save-next-record') )
-            $this->includeJs('js/hide_save_next_record.js');
-        $this->includeJs('js/stop_autocomplete.js');
-        $this->includeJs('js/mm_dd_yyyy.js');
+            $this->includeJs('js/data_entry_hide_save_goto_next_record.js');
+        if ( $this->getProjectSetting('hide-send-survey-email') )
+            $this->includeJS('js/data_entry_hide_survey_option_email.js');
+        $this->includeJs('js/data_entry_stop_autocomplete.js');
+        $this->includeJs('js/data_entry_mm_dd_yyyy.js');
     }
     
     public function redcap_survey_page() {
-        $this->includeJs('js/stop_autocomplete.js');
-        $this->includeJs('js/mm_dd_yyyy.js');
+        $this->includeJs('js/data_entry_stop_autocomplete.js');
+        $this->includeJs('js/data_entry_mm_dd_yyyy.js');
     }
     
     private function map_event_id_to_name( $array ){
@@ -139,8 +176,13 @@ class CTRItweaks extends AbstractExternalModule {
         foreach( $this->getProjectSetting('write-back-button-text') as $index => $btn) {
             $data['config'][$index]["btn"] = $btn;
             $data['config'][$index]["text"] = $this->getProjectSetting('write-back-warning-text')[$index];
-            $data['config'][$index]["var"] = $this->getProjectSetting('write-back-variable')[$index];
-            $data['config'][$index]["value"] = $this->getProjectSetting('write-back-value')[$index];
+            $data['config'][$index]["footer"] = $this->getProjectSetting('write-back-footer-text')[$index];
+            foreach( $this->getProjectSetting('write-back-value')[$index] as $sub_index => $val ) {
+                $data['config'][$index]["write"][$sub_index]['val'] = $val;
+                $data['config'][$index]["write"][$sub_index]['var'] = $this->getProjectSetting('write-back-variable')[$index][$sub_index];
+                $data['config'][$index]["write"][$sub_index]['global'] = $this->getProjectSetting('write-back-global')[$index][$sub_index];
+                $data['config'][$index]["write"][$sub_index]['radio'] = $this->getProjectSetting('write-back-to')[$index][$sub_index];
+            }
             $data['config'][$index]["report"] = $this->getProjectSetting('write-back-report')[$index];
             if( in_array(null, $data['config'][$index]) || !in_array($_GET["report_id"], array_map('trim',explode(',', $data['config'][$index]["report"]))) )
                 unset($data['config'][$index]);
@@ -151,12 +193,25 @@ class CTRItweaks extends AbstractExternalModule {
         return $data;
     }
     
+    private function initCTRIglobal() {
+        $s = $this->getSystemSettings();
+        unset($s['enabled']);
+        unset($s['discoverable-in-project']);
+        unset($s['user-activate-permission']);
+        unset($s['version']);
+        $data = array(
+            "modulePrefix" => $this->module_prefix,
+            "systemSettings" => $s,
+        );
+        echo "<script>var ".$this->module_global." = ".json_encode($data).";</script>";
+    }
+    
     private function includeJs($path) {
         echo '<script src="' . $this->getUrl($path) . '"></script>';
     }
     
     private function passArgument($name, $value) {
-        echo "<script>var ".$name." = ".json_encode($value).";</script>";
+        echo "<script>".$this->module_global.".".$name." = ".json_encode($value).";</script>";
     }
     
     private function debugToConsole($msg) { 

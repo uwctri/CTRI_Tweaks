@@ -1,23 +1,29 @@
 <?php
 
 use REDCap;
-
+use ExternalModules\ExternalModules;
+echo "1";
+return;
 if( isset($_POST['obj']) ) {
     $postData = json_decode($_POST['obj']);
     $pid = $postData->pid;
+    $prefix = $postData->prefix;
     $dd = REDCap::getDataDictionary($pid,'array');
     foreach ( $postData->write as $data) {
-        if( !in_array($data->varName, REDCap::getValidFieldsByEvents($pid, $data->event)) )
+        if( ($data->action == 'var' || $data->action == 'both') && //This check isn't really needed
+             !in_array($data->var, REDCap::getValidFieldsByEvents($pid, $data->event)) )
             continue;
+        if ($data->action == 'global' || $data->action == 'both')
+            ExternalModules::setSystemSetting($prefix, $data->global, $data->val);
         if( !empty($data->instrument) ) {
-            if( $dd[$data->varName]['form_name'] == $data->instrument )
-                $writeArray[$data->record]["repeat_instances"][$data->event][$data->instrument][$data->instance][$data->varName] = $data->val;
+            if( $dd[$data->var]['form_name'] == $data->instrument )
+                $writeArray[$data->record]["repeat_instances"][$data->event][$data->instrument][$data->instance][$data->var] = $data->val;
         }
         else
-            $writeArray[$data->record][$data->event][$data->varName] = $data->val;
+            $writeArray[$data->record][$data->event][$data->var] = $data->val;
     }
     $out = REDCap::saveData($pid, 'array', $writeArray);
-    echo json_encode($out); 
+    echo json_encode($out);
 }
 else {
     echo "Missing Args";

@@ -15,25 +15,37 @@
         "redcap_project_home_page",
         "redcap_survey_page"
     ],
+    "system-settings": [
+        {
+            "key": "global-check-number",
+            "name": "<b>Global Check Number:</b><br>Used to suggest the next check number to use across all pojects. Value stored is most recently <b>used</b> check number",
+            "type": "text"
+        },
+        {
+            "key": "testing-global",
+            "name": "<b>Testing Global:</b><br>Used for Testing and Staging projects",
+            "type": "text"
+        }
+    ],
     "project-settings": [
         {
             "key": "project-home-alert",
-            "name": "Home page alert",
+            "name": "<b>Home page alert</b>",
             "type": "textarea"
         },
         {
             "key": "unverified-name",
-            "name": "Rename 'Unverified' on Record Home to",
+            "name": "<b>Rename 'Unverified' on Record Home to</b>",
             "type": "text"
+        },
+        {
+            "key": "toggle-tweaks-start",
+            "name": "tableStart",
+            "type": "descriptive"
         },
         {
             "key": "force-save-next-form",
             "name": "Set all 'Save &...' Buttons to 'Save & Go To Next Form'",
-            "type": "checkbox"
-        },
-        {
-            "key": "center-instruments",
-            "name": "Center all repeating instruments on Record Home table",
             "type": "checkbox"
         },
         {
@@ -52,49 +64,148 @@
             "type": "checkbox"
         },
         {
+            "key": "hide-send-survey-email",
+            "name": "Hide 'Log out & Open Survey' & 'Compose survey invitiation' from Survey Options menu on data collection screens",
+            "type": "checkbox"
+        },
+        {
+            "key": "hide-survey-tools",
+            "name": "Hide 'Survey Distribution Tools' from the left side menu",
+            "type": "checkbox"
+        },
+        {
             "key": "lock-complete-instruments",
             "name": "Lock (readonly, easily unlocked by user) instruments as read only when they are saved as complete?",
             "type": "checkbox"
         },
         {
+            "key": "toggle-tweaks-end",
+            "name": "tableEnd",
+            "type": "descriptive"
+        },
+        {
             "key": "system-management-event",
-            "name": "Move event on Record Home to seperate table (used for System Managment events that don't represent a visit)",
+            "name": "<b>Move event to seperate table:</b><br>Used for System Managment event on the Record Home Page that don't represent a visit",
             "type": "event-list"
         },
         {
-            "key": "tab-event-button",
-            "name": "Hide event tabs (configured below) by default and use a button to add them? Button text",
-            "type": "text"
-        },
-        {
             "key": "write-back-from-reports-group",
-            "name": "Add Write Back Button",
+            "name": "<b>Write Back Button</b>",
             "type": "sub_settings",
             "repeatable":true,
             "sub_settings":[
                 {
                     "key": "write-back-button-text",
-                    "name": "Button text",
+                    "name": "<b>Button text</b>",
                     "type": "text"
                 },
                 {
                     "key": "write-back-warning-text",
-                    "name": "Warning modal text",
-                    "type": "text"
+                    "name": "<b>Warning modal text:</b><br>HTML enabled",
+                    "type": "textarea"
                 },
                 {
-                    "key": "write-back-variable",
-                    "name": "Write back field",
-                    "type": "field-list"
+                    "key": "write-back-footer-text",
+                    "name": "<b>Footer modal text:</b><br>HTML enabled",
+                    "type": "textarea"
                 },
                 {
-                    "key": "write-back-value",
-                    "name": "Write back value",
-                    "type": "text"
+                    "key": "write-back-variable-list",
+                    "name": "<b>Save Data to</b>",
+                    "type": "sub_settings",
+                    "repeatable":true,
+                    "sub_settings":[
+                        {
+                            "key": "write-back-to",
+                            "name": "<b>Write back to</b>",
+                            "type": "radio",
+                            "choices": [
+                                {
+                                    "value": "var",
+                                    "name": "Project Field"
+                                },
+                                {
+                                    "value": "global",
+                                    "name": "CRTRI Tweaks Global"
+                                },
+                                {
+                                    "value": "both",
+                                    "name": "Both"
+                                }
+                            ]
+                        },
+                        {
+                            "key": "write-back-variable",
+                            "name": "<b>Write back field</b>",
+                            "type": "field-list"
+                        },
+                        {
+                            "key": "write-back-global",
+                            "name": "<b>Write back global</b>",
+                            "type": "text"
+                        },
+                        {
+                            "key": "write-back-value",
+                            "name": "<b>Write back value</b><ul><li>Use '@TODAY' to populate with today's date</li><li>Use '@ASK' to ask for a value with a given default</li><li>Use '@INCREMENT' to ask for a value with a given default</li></ul></label><label class='d-none'>",
+                            "type": "text"
+                        }
+                    ]
                 },
                 {
                     "key": "write-back-report",
-                    "name": "Report ID(s) (comma seperated)",
+                    "name": "<b>Report ID(s):</b><br>Comma seperated",
+                    "type": "text"
+                }
+            ]
+        },
+        {
+            "key": "check-print-group",
+            "name": "<b>Add Check Print Button to Report</b>",
+            "type": "sub_settings",
+            "sub_settings":[
+                {
+                    "key": "check-print-study",
+                    "name": "<b>Name of study</b>",
+                    "type": "text"
+                },
+                {
+                    "key": "check-print-address",
+                    "name": "<b>Study Address:</b><br>Use '\\' to denote a new line",
+                    "type": "textarea"
+                },
+                {
+                    "key": "check-print-amt",
+                    "name": "<b>Check Amount:</b><br>Variable name, must be on the report",
+                    "type": "text"
+                },
+                {
+                    "key": "check-print-name",
+                    "name": "<b>Pay to:</b><br>Variable name, must be on the report",
+                    "type": "text"
+                },
+                {
+                    "key": "check-print-memo",
+                    "name": "<b>Check memo:</b><br>Variable name, must be on the report",
+                    "type": "text"
+                },
+                {
+                    "key": "check-print-addr1",
+                    "name": "<b>Address Line 1:</b><br>Variable name, must be on the report",
+                    "type": "text"
+                },
+                {
+                    "key": "check-print-addr2",
+                    "name": "<b>Address Line 2:</b><br>Variable name, must be on the report",
+                    "type": "text"
+                },
+                {
+                    "key": "check-print-addr3",
+                    "name": "<b>Address Line 3:</b><br>Variable name, must be on the report",
+                    "type": "text"
+                },
+                {
+                    "key": "check-print-report",
+                    "name": "<b>Report ID</b>",
                     "type": "text"
                 }
             ]
@@ -140,7 +251,7 @@
         },
         {
             "key": "full-size-repeating-table-list",
-            "name": "Repeating instrument tables to show at full width on the Record Home page",
+            "name": "Repeating instrument tables to show at full width<br> on the Record Home page",
             "type": "sub_settings",
             "sub_settings":[
                 {
@@ -164,11 +275,16 @@
                 },
                 {
                     "key": "tab-event",
-                    "name": "Event to include",
+                    "name": "Include Event",
                     "type": "event-list",
                     "repeatable":true
                 }
             ]
+        },
+        {
+            "key": "tab-event-button",
+            "name": "<b>Hide event tabs?</b><br>Hide the above tabs by default and use a button to add them, specify button text",
+            "type": "text"
         }
     ],
     "compatibility": {

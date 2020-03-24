@@ -2,16 +2,16 @@ function mdy2ymd(str) {
     return str.substr(-4)+'-'+str.substr(0,str.length-5)
 }
 
-var ctriTweaksDateRegex = /^\d{2}\-\d{2}\-\d{4}$/ ;
+CTRItweaks.DateRegex = /^\d{2}\-\d{2}\-\d{4}$/ ;
 $.fn.dataTable.ext.search.push(
     function( settings, data, dataIndex ) {
         var min = $('#tableFilterMin').val();
         var max = $('#tableFilterMax').val();
         var target = $('#minmaxpivot').val() || "";
         var pivot = data[$("#report_table th").index($("th:contains('"+target+"')"))] || 0;
-        min = isNumeric(min) ? Number(min) : ctriTweaksDateRegex.test(min) ? mdy2ymd(min) : min;
-        max = isNumeric(max) ? Number(max) : ctriTweaksDateRegex.test(max) ? mdy2ymd(max) : max;
-        pivot = isNumeric(pivot) ? Number(pivot) : ctriTweaksDateRegex.test(pivot) ? mdy2ymd(pivot) : pivot;
+        min = isNumeric(min) ? Number(min) : CTRItweaks.DateRegex.test(min) ? mdy2ymd(min) : min;
+        max = isNumeric(max) ? Number(max) : CTRItweaks.DateRegex.test(max) ? mdy2ymd(max) : max;
+        pivot = isNumeric(pivot) ? Number(pivot) : CTRItweaks.DateRegex.test(pivot) ? mdy2ymd(pivot) : pivot;
         if ( ( min==="" && max==="" ) ||
              ( target==="" ) ||
              ( min==="" && pivot <= max ) ||
@@ -34,7 +34,7 @@ function monitorBoxes() {
 function placeInputBoxes() {
     if ( $("#report_table_wrapper").length == 1 ) {
         $("#report_table_filter").prepend($("#FixedTableHdrsEnable"));
-        var ctriTweaksNewFilters = `
+        var newFilters = `
         <div id="NewFiltersGroup">  
             <div class="dataTables_filter">
                 <label><input type="text" placeholder="Maximum" id="tableFilterMax" tabindex=3></label>
@@ -48,7 +48,7 @@ function placeInputBoxes() {
                 </select>
             </div>
         </div>`;
-        $("#report_table_filter").before(ctriTweaksNewFilters);
+        $("#report_table_filter").before(newFilters);
         $("#report_table th :last-child").filter('div').each( function( _, val ){
             $("#minmaxpivot").append('<option value='+$(val).text()+'>'+$(val).text()+'</option>')
         });
@@ -72,6 +72,12 @@ function placeInputBoxes() {
 $(document).ready(function () {
     $('head').append(
     `<style>
+        #report_parent_div{
+            padding-right: 15px;
+        }
+        #report_table{
+            min-width: 100%;
+        }
         #report_div{
             margin-right: 10px !important;  
         }
