@@ -146,7 +146,7 @@
                         },
                         {
                             "key": "write-back-value",
-                            "name": "<b>Write back value</b><ul><li>Use '@TODAY' to populate with today's date</li><li>Use '@ASK' to ask for a value with a given default</li><li>Use '@INCREMENT' to ask for a value with a given default</li></ul></label><label class='d-none'>",
+                            "name": "<b>Write back value:</b><ul><li>Use '@TODAY' to populate with today's date</li><li>Use '@ASK' to ask for a value with a given default</li><li>Use '@INCREMENT' to ask for a value with a given default</li></ul></label><label class='d-none'>",
                             "type": "text"
                         }
                     ]
@@ -212,12 +212,12 @@
         },
         {
             "key": "hide-form-row-list",
-            "name": "Forms to hide on the Record Home page",
+            "name": "<b>Forms to hide</b><br>Record Home Page",
             "type": "sub_settings",
             "sub_settings":[
                 {
                     "key": "hide-form-row",
-                    "name": "Form",
+                    "name": "<b>Form</b>",
                     "type": "form-list",
                     "repeatable":true
                 }
@@ -225,12 +225,12 @@
         },
         {
             "key": "hide-events-list",
-            "name": "Events to hide on the Record Home page",
+            "name": "<b>Events to Hide</b><br>Record Home Page",
             "type": "sub_settings",
             "sub_settings":[
                 {
                     "key": "hide-events",
-                    "name": "Event",
+                    "name": "<b>Event</b>",
                     "type": "event-list",
                     "repeatable":true
                 }
@@ -238,12 +238,12 @@
         },
         {
             "key": "hide-repeating-table-list",
-            "name": "Repeating instrument tables to hide on the Record Home page",
+            "name": "<b>Repeating instrument tables to hide</b><br>Record Home Page",
             "type": "sub_settings",
             "sub_settings":[
                 {
                     "key": "hide-repeating-table",
-                    "name": "Form",
+                    "name": "<b>Form</b>",
                     "type": "form-list",
                     "repeatable":true
                 }
@@ -251,12 +251,12 @@
         },
         {
             "key": "full-size-repeating-table-list",
-            "name": "Repeating instrument tables to show at full width<br> on the Record Home page",
+            "name": "<b>Repeating instrument tables to show at full width</b><br>Record Home Page",
             "type": "sub_settings",
             "sub_settings":[
                 {
                     "key": "full-size-repeating-table",
-                    "name": "Form",
+                    "name": "<b>Form</b>",
                     "type": "form-list",
                     "repeatable":true
                 }
@@ -264,18 +264,18 @@
         },
         {
             "key": "event-tabs",
-            "name": "Event Group Tab",
+            "name": "<b>Event Group Tab</b>",
             "type": "sub_settings",
             "repeatable":true,
             "sub_settings":[
                 {
                     "key": "tab-name",
-                    "name": "Tab Name",
+                    "name": "<b>Tab Name</b>",
                     "type": "text"
                 },
                 {
                     "key": "tab-event",
-                    "name": "Include Event",
+                    "name": "<b>Include Event</b>",
                     "type": "event-list",
                     "repeatable":true
                 }
@@ -283,7 +283,7 @@
         },
         {
             "key": "tab-event-button",
-            "name": "<b>Hide event tabs?</b><br>Hide the above tabs by default and use a button to add them, specify button text",
+            "name": "<b>Hide event tabs?</b><br>Hide the above tabs by default<br>and use a button to add them, specify button text",
             "type": "text"
         }
     ],
