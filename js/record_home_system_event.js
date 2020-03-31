@@ -1,21 +1,20 @@
 $(document).ready(function () {
     var maxCells = 5;
-    var title = CTRItweaks.RecordHomeEvent;
-    var col = $("#event_grid_table th").index($("th:contains('"+title+"')"))
-    var subtitle = $("#event_grid_table th:eq("+col+") .custom_event_label").text();
+    var col = $("#event_grid_table th").index($(`th:contains(${CTRItweaks.RecordHomeEvent})`))
+    var subtitle = $(`#event_grid_table th:eq(${col}) .custom_event_label`).text();
     var newTable = `
     <div class="table-responsive">
         <table id="systemManagementTable" class="table table-bordered" style="background-color:#fcfef5;color:#000;width:max-content">
             <tbody>
                 <tr>
                     <td id="eventReformatTitle" style="text-align:center;background-color:#FFFFE0">
-                        <div class="evTitle font-weight-bold">newTitle</div>
-                        <div class="custom_event_label">newSubtitle</div>
+                        <div class="evTitle font-weight-bold">${CTRItweaks.RecordHomeEvent}</div>
+                        <div class="custom_event_label">${subtitle}</div>
                     </td>
                 </tr>
             </tbody>
         </table>
-    </div>`.replace("newTitle",title).replace("newSubtitle",subtitle);
+    </div>`;
     
     $("#record_display_name").after(newTable);
     $("button[targetid='event_grid_table']").remove();
@@ -23,7 +22,7 @@ $(document).ready(function () {
         $("#systemManagementTable .custom_event_label").remove();
     
     var total_col = $("#event_grid_table th").length;
-    $("#event_grid_table th:eq("+col+")").hide();
+    $(`#event_grid_table th:eq(${col})`).hide();
     var total_row = $("#event_grid_table tr").length -$('td:contains("Delete all data on event:")').length;
     var insertionCounter = 0;
     $("#event_grid_table td").each( function(index, el) {

@@ -3,8 +3,8 @@ $(document).ready(function() {
     var $modal = $('#external-modules-configure-modal');
     $modal.on('show.bs.modal', function() {
         // Making sure we are overriding this modules's modal only.
-        //if ($(this).data('module') !== CTRItweaks.modulePrefix)
-        //    return;
+        if ($(this).data('module') !== CTRItweaks.modulePrefix)
+            return;
     
         if (typeof ExternalModules.Settings.prototype.resetConfigInstancesOld === 'undefined')
             ExternalModules.Settings.prototype.resetConfigInstancesOld = ExternalModules.Settings.prototype.resetConfigInstances;
@@ -12,8 +12,8 @@ $(document).ready(function() {
         ExternalModules.Settings.prototype.resetConfigInstances = function() {
             ExternalModules.Settings.prototype.resetConfigInstancesOld();
 
-            //if ($modal.data('module') !== CTRItweaks.modulePrefix)
-            //    return;
+            if ($modal.data('module') !== CTRItweaks.modulePrefix)
+                return;
 
             $modal.addClass('CTRItweaksConfig');
             
@@ -25,16 +25,16 @@ $(document).ready(function() {
             $("tr:contains(tableEnd)").css('height','320px');
             $("tr:contains(tableEnd)").html('');
             $("tr[field^=write-back-] span").remove();
-            $.each( ['hide-form-row','hide-events','hide-repeating-table','full-size-repeating-table'], function(_,v) {
-                $("tr[field="+v+"] span").each( function() {
+            $.each( ['hide-form-row','hide-events','hide-repeating-table','full-size-repeating-table'], function() {
+                $(`tr[field=${this}] span`).each( function() {
                     $(this).text($(this).text().split('.')[1]+'. ');
                 });
             });
             $("tr[field^=check-print] span").remove();
             $("tr[field=write-back-report] span").remove();
             $.each( ['full-size-repeating-table-list','hide-repeating-table-list',
-                     'hide-events-list','hide-form-row-list'], function(_,v){
-                $("tr[field="+v+"] span").first().remove();
+                     'hide-events-list','hide-form-row-list'], function(){
+                $(`tr[field=${this}] span`).first().remove();
             });
             $("tr[field=write-back-variable-list] .external-modules-add-remove-column").css('padding','4px 12px 4px 12px')
             
@@ -55,16 +55,16 @@ $(document).ready(function() {
                 var [,a,b] = $(this).prop('name').split('____');
                 switch( $(this).val() ) {
                     case 'var':
-                        $('select[name=write-back-variable____'+a+'____'+b+']').closest('tr').show();
-                        $('input[name=write-back-global____'+a+'____'+b+']').closest('tr').hide();
+                        $(`select[name=write-back-variable____${a}____${b}]`).closest('tr').show();
+                        $(`input[name=write-back-global____${a}____${b}]`).closest('tr').hide();
                         break;
                     case 'global':
-                        $('select[name=write-back-variable____'+a+'____'+b+']').closest('tr').hide();
-                        $('input[name=write-back-global____'+a+'____'+b+']').closest('tr').show();
+                        $(`select[name=write-back-variable____${a}____${b}]`).closest('tr').hide();
+                        $(`input[name=write-back-global____${a}____${b}]`).closest('tr').show();
                         break;
                     case 'both':
-                        $('select[name=write-back-variable____'+a+'____'+b+']').closest('tr').show();
-                        $('input[name=write-back-global____'+a+'____'+b+']').closest('tr').show();
+                        $(`select[name=write-back-variable____${a}____${b}]`).closest('tr').show();
+                        $(`input[name=write-back-global____${a}____${b}]`).closest('tr').show();
                         break;
                 }
             });

@@ -8,7 +8,7 @@ $.fn.dataTable.ext.search.push(
         var min = $('#tableFilterMin').val();
         var max = $('#tableFilterMax').val();
         var target = $('#minmaxpivot').val() || "";
-        var pivot = data[$("#report_table th").index($("th:contains('"+target+"')"))] || 0;
+        var pivot = data[$("#report_table th").index($(`th:contains(${target})`))] || 0;
         min = isNumeric(min) ? Number(min) : CTRItweaks.DateRegex.test(min) ? mdy2ymd(min) : min;
         max = isNumeric(max) ? Number(max) : CTRItweaks.DateRegex.test(max) ? mdy2ymd(max) : max;
         pivot = isNumeric(pivot) ? Number(pivot) : CTRItweaks.DateRegex.test(pivot) ? mdy2ymd(pivot) : pivot;
@@ -49,8 +49,8 @@ function placeInputBoxes() {
             </div>
         </div>`;
         $("#report_table_filter").before(newFilters);
-        $("#report_table th :last-child").filter('div').each( function( _, val ){
-            $("#minmaxpivot").append('<option value='+$(val).text()+'>'+$(val).text()+'</option>')
+        $("#report_table th :last-child").filter('div').each( function(){
+            $("#minmaxpivot").append(`<option>${$(this).text()}</option>`)
         });
         $('#tableFilterMin, #tableFilterMax').keyup( function() {
             $("#report_table").DataTable().draw();

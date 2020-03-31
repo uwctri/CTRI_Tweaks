@@ -34,9 +34,9 @@ $(document).ready(function () {
     $("#FixedTableHdrsEnable").remove();
     $('#event_grid_table').before('<div id="tabsRow" class="row"><ul class="nav nav-tabs" id="customRecordHomeTabs"></ul></div>');
     $('.nav-tabs').css('border-bottom','none');
-    var new_tab = '<li class="nav-item"><a class="nav-link" href="javascript:void(0);">NAME</a></li>'
-    $.each( CTRItweaks.TabConfig, function(tab_name,event_names) { 
-        $('#customRecordHomeTabs').append( new_tab.replace("NAME", tab_name) );
+    var new_tab = '<li class="nav-item"><a class="nav-link" href="javascript:void(0);">{TabName}</a></li>'
+    $.each( Object.keys(CTRItweaks.TabConfig), function() { 
+        $('#customRecordHomeTabs').append( new_tab.replace("{TabName}", this) );
     });
     
     $('#customRecordHomeTabs a').on('click', function () {
@@ -47,8 +47,8 @@ $(document).ready(function () {
         $('#event_grid_table tr').find('td:eq(0),th:eq(0)').show();
         var col;
         $.each( CTRItweaks.TabConfig[$(this).text()], function(index, name) {
-            col = $("#event_grid_table th").index($("th:contains('"+name+"')"));
-            $('#event_grid_table tr').find('td:eq('+col+'),th:eq('+col+')').show();
+            col = $("#event_grid_table th").index($(`th:contains(${name})`));
+            $('#event_grid_table tr').find(`td:eq(${col}),th:eq(${col})`).show();
         });
         var header = $("#event_grid_table thead tr").length;
         $('#event_grid_table tr:visible').slice(header).each( function(index) {

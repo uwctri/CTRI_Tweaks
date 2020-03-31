@@ -22,7 +22,7 @@ function getEventID(eventDisplayName) {
 
 function gatherDataforPost() {
     var url = new URL(window.location.href);
-    var id_index = $("#report_table th:contains('"+CTRItweaks.ReportWriteBack['general']['record_id']+"')").index();
+    var id_index = $("#report_table th:contains("+CTRItweaks.ReportWriteBack['general']['record_id']+")").index();
     var event_index = $("#report_table th:contains('redcap_event_name')").index();
     var instrument_index = $("#report_table th:contains('redcap_repeat_instrument')").index();
     var instance_index = $("#report_table th:contains('redcap_repeat_instance')").index();
@@ -178,9 +178,9 @@ function placeWriteBackButton() {
         var load = `
         <div style='margin-top:10px;'>
             <button id="openWBmodal" class="report_btn jqbuttonmed ui-button ui-corner-all ui-widget" style="font-size:12px;">
-                <i class="fas fa-pencil-alt fs10"></i> button text
+                <i class="fas fa-pencil-alt fs10"></i> ${CTRItweaks.ReportWriteBack['config'][0]["btn"]}
             </button>
-        </div>`.replace('button text',CTRItweaks.ReportWriteBack['config'][0]["btn"]);
+        </div>`;
         $("#report_div .d-print-none").last().append(load);
         $("#openWBmodal").on("click",openWritebackModal);
         monitorWBbutton();

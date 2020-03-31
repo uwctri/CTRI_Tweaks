@@ -1,6 +1,6 @@
 function copyData() {
-    var headers = $("#report_table th:visible :last-child").filter('div').map(function(_,value) {
-        return $(value).text();
+    var headers = $("#report_table th:visible :last-child").filter('div').map(function() {
+        return $(this).text();
     });
     var data = $("#report_table td:visible").map(function(index,value) {
         if ( index % headers.length == 0 )
