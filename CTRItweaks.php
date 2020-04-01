@@ -184,7 +184,8 @@ class CTRItweaks extends AbstractExternalModule {
                 $data['config'][$index]["write"][$sub_index]['radio'] = $this->getProjectSetting('write-back-to')[$index][$sub_index];
             }
             $data['config'][$index]["report"] = $this->getProjectSetting('write-back-report')[$index];
-            if( in_array(null, $data['config'][$index]) || !in_array($_GET["report_id"], array_map('trim',explode(',', $data['config'][$index]["report"]))) )
+            if( !isset($data['config'][$index]["btn"]) || !isset($data['config'][$index]["text"]) ||
+                !in_array($_GET["report_id"], array_map('trim',explode(',', $data['config'][$index]["report"]))) )
                 unset($data['config'][$index]);
         }
         $data['general']['post'] = $this->getUrl('writeback.php');
