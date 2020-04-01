@@ -188,6 +188,7 @@ class CTRItweaks extends AbstractExternalModule {
                 !in_array($_GET["report_id"], array_map('trim',explode(',', $data['config'][$index]["report"]))) )
                 unset($data['config'][$index]);
         }
+        $data['config'] = array_values($data['config']);
         $data['general']['post'] = $this->getUrl('writeback.php');
         $data['general']['eventMap'] = $this->getEventNameMap();
         $data['general']['record_id'] = REDCap::getRecordIdField();
