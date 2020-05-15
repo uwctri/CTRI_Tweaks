@@ -28,12 +28,20 @@ class CTRItweaks extends AbstractExternalModule {
     
     public function redcap_every_page_top($project_id) {
         $this->initCTRIglobal();
+        
+        // Custom Config page
         if (strpos(PAGE, 'ExternalModules/manager/project.php') !== false && $project_id != NULL)
             $this->includeJs('js/config.js');
         
+        // Every page (edits to left-side nav bar)
         if ( $this->getProjectSetting('hide-survey-tools') ) 
             $this->includeJs('js/hide_survey_distribution_tools.js');
-
+        
+        // Form Designer Page
+        if (PAGE== 'Design/online_designer.php')
+            $this->includeJs('js/form_builder_action_tag_help.js');
+        
+        // Record Home Page
         if (PAGE == 'DataEntry/record_home.php' && $_GET['id']) {
             $this->includeJs('js/record_home_always.js');
             $name = $this->getProjectSetting('unverified-name');
@@ -78,8 +86,8 @@ class CTRItweaks extends AbstractExternalModule {
             }
         }
         
-        // Check to see if we are on the Reports page, and that its not the edit report page
-        if (PAGE == 'DataExport/index.php' && $project_id != NULL && !$_GET['addedit']){
+        // Reports Page (not the Edit Reports Page)
+        if (PAGE == 'DataExport/index.php' && $project_id != NULL && !$_GET['addedit'] && $_GET['report_id']){
             $this->includeJs('js/report_hide_rows_cols.js');
             $this->includeJs('js/report_range_filter.js');
             $this->includeJS('js/report_copy_visible.js');
@@ -107,7 +115,7 @@ class CTRItweaks extends AbstractExternalModule {
             }
         }
         
-        // Check if we are on the "Save and Return Later" page of a survey
+        // "Save and Return Later" page of a survey
         if ( $_GET['__return'] != NULL ){
             if ( $this->getProjectSetting('hide-send-survey-link') )
                 $this->includeJs('js/survey_hide_send_survey_link.js');
@@ -127,6 +135,7 @@ class CTRItweaks extends AbstractExternalModule {
     }
     
     public function redcap_data_entry_form() {
+        $this->afterLoadActionTags();
         if ( $this->getProjectSetting('lock-complete-instruments') )
             $this->includeJs('js/data_entry_prevent_enter_submission.js');
         if ( $this->getProjectSetting('prevent-enter-submit') )
@@ -135,13 +144,109 @@ class CTRItweaks extends AbstractExternalModule {
             $this->includeJs('js/data_entry_hide_save_goto_next_record.js');
         if ( $this->getProjectSetting('hide-send-survey-email') )
             $this->includeJS('js/data_entry_hide_survey_option_email.js');
-        $this->includeJs('js/data_entry_stop_autocomplete.js');
+        //$this->includeJs('js/data_entry_stop_autocomplete.js'); // No longer needed
         $this->includeJs('js/data_entry_mm_dd_yyyy.js');
+        $this->includeJS('js/data_entry_prevent_scrolling_on_load.js');
+    }
+    
+    public function redcap_data_entry_form_top() {
+        $this->beforeLoadActionTags();
     }
     
     public function redcap_survey_page() {
-        $this->includeJs('js/data_entry_stop_autocomplete.js');
+        $this->afterLoadActionTags();
         $this->includeJs('js/data_entry_mm_dd_yyyy.js');
+        //$this->includeJs('js/data_entry_stop_autocomplete.js'); // No longer needed
+    }
+    
+    public function redcap_survey_page_top() {
+        $this->beforeLoadActionTags();
+    }
+    
+    // Action tags that don't touch JS
+    private function beforeLoadActionTags() {
+        global $Proj;
+        foreach ($Proj->metadata as $field_name => $info) {
+            //@LABEL="[foo]"
+            if ( strpos($info['misc'], '@LABEL=') !== false ) {
+                $target = trim(explode(' ',explode('@LABEL=', $info['misc'])[1])[0],' []"');
+                if ( $Proj->metadata[$target] )
+                    $Proj->metadata[$field_name]['element_label'] = $Proj->metadata[$target]['element_label'];
+            }
+        }
+    }
+    
+    // Action tags that are JS based
+    private function afterLoadActionTags() {
+        global $Proj;
+        $jsonNotes = [];
+        $markAll = [];
+        $readonly2 = [];
+        $tomorrow = [];
+        $missingcode = [];
+        foreach ($Proj->metadata as $field_name => $info) {
+            //@JSONNOTES
+            if ( strpos($info['misc'], '@JSONNOTES') !== false && $info['element_type'] == 'textarea') {
+                $currentValue = REDCap::getData($Proj->project_id,'array',$_GET['id'],$field_name,$_GET['event_id']);
+                $currentValue = empty($currentValue) ? "" : end(end(end(end(end(end($currentValue))))));
+                $jsonNotes[$field_name] = $currentValue;
+            }
+            //@MARKALL
+            if ( strpos($info['misc'], '@MARKALL') !== false && $info['grid_name'] ) {
+                $markAll[$info['grid_name']] = trim(explode(' ',explode('@MARKALL=', $info['misc'])[1])[0],' "');
+            }
+            //@READONLY2
+            if ( strpos($info['misc'], '@READONLY2') !== false ) {
+                array_push($readonly2, $field_name);
+            }
+            //@READONLY2
+            if ( strpos($info['misc'], '@TOMORROWBUTTON') !== false && strpos($info['element_validation_type'], 'date_') !== false ) {
+                array_push($tomorrow, $field_name);
+            }
+            //@MISSINGCODE
+            if ( strpos($info['misc'], '@MISSINGCODE') !== false ) {
+                //$missingcode[$field_name] = trim(explode(' ',explode('@MISSINGCODE=', $info['misc'])[1])[0],' "');
+                $input = stripslashes(trim(explode(' ',explode('@MISSINGCODE=', $info['misc'])[1])[0],' "'));
+                $result = preg_match_all( '/\((.*?)\)/', $input, $match);
+                $out = array();
+                if ( !$result ) // No parentheses found, split on commas
+                    $out = array_map('strtoupper', explode(',', $input) );
+                else { // Parentheses found, break out the inputs
+                    $input = $match[1];
+                    foreach( $input as $index => $varString ) {
+                        if ( strlen($varString) == 2 )
+                            $out[$index] = [strtoupper($varString)];
+                        else { // Regex magic, ("foo","woo") or "dk" or dk (no quotes)
+                            $out[$index] = array_map(function($item) {
+                                return trim($item, ' \'"');
+                            }, preg_split('/,(?=(?:(?:[^"]*(?:")){2})*[^"]*$)/', $varString));
+                        }
+                    }
+                }
+                $missingcode[$field_name] = $out;
+            }
+        }
+        if ( !empty($jsonNotes) ) {
+            $this->passArgument('jsonNotes', $jsonNotes);
+            $this->includeJs('js/data_entry_json_notes.js');
+        }
+        if ( !empty($markAll) ) {
+            $this->passArgument('markAll', $markAll);
+            $this->includeJs('js/data_entry_matrix_mark_all.js');
+        }
+        if ( !empty($readonly2) ) {
+            $this->passArgument('readonly2', $readonly2);
+            $this->includeJs('js/data_entry_action_tag_readonly2.js');
+        }
+        if ( !empty($tomorrow) ) {
+            $this->passArgument('tomorrowButton', $tomorrow);
+            $this->includeJs('js/data_entry_action_tag_tomorrow.js');
+        }
+        if ( !empty($missingcode) ) {
+            $this->passArgument('missingcode', ['config' => []]);
+            $this->passArgument('missingcode.config', $missingcode);
+            $this->includeJs('js/data_entry_action_tag_missingcode.js');
+        }
     }
     
     private function map_event_id_to_name( $array ){
@@ -214,10 +319,6 @@ class CTRItweaks extends AbstractExternalModule {
     
     private function passArgument($name, $value) {
         echo "<script>".$this->module_global.".".$name." = ".json_encode($value).";</script>";
-    }
-    
-    private function debugToConsole($msg) { 
-        echo "<script>console.log(".json_encode($msg).")</script>";
     }
 }
 

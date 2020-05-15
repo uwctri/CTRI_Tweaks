@@ -195,7 +195,6 @@ function placeWriteBackButton() {
 
 $(document).ready(function () {
     //Todo - Only supporting 0th button - loop over the values sent back rather than just use 0th
-    console.log(CTRItweaks);
     generateModalHTML();
     placeWriteBackButton();
 });

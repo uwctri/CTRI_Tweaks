@@ -12,8 +12,10 @@
     "permissions": [
         "redcap_every_page_top",
         "redcap_data_entry_form",
+        "redcap_data_entry_form_top",
         "redcap_project_home_page",
-        "redcap_survey_page"
+        "redcap_survey_page",
+        "redcap_survey_page_top"
     ],
     "system-settings": [
         {

@@ -2,8 +2,7 @@
 
 use REDCap;
 use ExternalModules\ExternalModules;
-echo "1";
-return;
+
 if( isset($_POST['obj']) ) {
     $postData = json_decode($_POST['obj']);
     $pid = $postData->pid;
