@@ -29,12 +29,13 @@ $(document).ready(function () {
     $('head').append(css);
     
     $.each( CTRItweaks.missingcode.config, function(field, args) {
-        if ( $(`input[name=${field}]`).length == 0 || ignoreCheck(field) )
+        let $input = $(`#questiontable input[name=${field}]`);
+        if ( $input.length == 0 || ignoreCheck(field) )
             return;
         $.each(args.reverse(), function(_,arg) { 
             let codeStr = "";
             let uniqueID = "";
-            let fv = $(`[name=${field}]`).attr("fv");
+            let fv = $input.attr("fv");
             let html = CTRItweaks.missingcode.btnTemplate;
             if( arg.length == 1 ) {
                 if( !CTRItweaks.missingcode.defaults[arg[0]] )
@@ -89,31 +90,31 @@ $(document).ready(function () {
             }
             
             // Add CSS if already clicked on load
-            if ($(`[name=${field}]`).val() == codeStr) {
+            if ($input.val() == codeStr) {
                 html = html.replace('CHKD', "stateSelected");
-                $(`[name=${field}]`).prop('readonly', true).addClass("fieldDisabled");
+                $input.prop('readonly', true).addClass("fieldDisabled");
             }
             else 
                 html = html.replace('CHKD', "");
             
             // Insert the button onto the page
             if( fv && (fv.startsWith("date") || fv.startsWith("time")) )
-                $(`[name=${field}]`).nextAll('[class=df]').after('<br>'+html);
+                $input.nextAll('[class=df]').after('<br>'+html);
             else
-                $(`[name=${field}]`).after(html);
+                $input.after(html);
             
             // Attach on click event
             $(`#${uniqueID}_${field}`).on('click', function() {
                 if ($(this).hasClass("stateSelected")) {
                     $(this).removeClass("stateSelected");
-                    $(`[name=${field}]`).prop("readonly", false).val("").removeClass("fieldDisabled").change();
+                    $input.prop("readonly", false).val("").removeClass("fieldDisabled").change();
                 }
                 else { // A button was clicked for the first time. Turn all the others off except for the one clicked.
                     $.each($(`button[id$=_${field}]`), function() {
                         $(this).removeClass("stateSelected");
                     });
                     $(this).addClass("stateSelected");
-                    $(`[name=${field}]`).prop('readonly', true).val(codeStr).addClass("fieldDisabled").change();
+                    $input.prop('readonly', true).val(codeStr).addClass("fieldDisabled").change();
                 }
             });
         });
@@ -125,9 +126,9 @@ $(document).ready(function () {
 // Helper function, returns true if the field shouldn't be modified
 function ignoreCheck( field ) {
     // field - Name of field as seen on the dom. This is always the variable name.
-    return ( $(`input[name=${field}]`).closest("tr").hasClass("@READONLY") || // Check if read only
-             $(`input[name=${field}]`).hasClass("rci-calc") || // Check if its a calc field
-             $(`select[name=${field}]`).length > 0 || // Check if its a dropdown (or SQL)
-             $(`div[id=${field}-linknew]`).length > 0 || // Check if signature or file upload
-             $(`input[name=${field}]`).hasClass("sldrnum") ) // Check if slider
+    return ( $(`#questiontable input[name=${field}]`).closest("tr").hasClass("@READONLY") || // Check if read only
+             $(`#questiontable input[name=${field}]`).hasClass("rci-calc") || // Check if its a calc field
+             $(`#questiontable select[name=${field}]`).length > 0 || // Check if its a dropdown (or SQL)
+             $(`#questiontable div[id=${field}-linknew]`).length > 0 || // Check if signature or file upload
+             $(`#questiontable input[name=${field}]`).hasClass("sldrnum") ) // Check if slider
 }
