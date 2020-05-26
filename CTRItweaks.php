@@ -240,23 +240,23 @@ class CTRItweaks extends AbstractExternalModule {
                                         array_push($fuzzy['search'][$field_name], [
                                             'record' => $record,
                                             'event' => $repeatingEvent,
-                                            'value' => $val,
+                                            'value' => $val[$target],
                                             'instance' => $instance,
                                             'instrument' => $instrument
                                         ]);
                                     }
                                 }
                             }
-                            continue;
-                        }
-                        foreach( $values as $val ) {
-                            array_push($fuzzy['search'][$field_name], [
-                                'record' => $record,
-                                'event' => $event,
-                                'value' => $val,
-                                'instance' => '1',
-                                'instrument' => $dd[$field_name]['form_name']
-                            ]);
+                        } else {
+                            foreach( $values as $val ) {
+                                array_push($fuzzy['search'][$field_name], [
+                                    'record' => $record,
+                                    'event' => $event,
+                                    'value' => $val,
+                                    'instance' => '1',
+                                    'instrument' => $dd[$field_name]['form_name']
+                                ]);
+                            }
                         }
                     }
                 }
