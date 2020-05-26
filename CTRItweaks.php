@@ -184,6 +184,7 @@ class CTRItweaks extends AbstractExternalModule {
         $readonly2 = [];
         $tomorrow = [];
         $missingcode = [];
+        $fuzzy = [];
         foreach ($Proj->metadata as $field_name => $info) {
             //@JSONNOTES
             if ( strpos($info['misc'], '@JSONNOTES') !== false && $info['element_type'] == 'textarea') {
@@ -205,7 +206,6 @@ class CTRItweaks extends AbstractExternalModule {
             }
             //@MISSINGCODE
             if ( strpos($info['misc'], '@MISSINGCODE') !== false ) {
-                //$missingcode[$field_name] = trim(explode(' ',explode('@MISSINGCODE=', $info['misc'])[1])[0],' "');
                 $input = stripslashes(trim(explode(' ',explode('@MISSINGCODE=', $info['misc'])[1])[0],' "'));
                 $result = preg_match_all( '/\((.*?)\)/', $input, $match);
                 $out = array();
@@ -224,6 +224,42 @@ class CTRItweaks extends AbstractExternalModule {
                     }
                 }
                 $missingcode[$field_name] = $out;
+            }
+            if ( strpos($info['misc'], '@FUZZY') !== false ) {
+                $fuzzy['search'][$field_name] = [];
+                $target = trim(explode(' ',explode('@FUZZY=', $info['misc'])[1])[0],' []"');
+                $target = $Proj->metadata[$target] ? $target : $field_name;
+                $data = REDCap::getData($Proj->project_id,'array',null,$target);
+                $dd = REDCap::getDataDictionary($Proj->project_id, 'array');
+                foreach( $data as $record => $events ) {
+                    foreach( $events as $event => $values ) {
+                        if ( $event == 'repeat_instances' ) {
+                            foreach( $values as $repeatingEvent => $instruments) {
+                                foreach( $instruments as $instrument => $instances ) {
+                                    foreach( $instances as $instance => $val ) {
+                                        array_push($fuzzy['search'][$field_name], [
+                                            'record' => $record,
+                                            'event' => $repeatingEvent,
+                                            'value' => $val,
+                                            'instance' => $instance,
+                                            'instrument' => $instrument
+                                        ]);
+                                    }
+                                }
+                            }
+                            continue;
+                        }
+                        foreach( $values as $val ) {
+                            array_push($fuzzy['search'][$field_name], [
+                                'record' => $record,
+                                'event' => $event,
+                                'value' => $val,
+                                'instance' => '1',
+                                'instrument' => $dd[$field_name]['form_name']
+                            ]);
+                        }
+                    }
+                }
             }
         }
         if ( !empty($jsonNotes) ) {
@@ -246,6 +282,11 @@ class CTRItweaks extends AbstractExternalModule {
             $this->passArgument('missingcode', ['config' => []]);
             $this->passArgument('missingcode.config', $missingcode);
             $this->includeJs('js/data_entry_action_tag_missingcode.js');
+        }
+        if ( !empty($fuzzy) ) {
+            $this->passArgument('fuzzy', $fuzzy);
+            $this->includeJs('js/data_entry_action_tag_fuzzy.js');
+            echo '<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.0.0"></script>';
         }
     }
     
