@@ -144,7 +144,7 @@ class CTRItweaks extends AbstractExternalModule {
             $this->includeJs('js/data_entry_hide_save_goto_next_record.js');
         if ( $this->getProjectSetting('hide-send-survey-email') )
             $this->includeJS('js/data_entry_hide_survey_option_email.js');
-        //$this->includeJs('js/data_entry_stop_autocomplete.js'); // No longer needed
+        $this->includeJs('js/data_entry_stop_autocomplete.js');
         $this->includeJs('js/data_entry_mm_dd_yyyy.js');
         $this->includeJS('js/data_entry_prevent_scrolling_on_load.js');
     }
