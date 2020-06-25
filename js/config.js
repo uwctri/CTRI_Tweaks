@@ -19,8 +19,8 @@ $(document).ready(function() {
             
             // Pretty up the form a bit
             $modal.find('thead').remove();
-            $("tr:contains(tableStart)").first().closest('tr').nextUntil("tr:contains(tableEnd)").wrapAll("\
-                <table style='width:98%' class='table table-no-top-row-border position-absolute'><tbody></tbody></table>");
+            $("tr:contains(tableStart)").first().closest('tr').nextUntil("tr:contains(tableEnd)").wrapAll(`
+                <table style='width:98%' class='table table-no-top-row-border position-absolute'><tbody></tbody></table>`);
             $("tr:contains(tableStart)").remove();
             $("tr:contains(tableEnd)").css('height','320px');
             $("tr:contains(tableEnd)").html('');

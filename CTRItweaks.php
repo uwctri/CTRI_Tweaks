@@ -44,6 +44,9 @@ class CTRItweaks extends AbstractExternalModule {
         // Record Home Page
         if (PAGE == 'DataEntry/record_home.php' && $_GET['id']) {
             $this->includeJs('js/record_home_always.js');
+            if ( $this->getProjectSetting('align-th-top') ) {
+                $this->includeJs('js/record_home_top_align_th.js');
+            }
             $name = $this->getProjectSetting('unverified-name');
             if ( !is_null($name) ) {
                 $this->passArgument('UnverifiedName', $name);

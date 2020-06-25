@@ -46,6 +46,11 @@
             "type": "descriptive"
         },
         {
+            "key": "align-th-top",
+            "name": "Align record home page table headers to top of cell",
+            "type": "checkbox"
+        },
+        {
             "key": "force-save-next-form",
             "name": "Set all 'Save &...' Buttons to 'Save & Go To Next Form'",
             "type": "checkbox"
