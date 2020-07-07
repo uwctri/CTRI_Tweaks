@@ -8,9 +8,16 @@ function restripeRows(){
     });
 }
 
-$(document).ready(function () {
-    if ( $(".DTFC_ScrollWrapper").length != 0 )
+function tabDisplayWatchdog() {
+    if ( $("a:contains(Table not displaying properly)").length != 0 )
         disableFixedTableHdrs('event_grid_table',0);
+    else
+        setTimeout(tabDisplayWatchdog, 1000);
+    $("#FixedTableHdrsEnable").hide();
+}
+
+$(document).ready(function () {
+    tabDisplayWatchdog();
     $('head').append(
         `<style>
             #customRecordHomeTabs .nav-link.active {
@@ -31,7 +38,6 @@ $(document).ready(function () {
                 padding: 3px 8px 3px 8px;
             }
         </style>`);
-    $("#FixedTableHdrsEnable").remove();
     $('#event_grid_table').before('<div id="tabsRow" class="row"><ul class="nav nav-tabs" id="customRecordHomeTabs"></ul></div>');
     $('.nav-tabs').css('border-bottom','none');
     var new_tab = '<li class="nav-item"><a class="nav-link" href="javascript:void(0);">{TabName}</a></li>'
