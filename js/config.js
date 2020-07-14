@@ -22,7 +22,7 @@ $(document).ready(function() {
             $("tr:contains(tableStart)").first().closest('tr').nextUntil("tr:contains(tableEnd)").wrapAll(`
                 <table style='width:98%' class='table table-no-top-row-border position-absolute'><tbody></tbody></table>`);
             $("tr:contains(tableStart)").remove();
-            $("tr:contains(tableEnd)").css('height','320px');
+            $("tr:contains(tableEnd)").css('height','360px');
             $("tr:contains(tableEnd)").html('');
             $("tr[field^=write-back-] span").remove();
             $.each( ['hide-form-row','hide-events','hide-repeating-table','full-size-repeating-table'], function() {
