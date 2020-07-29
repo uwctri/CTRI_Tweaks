@@ -53,6 +53,15 @@ $(document).ready(function() {
                 <td class="nowrap actionTagButton">
                     <button class="btn btn-xs btn-rcred" >Add</button>
                 </td>
+                <td class="nowrap actionTagName">@DEFAULT2</td>
+                <td class="actionTagInfo">
+                    Similar to "@DEFAULT", but applies the default when the feild is made visible to prevent REDCap errors.
+                </td>
+            </tr>
+            <tr>
+                <td class="nowrap actionTagButton">
+                    <button class="btn btn-xs btn-rcred" >Add</button>
+                </td>
                 <td class="nowrap actionTagName">@TOMORROWBUTTON</td>
                 <td class="actionTagInfo">
                     Adds a "Tomorrow" button below date feilds that populates the feild with the next work day.
