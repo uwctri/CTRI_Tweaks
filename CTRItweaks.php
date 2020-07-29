@@ -188,6 +188,7 @@ class CTRItweaks extends AbstractExternalModule {
         $tomorrow = [];
         $missingcode = [];
         $fuzzy = [];
+        $default2 = [];
         foreach ($Proj->metadata as $field_name => $info) {
             //@JSONNOTES
             if ( strpos($info['misc'], '@JSONNOTES') !== false && $info['element_type'] == 'textarea') {
@@ -203,7 +204,24 @@ class CTRItweaks extends AbstractExternalModule {
             if ( strpos($info['misc'], '@READONLY2') !== false ) {
                 array_push($readonly2, $field_name);
             }
-            //@READONLY2
+            //@DEFAULT2
+            if ( strpos($info['misc'], '@DEFAULT2') !== false ) {
+                $target = trim(explode(' ',explode('@DEFAULT2=', $info['misc'])[1])[0],' "');
+                if ( $target[0] == "[" && substr($target, strlen($target)-1) == "]" ) {
+                    list($event,$field) = explode('][', $target);
+                    $event = trim($event,'[]');
+                    if ( empty($field) ) {
+                        $field = $event;
+                        $event = $_GET['event_id'];
+                    } else {
+                        $field = trim($field,'[]');
+                        $event = REDCap::getEventIdFromUniqueEvent( $event );
+                    }
+                    $target = REDCap::getData($Proj->project_id,'array',$_GET['id'],$field,$event)[$_GET['id']][$event][$field];
+                }
+                $default2[$field_name] = $target;
+            }
+            //@TOMORROWBUTTON
             if ( strpos($info['misc'], '@TOMORROWBUTTON') !== false && strpos($info['element_validation_type'], 'date_') !== false ) {
                 array_push($tomorrow, $field_name);
             }
@@ -228,6 +246,7 @@ class CTRItweaks extends AbstractExternalModule {
                 }
                 $missingcode[$field_name] = $out;
             }
+            //@FUZZY
             if ( strpos($info['misc'], '@FUZZY') !== false ) {
                 $fuzzy['search'][$field_name] = [];
                 $target = trim(explode(' ',explode('@FUZZY=', $info['misc'])[1])[0],' []"');
@@ -276,6 +295,10 @@ class CTRItweaks extends AbstractExternalModule {
         if ( !empty($readonly2) ) {
             $this->passArgument('readonly2', $readonly2);
             $this->includeJs('js/data_entry_action_tag_readonly2.js');
+        }
+        if ( !empty($default2) ) {
+            $this->passArgument('default2', $default2);
+            $this->includeJs('js/data_entry_action_tag_default2.js');
         }
         if ( !empty($tomorrow) ) {
             $this->passArgument('tomorrowButton', $tomorrow);
