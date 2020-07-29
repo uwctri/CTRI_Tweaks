@@ -217,7 +217,8 @@ class CTRItweaks extends AbstractExternalModule {
                         $field = trim($field,'[]');
                         $event = REDCap::getEventIdFromUniqueEvent( $event );
                     }
-                    $target = REDCap::getData($Proj->project_id,'array',$_GET['id'],$field,$event)[$_GET['id']][$event][$field];
+                    $target = REDCap::getData($Proj->project_id,'array',$_GET['id'],$field,$event)[$_GET['id']];
+                    $target = !is_null($target['repeat_instances']) ? end(end($target['repeat_instances'][$event]))[$field] : $target[$event][$field];
                 }
                 $default2[$field_name] = $target;
             }
