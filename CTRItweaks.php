@@ -22,6 +22,11 @@ class CTRItweaks extends AbstractExternalModule {
     private $module_global = 'CTRItweaks';
     private $module_name = 'CTRItweaks';
     
+    private $js_library_fuse = "https://cdn.jsdelivr.net/npm/fuse.js@6.0.0";
+    private $js_library_tempus_dominus = "https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/js/tempusdominus-bootstrap-4.min.js";
+    private $css_tempus_dominus = "https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css";
+    private $js_library_moment = "https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js";
+    
     public function __construct() {
             parent::__construct();
     }
@@ -93,7 +98,7 @@ class CTRItweaks extends AbstractExternalModule {
         if (PAGE == 'DataExport/index.php' && $project_id != NULL && !$_GET['addedit'] && $_GET['report_id']){
             $this->includeJs('js/report_hide_rows_cols.js');
             $this->includeJs('js/report_range_filter.js');
-            $this->includeJS('js/report_copy_visible.js');
+            $this->includeJs('js/report_copy_visible.js');
             $wbSettings = $this->load_report_write_back_settings();
             if ( !empty($wbSettings['config']) ) {
                 $this->passArgument('ReportWriteBack', $wbSettings);
@@ -139,6 +144,12 @@ class CTRItweaks extends AbstractExternalModule {
     
     public function redcap_data_entry_form() {
         $this->afterLoadActionTags();
+        if ( $this->getProjectSetting('replace-datetime-pickers') ) {
+            $this->includeJsLibrary($this->js_library_moment);
+            $this->includeJsLibrary($this->js_library_tempus_dominus);
+            $this->includeCss($this->css_tempus_dominus);
+            $this->includeJs('js/data_entry_datetime_pickers.js');
+        }
         if ( $this->getProjectSetting('lock-complete-instruments') )
             $this->includeJs('js/data_entry_prevent_enter_submission.js');
         if ( $this->getProjectSetting('prevent-enter-submit') )
@@ -146,10 +157,10 @@ class CTRItweaks extends AbstractExternalModule {
         if ( $this->getProjectSetting('hide-save-next-record') )
             $this->includeJs('js/data_entry_hide_save_goto_next_record.js');
         if ( $this->getProjectSetting('hide-send-survey-email') )
-            $this->includeJS('js/data_entry_hide_survey_option_email.js');
+            $this->includeJs('js/data_entry_hide_survey_option_email.js');
         $this->includeJs('js/data_entry_stop_autocomplete.js');
         $this->includeJs('js/data_entry_mm_dd_yyyy.js');
-        $this->includeJS('js/data_entry_prevent_scrolling_on_load.js');
+        $this->includeJs('js/data_entry_prevent_scrolling_on_load.js');
     }
     
     public function redcap_data_entry_form_top() {
@@ -313,7 +324,7 @@ class CTRItweaks extends AbstractExternalModule {
         if ( !empty($fuzzy) ) {
             $this->passArgument('fuzzy', $fuzzy);
             $this->includeJs('js/data_entry_action_tag_fuzzy.js');
-            echo '<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.0.0"></script>';
+            $this->includeJsLibrary($this->js_library_fuse);
         }
     }
     
@@ -381,8 +392,16 @@ class CTRItweaks extends AbstractExternalModule {
         echo "<script>var ".$this->module_global." = ".json_encode($data).";</script>";
     }
     
+    private function includeJsLibrary($path) {
+        echo '<script src="' . $path . '"></script>';
+    }
+    
     private function includeJs($path) {
         echo '<script src="' . $this->getUrl($path) . '"></script>';
+    }
+    
+    private function includeCss($path) {
+        echo '<link rel="stylesheet" href="' . $path . '"/>';
     }
     
     private function passArgument($name, $value) {

@@ -46,6 +46,11 @@
             "type": "descriptive"
         },
         {
+            "key": "replace-datetime-pickers",
+            "name": "Replace Datetime pickers with Tempus Dominus BS4",
+            "type": "checkbox"
+        },
+        {
             "key": "align-th-top",
             "name": "Align record home page table headers to top of cell",
             "type": "checkbox"
