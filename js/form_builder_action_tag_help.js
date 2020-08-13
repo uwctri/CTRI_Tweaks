@@ -28,7 +28,7 @@ $(document).ready(function() {
                 </td>
                 <td class="nowrap actionTagName">@JSONNOTES</td>
                 <td class="actionTagInfo">
-                    Transforms a notes box into a full-width persistant notes area that can be used to track multiple notes over time. Date, time and username are recorded with every note. On repeating instruments all notes are propogated forward for easy viewing.
+                    Transforms a notes box into a full-width persistant notes area that can be used to track multiple notes over time. Date, time and username are recorded with every note. On repeating instruments all notes are propogated forward for easy viewing. To sync the notes across multiple events append the '-EVENTS' modifier, i.e. @JSONNOTES-EVENTS. The form should not be a repeating instrument when using the '-EVENTS' modifier.
                 </td>
             </tr>
             <tr>
@@ -55,7 +55,7 @@ $(document).ready(function() {
                 </td>
                 <td class="nowrap actionTagName">@DEFAULT2</td>
                 <td class="actionTagInfo">
-                    Similar to "@DEFAULT", but applies the default when the feild is made visible to prevent REDCap errors.
+                    Similar to "@DEFAULT", but attempts to apply the default any time the feild is made visible (to prevent REDCap errors) and every time the form is loaded.
                 </td>
             </tr>
             <tr>

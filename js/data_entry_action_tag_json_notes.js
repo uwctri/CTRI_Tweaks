@@ -1,7 +1,7 @@
 $(document).ready(function () {
     
     const notesFieldTemplate = `
-    <td class="col-7 jsonNotesRow" colspan="3" style="background-color:#f5f5f5"> 
+    <td class="col-7 jsonNotesRow" colspan="2" style="background-color:#f5f5f5"> 
         <div class="container">
             <div class="row mb-3 mt-2 font-weight-bold"> LABEL </div>
             <div class="row panel-container">
@@ -72,20 +72,21 @@ $(document).ready(function () {
     $('head').append(css);
     CTRItweaks.jsonNotesData = {};
     
+    // Load all the JSON data
     $.each( CTRItweaks.jsonNotes, function(field, json) {
         $(`#${field}-tr td`).hide()
         let label = $(`#label-${field} td`).first().text().trim();
-        let newJson = $(`[name=${field}]`).val();
         try {
-            CTRItweaks.jsonNotesData[field] = newJson ? JSON.parse(newJson) : json ? JSON.parse(json) : {};
+            CTRItweaks.jsonNotesData[field] = json ? JSON.parse(json) : {};
         } catch(e) {
             CTRItweaks.jsonNotesData[field] = {};
             CTRItweaks.jsonNotesData[field]["historic"] = "Historic Notes:\n"+json; // Not JSON, just old non-json notes.
         }
         $(`#${field}-tr`).append(notesFieldTemplate.replace('LABEL',label));
         displayJSONnotes(field);
-        
     });
+    
+    // Setup the pannel to be resized
     $(".panel-left").resizable({
         handleSelector: ".splitter",
         resizeHeight: false,
@@ -93,11 +94,18 @@ $(document).ready(function () {
             $('.ui-icon-gripsmall-diagonal-se').remove();
         }
     });
+    
+    // Save any new text entered
     $(".jsonNotesNew").on("change", function() {
         let field = $(this).closest('tr').prop('id').replace('-tr','');
         saveNewJSONnotes( field );
         displayJSONnotes( field );
     });
+    
+    //Scroll the notes to the top (wait two frames)
+    setTimeout( function() {
+        $('.jsonNotesCurrent').scrollTop(0);
+    },32);
 });
 
 function displayJSONnotes( field ) {

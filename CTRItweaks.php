@@ -203,9 +203,20 @@ class CTRItweaks extends AbstractExternalModule {
         foreach ($Proj->metadata as $field_name => $info) {
             //@JSONNOTES
             if ( strpos($info['misc'], '@JSONNOTES') !== false && $info['element_type'] == 'textarea') {
-                $currentValue = REDCap::getData($Proj->project_id,'array',$_GET['id'],$field_name,$_GET['event_id']);
-                $currentValue = empty($currentValue) ? "" : end(end(end(end(end(end($currentValue))))));
-                $jsonNotes[$field_name] = $currentValue;
+                if ( strpos($info['misc'], '@JSONNOTES-EVENTS') !== false ) {
+                    $data = REDCap::getData($Proj->project_id,'array',$_GET['id'],$field_name)[$_GET['id']];
+                    $jsonData = [];
+                    foreach ( $data as $event_id => $eventData ) {
+                        $eventJson = json_decode($eventData[$field_name],true);
+                        $eventJson = $eventJson ? $eventJson : [];
+                        $jsonData = array_merge($jsonData, $eventJson);
+                    }
+                    $jsonData = json_encode($jsonData);
+                } else {
+                    $jsonData = REDCap::getData($Proj->project_id,'array',$_GET['id'],$field_name,$_GET['event_id']);
+                    $jsonData = empty($jsonData) ? "" : end(end(end(end(end(end($jsonData))))));
+                }
+                $jsonNotes[$field_name] = $jsonData;
             }
             //@MARKALL
             if ( strpos($info['misc'], '@MARKALL') !== false && $info['grid_name'] ) {
@@ -298,11 +309,11 @@ class CTRItweaks extends AbstractExternalModule {
         }
         if ( !empty($jsonNotes) ) {
             $this->passArgument('jsonNotes', $jsonNotes);
-            $this->includeJs('js/data_entry_json_notes.js');
+            $this->includeJs('js/data_entry_action_tag_json_notes.js');
         }
         if ( !empty($markAll) ) {
             $this->passArgument('markAll', $markAll);
-            $this->includeJs('js/data_entry_matrix_mark_all.js');
+            $this->includeJs('js/data_entry_action_tag_matrix_mark_all.js');
         }
         if ( !empty($readonly2) ) {
             $this->passArgument('readonly2', $readonly2);
