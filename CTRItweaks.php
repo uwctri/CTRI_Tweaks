@@ -211,7 +211,7 @@ class CTRItweaks extends AbstractExternalModule {
                         $eventJson = $eventJson ? $eventJson : [];
                         $jsonData = array_merge($jsonData, $eventJson);
                     }
-                    $jsonData = json_encode($jsonData);
+                    $jsonData = empty($jsonData) ? "{}" : json_encode($jsonData);
                 } else {
                     $jsonData = REDCap::getData($Proj->project_id,'array',$_GET['id'],$field_name,$_GET['event_id']);
                     $jsonData = empty($jsonData) ? "" : end(end(end(end(end(end($jsonData))))));
