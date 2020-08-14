@@ -21,8 +21,9 @@ $(document).ready(function() {
             $modal.find('thead').remove();
             $("tr:contains(tableStart)").first().closest('tr').nextUntil("tr:contains(tableEnd)").wrapAll(`
                 <table style='width:98%' class='table table-no-top-row-border position-absolute'><tbody></tbody></table>`);
+            let rowCount = $("tr:contains(tableStart)").next().find('tr').length;
             $("tr:contains(tableStart)").remove();
-            $("tr:contains(tableEnd)").css('height','360px');
+            $("tr:contains(tableEnd)").css('height',(45*rowCount)+'px');
             $("tr:contains(tableEnd)").html('');
             $("tr[field^=write-back-] span").remove();
             $.each( ['hide-form-row','hide-events','hide-repeating-table','full-size-repeating-table'], function() {
