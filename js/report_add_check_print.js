@@ -52,20 +52,22 @@ function makeWrapperPrintObject() {
 
 function makePrintObject(subject, study, memo, cash, addr, study_addr) {
     
-    var [dollars, cents] = cash.split('.');
+    let [dollars, cents] = cash.split('.');
     cents = typeof cents === 'undefined' ? '00' : cents.length==1 ? cents+'0' : cents;
     const cash_format = (dollars+'.'+cents).padStart(7,'*');
-    var words = inWords(dollars);
+    let words = inWords(dollars);
     words = words.charAt(0).toUpperCase() + words.slice(1);
-    const date = (new Date()).toLocaleDateString();
-    addr = addr.map(x=>x==""?" ":x);
+    const date = today_mdy.replace(/-/g,'/');
+    const studyAddrLen = 5;
+    study_addr = study_addr.filter(x=>x.trim()!=="").concat(Array(studyAddrLen).fill(" ")).slice(0,studyAddrLen);
+    addr = [addr.slice(0,2).filter(x=>x).join(', '),addr[2]," "];
     
     var check = [
-            {
-                image: 'logo',
-                width: 30,
-                absolutePosition: {x: 25, y: 36}
-            },
+            //{
+            //    image: 'logo',
+            //    width: 30,
+            //    absolutePosition: {x: 25, y: 36}
+            //},
             {
                 margin: [40, 0, 40, 0],
                 stack: [
@@ -79,7 +81,7 @@ function makePrintObject(subject, study, memo, cash, addr, study_addr) {
             {
                 margin: [0,0,60,0],
                 table: {
-                    widths: ['*','auto','10%','auto','10%'],
+                    widths: ['*','auto','10%','auto','12%'],
                     body: [
                         ['','Amount:','$'+cash,'Date:',date],
                     ],
@@ -112,11 +114,11 @@ function makePrintObject(subject, study, memo, cash, addr, study_addr) {
                 ]
             },
             {text: ' ', style: 'buffer'},
-            {
-                image: 'logo',
-                width: 30,
-                absolutePosition: {x: 25, y: 265}
-            },
+            //{
+            //    image: 'logo',
+            //    width: 30,
+            //    absolutePosition: {x: 25, y: 265}
+            //},
             {
                 style: 'check',
                 stack: [
@@ -281,11 +283,11 @@ function printChecks() {
     const addr2_index = $("#report_table th:contains('"+CTRItweaks.Check.varAddr2+"')").index();
     const addr3_index = $("#report_table th:contains('"+CTRItweaks.Check.varAddr3+"')").index();
                   
-    var master = makeWrapperPrintObject();
-    var subject;
-    var cash;
-    var memo;
-    var max = $("#report_table tr:visible").slice(header).length;
+    let master = makeWrapperPrintObject();
+    let subject;
+    let cash;
+    let memo;
+    const max = $("#report_table tr:visible").slice(header).length;
     $("#report_table tr:visible").slice(header).each( function( index, el ) {
         cash = $($(el).find('td')[cash_index]).text();
         subject = $($(el).find('td')[payto_index]).text();

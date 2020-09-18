@@ -30,7 +30,8 @@ $(document).ready(function () {
     
     $.each( CTRItweaks.missingcode.config, function(field, args) {
         let $input = $(`#questiontable input[name=${field}]`);
-        if ( $input.length == 0 || ignoreCheck(field) )
+        // Input not on form, its a type we should ignore, or the input it just being used for branching logic
+        if ( $input.length == 0 || ignoreCheck(field) || ($input.length == 1 && $input.parent().is('tbody')) )
             return;
         $.each(args.reverse(), function(_,arg) { 
             let codeStr = "";
