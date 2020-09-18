@@ -46,8 +46,8 @@
             "type": "descriptive"
         },
         {
-            "key": "replace-datetime-pickers",
-            "name": "Replace Datetime pickers with Tempus Dominus BS4",
+            "key": "support-12-hour-input",
+            "name": "Add 12 hour validation to time fields",
             "type": "checkbox"
         },
         {

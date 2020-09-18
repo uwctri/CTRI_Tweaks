@@ -43,8 +43,11 @@ class CTRItweaks extends AbstractExternalModule {
             $this->includeJs('js/hide_survey_distribution_tools.js');
         
         // Form Designer Page
-        if (PAGE== 'Design/online_designer.php')
+        if (PAGE== 'Design/online_designer.php') {
             $this->includeJs('js/form_builder_action_tag_help.js');
+            if ( $this->getProjectSetting('support-12-hour-input') ) 
+                $this->includeJs('js/data_entry_datetime_pickers.js');
+        }
         
         // Record Home Page
         if (PAGE == 'DataEntry/record_home.php' && $_GET['id']) {
@@ -96,7 +99,7 @@ class CTRItweaks extends AbstractExternalModule {
         
         // Reports Page (not the Edit Reports Page)
         if (PAGE == 'DataExport/index.php' && $project_id != NULL && !$_GET['addedit'] && $_GET['report_id']){
-            $this->includeJs('js/report_hide_rows_cols.js');
+            $this->includeJs('js/report_checkbox_row_col.js');
             $this->includeJs('js/report_range_filter.js');
             $this->includeJs('js/report_copy_visible.js');
             $wbSettings = $this->load_report_write_back_settings();
@@ -144,12 +147,8 @@ class CTRItweaks extends AbstractExternalModule {
     
     public function redcap_data_entry_form() {
         $this->afterLoadActionTags();
-        if ( $this->getProjectSetting('replace-datetime-pickers') ) {
-            $this->includeJsLibrary($this->js_library_moment);
-            $this->includeJsLibrary($this->js_library_tempus_dominus);
-            $this->includeCss($this->css_tempus_dominus);
+        if ( $this->getProjectSetting('support-12-hour-input') ) 
             $this->includeJs('js/data_entry_datetime_pickers.js');
-        }
         if ( $this->getProjectSetting('lock-complete-instruments') )
             $this->includeJs('js/data_entry_prevent_enter_submission.js');
         if ( $this->getProjectSetting('prevent-enter-submit') )
@@ -213,8 +212,9 @@ class CTRItweaks extends AbstractExternalModule {
                     }
                     $jsonData = empty($jsonData) ? "{}" : json_encode($jsonData);
                 } else {
-                    $jsonData = REDCap::getData($Proj->project_id,'array',$_GET['id'],$field_name,$_GET['event_id']);
-                    $jsonData = empty($jsonData) ? "" : end(end(end(end(end(end($jsonData))))));
+                    $data = REDCap::getData($Proj->project_id,'array',$_GET['id'],$field_name,$_GET['event_id'])[$_GET['id']];
+                    $jsonData = is_null($data) ? null : end(end($data['repeat_instances'][$_GET['event_id']]))[$field_name];
+                    $jsonData = is_null($jsonData) ? $data[$_GET['event_id']][$field_name] : $jsonData;
                 }
                 $jsonNotes[$field_name] = $jsonData;
             }
