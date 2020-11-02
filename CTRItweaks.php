@@ -23,10 +23,7 @@ class CTRItweaks extends AbstractExternalModule {
     private $module_name = 'CTRItweaks';
     
     private $js_library_fuse = "https://cdn.jsdelivr.net/npm/fuse.js@6.0.0";
-    private $js_library_tempus_dominus = "https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/js/tempusdominus-bootstrap-4.min.js";
-    private $css_tempus_dominus = "https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css";
-    private $js_library_moment = "https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js";
-    
+
     public function __construct() {
             parent::__construct();
     }
