@@ -163,10 +163,12 @@ function generateModalHTML() {
                 htmlModal += ask.replace('LABEL',toTitleCase(wb['global'])).replace('ID',wb['global'])+'&nbsp;';
             }
             if ( wb['radio'] == 'global' || wb['radio'] == 'both') {
-                phval = CTRItweaks.systemSettings[wb['global']].value
-                if (wb['val'].includes('@INCREMENT')) // Incrementing stored values store the last written value, so we need to +1
-                    phval = Number(phval) + 1;
-                htmlModal = htmlModal.replace(id,`${id} placeholder="${phval}"`)
+                if ( wb['global'] ) {
+                    phval = CTRItweaks.systemSettings[wb['global']].value;
+                    if (wb['val'].includes('@INCREMENT')) // Incrementing stored values store the last written value, so we need to +1
+                        phval = Number(phval) + 1;
+                    htmlModal = htmlModal.replace(id,`${id} placeholder="${phval}"`);
+                }
             }
         }
     });

@@ -107,23 +107,6 @@ class CTRItweaks extends AbstractExternalModule {
                 $this->passArgument('ReportWriteBack', $wbSettings);
                 $this->includeJs('js/report_write_back.js');
             }
-            if( in_array($_GET["report_id"], array_map('trim',$this->getProjectSetting('check-print-report'))) ) {
-                $this->passArgument('Check', 
-                    array(
-                        "useGlobal" => $this->getProjectSetting('use-global-check-number')[0],
-                        "checkNumber" => $this->getSystemSetting('global-check-number'),
-                        "study" => $this->getProjectSetting('check-print-study')[0],
-                        "address" => $this->getProjectSetting('check-print-address')[0],
-                        "varAmt" => $this->getProjectSetting('check-print-amt')[0],
-                        "varName" => $this->getProjectSetting('check-print-name')[0],
-                        "varMemo" => $this->getProjectSetting('check-print-memo')[0],
-                        "varAddr1" => $this->getProjectSetting('check-print-addr1')[0],
-                        "varAddr2" => $this->getProjectSetting('check-print-addr2')[0],
-                        "varAddr3" => $this->getProjectSetting('check-print-addr3')[0],
-                        )
-                );
-                $this->includeJs('js/report_add_check_print.js');
-            }
         }
         
         // "Save and Return Later" page of a survey
@@ -145,8 +128,10 @@ class CTRItweaks extends AbstractExternalModule {
         }
     }
     
-    public function redcap_data_entry_form() {
+    public function redcap_data_entry_form($project_id, $record, $instrument, $event_id) {
         $this->afterLoadActionTags();
+        if ( $this->getProjectSetting('system-management-event') == $event_id )
+            $this->includeJs('js/data_entry_system_event.js');
         if ( $this->getProjectSetting('support-12-hour-input') ) 
             $this->includeJs('js/data_entry_datetime_pickers.js');
         if ( $this->getProjectSetting('lock-complete-instruments') )
@@ -157,6 +142,8 @@ class CTRItweaks extends AbstractExternalModule {
             $this->includeJs('js/data_entry_hide_save_goto_next_record.js');
         if ( $this->getProjectSetting('hide-send-survey-email') )
             $this->includeJs('js/data_entry_hide_survey_option_email.js');
+        if ( $this->getProjectSetting('hide-instruments-on-forms') )
+            $this->includeJs('js/data_entry_hide_instruments.js');
         $this->includeJs('js/data_entry_stop_autocomplete.js');
         $this->includeJs('js/data_entry_mm_dd_yyyy.js');
         $this->includeJs('js/data_entry_prevent_scrolling_on_load.js');
@@ -308,7 +295,7 @@ class CTRItweaks extends AbstractExternalModule {
             }
         }
         if ( !empty($jsonNotes) ) {
-            $this->passArgument('jsonNotes', $jsonNotes);
+            $this->passArgument('jsonNotes', ['raw'=>$jsonNotes]);
             $this->includeJs('js/data_entry_action_tag_json_notes.js');
         }
         if ( !empty($markAll) ) {

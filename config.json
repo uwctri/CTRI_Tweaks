@@ -19,11 +19,6 @@
     ],
     "system-settings": [
         {
-            "key": "global-check-number",
-            "name": "<b>Global Check Number:</b><br>Used to suggest the next check number to use across all pojects. Value stored is most recently <b>used</b> check number",
-            "type": "text"
-        },
-        {
             "key": "testing-global",
             "name": "<b>Testing Global:</b><br>Used for Testing and Staging projects",
             "type": "text"
@@ -91,6 +86,11 @@
             "type": "checkbox"
         },
         {
+            "key": "hide-instruments-on-forms",
+            "name": "Hide all instruments when on data entry forms",
+            "type": "checkbox"
+        },
+        {
             "key": "toggle-tweaks-end",
             "name": "tableEnd",
             "type": "descriptive"
@@ -138,7 +138,7 @@
                                 },
                                 {
                                     "value": "global",
-                                    "name": "CRTRI Tweaks Global"
+                                    "name": "CTRI Tweaks Global"
                                 },
                                 {
                                     "value": "both",
@@ -166,58 +166,6 @@
                 {
                     "key": "write-back-report",
                     "name": "<b>Report ID(s):</b><br>Comma seperated",
-                    "type": "text"
-                }
-            ]
-        },
-        {
-            "key": "check-print-group",
-            "name": "<b>Add Check Print Button to Report</b>",
-            "type": "sub_settings",
-            "sub_settings":[
-                {
-                    "key": "check-print-study",
-                    "name": "<b>Name of study</b>",
-                    "type": "text"
-                },
-                {
-                    "key": "check-print-address",
-                    "name": "<b>Study Address:</b><br>Use '\\' to denote a new line",
-                    "type": "textarea"
-                },
-                {
-                    "key": "check-print-amt",
-                    "name": "<b>Check Amount:</b><br>Variable name, must be on the report",
-                    "type": "text"
-                },
-                {
-                    "key": "check-print-name",
-                    "name": "<b>Pay to:</b><br>Variable name, must be on the report",
-                    "type": "text"
-                },
-                {
-                    "key": "check-print-memo",
-                    "name": "<b>Check memo:</b><br>Variable name, must be on the report",
-                    "type": "text"
-                },
-                {
-                    "key": "check-print-addr1",
-                    "name": "<b>Address Line 1:</b><br>Variable name, must be on the report",
-                    "type": "text"
-                },
-                {
-                    "key": "check-print-addr2",
-                    "name": "<b>Address Line 2:</b><br>Variable name, must be on the report",
-                    "type": "text"
-                },
-                {
-                    "key": "check-print-addr3",
-                    "name": "<b>Address Line 3:</b><br>Variable name, must be on the report",
-                    "type": "text"
-                },
-                {
-                    "key": "check-print-report",
-                    "name": "<b>Report ID</b>",
                     "type": "text"
                 }
             ]
