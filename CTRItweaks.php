@@ -126,6 +126,15 @@ class CTRItweaks extends AbstractExternalModule {
     }
     
     public function redcap_data_entry_form($project_id, $record, $instrument, $event_id) {
+        
+        // If on a hidden event then redirect the user to the Record Home
+        $events = $this->getProjectSetting('hide-events')[0];
+        if ( in_array($event_id, $events) ) {
+            $arm = $_GET['arm'] ? $_GET['arm'] : '1';
+            header("Location: https://" . $_SERVER['HTTP_HOST'] . "/redcap/redcap_v" . REDCAP_VERSION . "/DataEntry/record_home.php?pid=" . $project_id . "&arm=" . $arm . "&id=" . $record);
+            return;
+        }
+        
         $this->afterLoadActionTags();
         if ( $this->getProjectSetting('system-management-event') == $event_id )
             $this->includeJs('js/data_entry_system_event.js');

@@ -173,7 +173,7 @@ function compileNotes( field ) {
     $.each(CTRItweaks.jsonNotes.data[field], function(ts, info) {
         if ( ["current","historic"].includes(ts) )
             return;
-        let tmp = `${ts.slice(0,15)+ts.slice(18)} - ${info.author}: ${info.note}\n\n`;
+        let tmp = `${ts.slice(0,16)+ts.slice(19)} - ${info.author}: ${info.note}\n\n`;
         if ( info.important )
             importantNotes = tmp + importantNotes;
         else
