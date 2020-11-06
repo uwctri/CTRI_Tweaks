@@ -197,6 +197,19 @@
             ]
         },
         {
+            "key": "prevent-navigation-instrument-list",
+            "name": "<b>Intruments to Block Navigation to</b><br>Redirect to record home",
+            "type": "sub_settings",
+            "sub_settings":[
+                {
+                    "key": "stop-nav-instrument",
+                    "name": "<b>Intruments</b>",
+                    "type": "form-list",
+                    "repeatable":true
+                }
+            ]
+        },
+        {
             "key": "hide-repeating-table-list",
             "name": "<b>Repeating instrument tables to hide</b><br>Record Home Page",
             "type": "sub_settings",
