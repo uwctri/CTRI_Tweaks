@@ -7,14 +7,9 @@ use REDCap;
 use UIState;
 
 function printToScreen($string) {
-?>
-    <script type='text/javascript'>
-       $(function() {
-          console.log(<?=json_encode($string); ?>);
-       });
-    </script>
-    <?php
+    ?><script>console.log(<?=json_encode($string); ?>);</script><?php
 }
+
 
 class CTRItweaks extends AbstractExternalModule {
     
