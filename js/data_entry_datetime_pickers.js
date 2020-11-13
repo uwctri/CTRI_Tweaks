@@ -5,6 +5,8 @@ $(document).ready(function () {
         let time = $(this).val().toLowerCase();
         let isPM = time.includes('pm');
         time = time.replace(/\s/g,'').replace('am','').replace('pm','');
+        if ( time.replace(':','').length > 4 )
+            return;
         let [hours,mins] = time.split(':');
         
         if ( hours && mins ) {
@@ -14,7 +16,7 @@ $(document).ready(function () {
             hours = isPM ? (parseInt(hours)+12)%24 : hours;
         } else if ( hours.length <= 4 ) {
             mins = hours.slice(-2);
-            hours = hours.slice(0,4-hours.length);
+            hours = hours.slice(0,hours.length-2);
             hours = isPM ? (parseInt(hours)+12)%24 : hours;
         }
         
