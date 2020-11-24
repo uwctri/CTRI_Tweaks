@@ -2,26 +2,24 @@ $(document).ready(function () {
     
     const notesFieldTemplate = `
     <td class="col-7 jsonNotesRow" colspan="2" style="background-color:#f5f5f5"> 
-        <div class="container">
-            <div class="row mb-3 mt-2 font-weight-bold"> LABEL </div>
-            <div class="row panel-container">
-                <div class="panel-left">
-                    <textarea class="jsonNotesCurrent" readonly placeholder="Previous notes will display here"></textarea>
-                </div>
-                <div class="splitter"></div>
-                <div class="panel-right">
-                    <div class="container">
-                        <div class="row jsonTextRow">
-                            <textarea class="jsonNotesNew" placeholder="Enter any notes here"></textarea>
-                        </div>
-                        <div class="row">
-                            <div class="col pr-4">
-                                <span>Important </span>
-                                <input type="checkbox" class="importantJson" 
-                                    title="Flag as important and keep the note at the top." 
-                                    name="importantJson">
-                                <span class="editLink" style="float:right"><a href="javascript:;">edit</a></span>
-                            </div>
+        <div class="mb-3 mt-2 font-weight-bold"> LABEL </div>
+        <div class="panel-container">
+            <div class="panel-left">
+                <textarea class="jsonNotesCurrent" readonly placeholder="Previous notes will display here"></textarea>
+            </div>
+            <div class="splitter"></div>
+            <div class="panel-right">
+                <div class="container">
+                    <div class="row jsonTextRow">
+                        <textarea class="jsonNotesNew" placeholder="Enter any notes here"></textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col pr-4">
+                            <span>Important </span>
+                            <input type="checkbox" class="importantJson" 
+                                title="Flag as important and keep the note at the top." 
+                                name="importantJson">
+                            <span class="editLink" style="float:right"><a href="javascript:;">edit</a></span>
                         </div>
                     </div>
                 </div>
@@ -87,6 +85,7 @@ $(document).ready(function () {
         }
         .jsonNotesNew {
             height: 180px;
+            width: 97%!important;
         }
         .importantJson {
             transform: translateY(2px);
