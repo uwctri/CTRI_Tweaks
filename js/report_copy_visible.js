@@ -21,6 +21,8 @@ function monitorCopyBtn() {
 
 function placeCopyBtn() {
     if ( $("#report_table_wrapper").length == 1 ) {
+        if ( $(".report_pagenum_div").length ) // We break on pagination
+            return;
         var btn = '<a href="#" class="btn btn-secondary btn-sm" role="button" id="copyDataBtn"><i class="fas fa-clipboard"></i></a>'
         $("#report_table_wrapper").prepend(btn)
         $("#copyDataBtn").popover({

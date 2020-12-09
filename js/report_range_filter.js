@@ -33,6 +33,8 @@ function monitorBoxes() {
 
 function placeInputBoxes() {
     if ( $("#report_table_wrapper").length == 1 ) {
+        if ( $(".report_pagenum_div").length ) // We break on pagination
+            return;
         $("#report_table_filter").prepend($("#FixedTableHdrsEnable"));
         var newFilters = `
         <div id="NewFiltersGroup">  
