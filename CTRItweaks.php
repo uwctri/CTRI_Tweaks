@@ -129,7 +129,7 @@ class CTRItweaks extends AbstractExternalModule {
             header("Location: https://" . $_SERVER['HTTP_HOST'] . "/redcap/redcap_v" . REDCAP_VERSION . "/DataEntry/record_home.php?pid=" . $project_id . "&arm=" . $arm . "&id=" . $record);
             return;
         }
-        
+
         $this->afterLoadActionTags();
         if ( $this->getProjectSetting('system-management-event') == $event_id )
             $this->includeJs('js/data_entry_system_event.js');
@@ -216,7 +216,9 @@ class CTRItweaks extends AbstractExternalModule {
             }
             //@DEFAULT2
             if ( strpos($info['misc'], '@DEFAULT2') !== false ) {
-                $target = trim(explode(' ',explode('@DEFAULT2=', $info['misc'])[1])[0],' "');
+                $target = preg_replace('/\s+/', ' ', $info['misc']);
+                $target = str_replace('@DEFAULT2 =', 'DEFAULT2=', $target);
+                $target = trim(explode(' ',explode('DEFAULT2=', $target)[1])[0],' "');
                 if ( $target[0] == "[" && substr($target, strlen($target)-1) == "]" ) {
                     list($event,$field) = explode('][', $target);
                     $event = trim($event,'[]');
@@ -230,7 +232,7 @@ class CTRItweaks extends AbstractExternalModule {
                     $target = REDCap::getData($Proj->project_id,'array',$_GET['id'],$field,$event)[$_GET['id']];
                     $target = !is_null($target['repeat_instances']) ? end(end($target['repeat_instances'][$event]))[$field] : $target[$event][$field];
                 }
-                $default2[$field_name] = $target;
+                $default2[$field_name] = trim($target, '"\' ');
             }
             //@TOMORROWBUTTON
             if ( strpos($info['misc'], '@TOMORROWBUTTON') !== false && strpos($info['element_validation_type'], 'date_') !== false ) {
