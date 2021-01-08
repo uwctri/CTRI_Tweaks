@@ -218,7 +218,8 @@ class CTRItweaks extends AbstractExternalModule {
             if ( strpos($info['misc'], '@DEFAULT2') !== false ) {
                 $target = preg_replace('/\s+/', ' ', $info['misc']);
                 $target = str_replace('@DEFAULT2 =', 'DEFAULT2=', $target);
-                $target = trim(explode(' ',explode('DEFAULT2=', $target)[1])[0],' "');
+                $rhs = explode('DEFAULT2=', $target)[1];
+                $target = trim(explode(' ',$target)[0],' "');
                 if ( $target[0] == "[" && substr($target, strlen($target)-1) == "]" ) {
                     list($event,$field) = explode('][', $target);
                     $event = trim($event,'[]');
@@ -231,8 +232,15 @@ class CTRItweaks extends AbstractExternalModule {
                     }
                     $target = REDCap::getData($Proj->project_id,'array',$_GET['id'],$field,$event)[$_GET['id']];
                     $target = !is_null($target['repeat_instances']) ? end(end($target['repeat_instances'][$event]))[$field] : $target[$event][$field];
+                } else {
+                    preg_match('/"([^"]+)"/', $rhs, $target);
+                    if ( !empty($target[0]) )
+                        $target = $target[1];
+                    else
+                        $target = $rhs;
+                    $default2[$field_name] = trim($target, '"\' ');
                 }
-                $default2[$field_name] = trim($target, '"\' ');
+                
             }
             //@TOMORROWBUTTON
             if ( strpos($info['misc'], '@TOMORROWBUTTON') !== false && strpos($info['element_validation_type'], 'date_') !== false ) {
