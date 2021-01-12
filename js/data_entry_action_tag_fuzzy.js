@@ -6,7 +6,10 @@ $(document).ready(function () {
     </tr>`
     let url = new URLSearchParams(location.search);
     $.each( CTRItweaks.fuzzy.search, function(field, data) {
-        const fuse = new Fuse(data, {keys: ['value']});
+        const fuse = new Fuse(data, {
+            keys: ['value'],
+            threshold: 0.2
+        });
         $(`input[name=${field}]`).on('keyup change', function() {
             let search = fuse.search($(this).val());
             let display;
