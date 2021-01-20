@@ -5,6 +5,15 @@ $(document).ready(function () {
         <td>Value</td>
     </tr>`
     let url = new URLSearchParams(location.search);
+    
+    $('body').on('click', function (e) {
+        // Close popovers when we click outside an input or popover
+        if ( $(e.target).closest('.popover').length == 0
+            && !$(e.target).is('input')) { 
+            $('.ctriFuzzy').popover('dispose');
+        }
+    });
+    
     $.each( CTRItweaks.fuzzy.search, function(field, data) {
         const fuse = new Fuse(data, {
             keys: ['value'],
@@ -33,7 +42,7 @@ $(document).ready(function () {
                 html: true,
                 sanitize: false,
                 container: 'body',
-            });
+            }).addClass('ctriFuzzy');
             $(this).popover('show');
         });
     });
