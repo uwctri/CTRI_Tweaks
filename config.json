@@ -91,6 +91,11 @@
             "type": "checkbox"
         },
         {
+            "key": "stop-dag-rename",
+            "name": "Use incremental record ID when DAGs enabled",
+            "type": "checkbox"
+        },
+        {
             "key": "toggle-tweaks-end",
             "name": "tableEnd",
             "type": "descriptive"

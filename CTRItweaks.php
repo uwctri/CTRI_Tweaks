@@ -41,6 +41,24 @@ class CTRItweaks extends AbstractExternalModule {
                 $this->includeJs('js/data_entry_datetime_pickers.js');
         }
         
+        // Add / Edit Records Page
+        if (PAGE == 'DataEntry/record_home.php' && is_null($_GET['id'])) {
+            if ( $this->getProjectSetting('stop-dag-rename') ) {
+                $this->includeCss('stop_new_record.css');
+                $this->passArgument('newRecordID', $this->getNextRecordID() );
+                $this->includeJs('js/add_edit_record_stop_dag_rename.js');
+            }
+        }
+        
+        // Record Status Dashboard
+        if ( PAGE == 'DataEntry/record_status_dashboard.php' && is_null($_GET['id'])) {
+            if ( $this->getProjectSetting('stop-dag-rename') ) {
+                $this->includeCss('stop_new_record.css');
+                $this->passArgument('newRecordID', $this->getNextRecordID() );
+                $this->includeJs('js/add_edit_record_stop_dag_rename.js');
+            }
+        }
+        
         // Record Home Page
         if (PAGE == 'DataEntry/record_home.php' && $_GET['id']) {
             $this->includeJs('js/record_home_always.js');
@@ -148,6 +166,8 @@ class CTRItweaks extends AbstractExternalModule {
         $this->includeJs('js/data_entry_stop_autocomplete.js');
         $this->includeJs('js/data_entry_mm_dd_yyyy.js');
         $this->includeJs('js/data_entry_prevent_scrolling_on_load.js');
+        
+        $this->includeJs('js/data_entry_toggle_write.js');
     }
     
     public function redcap_data_entry_form_top() {
@@ -157,7 +177,7 @@ class CTRItweaks extends AbstractExternalModule {
     public function redcap_survey_page() {
         $this->afterLoadActionTags();
         $this->includeJs('js/data_entry_mm_dd_yyyy.js');
-        //$this->includeJs('js/data_entry_stop_autocomplete.js'); // No longer needed
+        $this->includeJs('js/data_entry_stop_autocomplete.js');
     }
     
     public function redcap_survey_page_top() {
@@ -366,6 +386,11 @@ class CTRItweaks extends AbstractExternalModule {
         return $data;
     }
     
+    private function getNextRecordID() {
+        global $Proj;
+        return end(array_keys(REDCap::getData( $Proj->project_id, 'array', NULL, REDCap::getRecordIdField() )))+1;
+    }
+    
     private function load_report_write_back_settings() {
         foreach( $this->getProjectSetting('write-back-button-text') as $index => $btn) {
             $data['config'][$index]["btn"] = $btn;
@@ -411,7 +436,7 @@ class CTRItweaks extends AbstractExternalModule {
     }
     
     private function includeCss($path) {
-        echo '<link rel="stylesheet" href="' . $path . '"/>';
+        echo '<link rel="stylesheet" href="' . $this->getUrl($path) . '"/>';
     }
     
     private function passArgument($name, $value) {
