@@ -172,7 +172,7 @@ function compileNotes( field ) {
     $.each(CTRItweaks.jsonNotes.data[field], function(ts, info) {
         if ( ["current","historic"].includes(ts) )
             return;
-        let tmp = `${ts.slice(0,16)+ts.slice(19)} - ${info.author}: ${info.note}\n\n`;
+        let tmp = `${ts.slice(0,16)+ts.slice(19)} - ${info.author}: ${info.note.replace(/\^/g,'"')}\n\n`;
         if ( info.important )
             importantNotes = tmp + importantNotes;
         else
@@ -203,7 +203,7 @@ function saveNewJSONnotes( field ) {
     CTRItweaks.jsonNotes.data[field][ts] = {
         important: $(`#${field}-tr .importantJson`).prop('checked'),
         author: $("#username-reference").text(),
-        note: $(`#${field}-tr .jsonNotesNew`).val()
+        note: $(`#${field}-tr .jsonNotesNew`).val().replace(/\"/g,"^")
     };
     
     $(`[name=${field}]`).val( JSON.stringify(CTRItweaks.jsonNotes.data[field]) );

@@ -39,6 +39,12 @@ $(document).ready(function() {
             });
             $("tr[field=write-back-variable-list] .external-modules-add-remove-column").css('padding','4px 12px 4px 12px')
             
+            // Organze the Write back event/var area
+            $("tr[field=write-back-variable] label").css('transform','translateY(-20px)');
+            $("tr[field=write-back-event] td").css('padding-top','1.5rem').css('padding-bottom','.25rem');
+            $("tr[field=write-back-variable] td").css('border','none').css('padding-top','.25rem').css('padding-bottom','.25rem');
+            $("tr[field=write-back-variable] select").css('margin-bottom','20px');
+            
             // Setup system global drop down
             $("input[name^=write-back-global]").hide();
             var ddm = '<select class="external-modules-input-element global-wb-dropdown"><option value=""></option><option>';

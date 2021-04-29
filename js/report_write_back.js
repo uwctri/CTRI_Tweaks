@@ -57,7 +57,8 @@ function gatherDataforPost() {
             
             post_data['write'].push( {
                 'record': $($(el).find('td')[id_index]).find('a').text(),
-                'event': getEventID($($(el).find('td')[event_index]).text()),
+                'ignoreInstance': wb['eventStatic'] > 0,
+                'event': wb['eventStatic'] || getEventID($($(el).find('td')[event_index]).text()),
                 'instrument': $($(el).find('td')[instrument_index]).text().toLowerCase(),
                 'instance': $($(el).find('td')[instance_index]).text(),
                 'var': wb['var'],

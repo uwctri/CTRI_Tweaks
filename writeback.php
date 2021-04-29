@@ -14,8 +14,10 @@ if( isset($_POST['obj']) ) {
             continue;
         if ($data->action == 'global' || $data->action == 'both')
             ExternalModules::setSystemSetting($prefix, $data->global, $data->val);
-        if( !empty($data->instrument) ) {
-            if( $dd[$data->var]['form_name'] == $data->instrument )
+        if( !empty($data->instrument) && !$data->ignoreInstance ) {
+            $instrument = str_replace(' ', '_', $data->instrument);
+            $instrument = str_replace('-', '', $data->instrument);
+            if( $dd[$data->var]['form_name'] == $instrument )
                 $writeArray[$data->record]["repeat_instances"][$data->event][$data->instrument][$data->instance][$data->var] = $data->val;
         }
         else

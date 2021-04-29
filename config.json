@@ -152,8 +152,13 @@
                             ]
                         },
                         {
+                            "key": "write-back-event",
+                            "name": "<b>Write back target</b>",
+                            "type": "event-list"
+                        },
+                        {
                             "key": "write-back-variable",
-                            "name": "<b>Write back field</b>",
+                            "name": "If no event is given, the event of the row is used",
                             "type": "field-list"
                         },
                         {

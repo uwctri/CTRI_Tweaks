@@ -10,7 +10,6 @@ function printToScreen($string) {
     ?><script>console.log(<?=json_encode($string); ?>);</script><?php
 }
 
-
 class CTRItweaks extends AbstractExternalModule {
     
     private $module_prefix = 'CTRI_Tweaks';
@@ -20,7 +19,7 @@ class CTRItweaks extends AbstractExternalModule {
     private $js_library_fuse = "https://cdn.jsdelivr.net/npm/fuse.js@6.0.0";
 
     public function __construct() {
-            parent::__construct();
+        parent::__construct();
     }
     
     public function redcap_every_page_top($project_id) {
@@ -239,7 +238,7 @@ class CTRItweaks extends AbstractExternalModule {
                 $target = preg_replace('/\s+/', ' ', $info['misc']);
                 $target = str_replace('@DEFAULT2 =', '@DEFAULT2=', $target);
                 $rhs = explode('DEFAULT2=', $target)[1];
-                $target = trim(explode(' ',$rhs)[0],' "');
+                $target = trim(explode(' ',trim($rhs,' '))[0],' "');
                 if ( $target[0] == "[" && substr($target, strlen($target)-1) == "]" ) {
                     list($event,$field) = explode('][', $target);
                     $event = trim($event,'[]');
@@ -398,6 +397,7 @@ class CTRItweaks extends AbstractExternalModule {
             $data['config'][$index]["footer"] = $this->getProjectSetting('write-back-footer-text')[$index];
             foreach( $this->getProjectSetting('write-back-value')[$index] as $sub_index => $val ) {
                 $data['config'][$index]["write"][$sub_index]['val'] = $val;
+                $data['config'][$index]["write"][$sub_index]['eventStatic'] = $this->getProjectSetting('write-back-event')[$index][$sub_index];
                 $data['config'][$index]["write"][$sub_index]['var'] = $this->getProjectSetting('write-back-variable')[$index][$sub_index];
                 $data['config'][$index]["write"][$sub_index]['global'] = $this->getProjectSetting('write-back-global')[$index][$sub_index];
                 $data['config'][$index]["write"][$sub_index]['radio'] = $this->getProjectSetting('write-back-to')[$index][$sub_index];
