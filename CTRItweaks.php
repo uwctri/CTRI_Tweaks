@@ -153,7 +153,7 @@ class CTRItweaks extends AbstractExternalModule {
         if ( $this->getProjectSetting('support-12-hour-input') ) 
             $this->includeJs('js/data_entry_datetime_pickers.js');
         if ( $this->getProjectSetting('lock-complete-instruments') )
-            $this->includeJs('js/data_entry_prevent_enter_submission.js');
+            $this->includeJs('js/data_entry_lock_complete.js');
         if ( $this->getProjectSetting('prevent-enter-submit') )
             $this->includeJs('js/data_entry_prevent_enter_submission.js');
         if ( $this->getProjectSetting('hide-save-next-record') )
