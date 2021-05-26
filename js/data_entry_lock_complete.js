@@ -1,6 +1,7 @@
 $(document).ready(function () {
     if ( $("select[name$='_complete']").val()==="2" ) {
-        $("#questiontable").css("pointer-events","none");
+        if ( !super_user )
+            $("#questiontable").css("pointer-events","none");
         $("#questiontable").before(`
         <div class="alert alert-danger" id="alertLockMsg" style="text-align:center" role="alert">
             <i class="fas fa-lock"></i>&nbsp;This record is marked as complete, verify that this is the correct record and instrument before making changes.
