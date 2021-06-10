@@ -96,6 +96,11 @@
             "type": "checkbox"
         },
         {
+            "key": "always-all-report",
+            "name": "Default report pagenation to 'ALL'",
+            "type": "checkbox"
+        },
+        {
             "key": "toggle-tweaks-end",
             "name": "tableEnd",
             "type": "descriptive"

@@ -30,8 +30,10 @@ class CTRItweaks extends AbstractExternalModule {
             $this->includeJs('js/config.js');
         
         // Every page (edits to left-side nav bar)
-        if ( $this->getProjectSetting('hide-survey-tools') ) 
-            $this->includeJs('js/hide_survey_distribution_tools.js');
+        if ( $this->getProjectSetting('hide-survey-tools') )
+            $this->includeJs('js/all_hide_survey_distribution_tools.js');
+        if ( $this->getProjectSetting('always-all-report') )
+            $this->includeJs('js/all_reports_one_page.js');
         
         // Form Designer Page
         if (PAGE== 'Design/online_designer.php') {

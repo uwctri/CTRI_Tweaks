@@ -1,7 +1,3 @@
-function mdy2ymd(str) {
-    return str.substr(-4)+'-'+str.substr(0,str.length-5)
-}
-
 CTRItweaks.DateRegex = /^\d{2}\-\d{2}\-\d{4}$/ ;
 $.fn.dataTable.ext.search.push(
     function( settings, data, dataIndex ) {
@@ -9,9 +5,9 @@ $.fn.dataTable.ext.search.push(
         var max = $('#tableFilterMax').val();
         var target = $('#minmaxpivot').val() || "";
         var pivot = data[$("#report_table th").index($(`th:contains(${target})`))] || 0;
-        min = isNumeric(min) ? Number(min) : CTRItweaks.DateRegex.test(min) ? mdy2ymd(min) : min;
-        max = isNumeric(max) ? Number(max) : CTRItweaks.DateRegex.test(max) ? mdy2ymd(max) : max;
-        pivot = isNumeric(pivot) ? Number(pivot) : CTRItweaks.DateRegex.test(pivot) ? mdy2ymd(pivot) : pivot;
+        min = isNumeric(min) ? Number(min) : CTRItweaks.DateRegex.test(min) ? date_mdy2ymd(min.replaceAll('/','-')) : min;
+        max = isNumeric(max) ? Number(max) : CTRItweaks.DateRegex.test(max) ? date_mdy2ymd(max.replaceAll('/','-')) : max;
+        pivot = isNumeric(pivot) ? Number(pivot) : CTRItweaks.DateRegex.test(pivot) ? date_mdy2ymd(pivot.replaceAll('/','-')) : pivot;
         if ( ( min==="" && max==="" ) ||
              ( target==="" ) ||
              ( min==="" && pivot <= max ) ||

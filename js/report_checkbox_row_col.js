@@ -104,7 +104,7 @@ function monitorCheckBox() {
 }
 
 function placeCheckBox() {
-    if ( $("#report_div .d-print-none").length == 2 ) {
+    if ( $("#report_div .d-print-none").length >= 2 ) { // 2 features when no pagination, otherwise 4
         var load = `
         <div style='margin-top:10px; id="checkboxGrouper"'>
             <span style='margin-right:10px;font-weight:bold;'>Hide Empty Rows: </span>
@@ -115,7 +115,7 @@ function placeCheckBox() {
             <span style='margin-right:10px;margin-left:29px;font-weight:bold;'>Squash Rows: </span>
             <input type='checkbox' class='form-check-input' style='margin-left:2px' id='squashRowsCheck' checked>
         </div>`;
-        $("#report_div .d-print-none").last().append(load);
+        $("#report_div .d-print-none").eq(1).append(load); // Use the last of the two at the top. Other two are at bottom of page when pagination
         $("#hideEmptyRowsCheck").on("change",hideEmptyRowsCheck);
         $("#hideRedcapColsCheck").on("change",hideRedcapColsCheck);
         $("#squashRowsCheck").on("change",squashRowsCheck);
@@ -134,7 +134,7 @@ function placeCheckBox() {
 }
 
 $(document).ready(function () {
-    if (new URL(window.location.href).searchParams.get('report_id') == "ALL")
+    if (getParameterByName('report_id') == "ALL" || (getParameterByName('pagenum') || "ALL") != "ALL")
         return;
     placeCheckBox();
 });
