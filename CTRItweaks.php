@@ -49,6 +49,7 @@ class CTRItweaks extends AbstractExternalModule {
                 $this->passArgument('newRecordID', $this->getNextRecordID() );
                 $this->includeJs('js/add_edit_record_stop_dag_rename.js');
             }
+            setUIstate($project_id);
         }
         
         // Record Status Dashboard
@@ -58,6 +59,7 @@ class CTRItweaks extends AbstractExternalModule {
                 $this->passArgument('newRecordID', $this->getNextRecordID() );
                 $this->includeJs('js/add_edit_record_stop_dag_rename.js');
             }
+            setUIstate($project_id);
         }
         
         // Record Home Page
@@ -133,10 +135,7 @@ class CTRItweaks extends AbstractExternalModule {
             $this->passArgument('AlertText', $text);
             $this->includeJs('js/home_page_alert.js');
         }
-        if ( $this->getProjectSetting('force-save-next-form') ) { // Done directly in php
-            if( UIState::getUIStateValue($project_id , 'form', 'submit-btn')!='savenextform' )
-                UIState::saveUIStateValue($project_id, 'form', 'submit-btn', 'savenextform');
-        }
+        setUIstate($project_id);
     }
     
     public function redcap_data_entry_form($project_id, $record, $instrument, $event_id) {
@@ -183,6 +182,13 @@ class CTRItweaks extends AbstractExternalModule {
     
     public function redcap_survey_page_top() {
         $this->beforeLoadActionTags();
+    }
+    
+    private function setUIstate($project_id) {
+        if ( $this->getProjectSetting('force-save-next-form') ) { // Done directly in php
+            if( UIState::getUIStateValue($project_id , 'form', 'submit-btn')!='savenextform' )
+                UIState::saveUIStateValue($project_id, 'form', 'submit-btn', 'savenextform');
+        }
     }
     
     // Action tags that don't touch JS
@@ -399,6 +405,7 @@ class CTRItweaks extends AbstractExternalModule {
             $data['config'][$index]["footer"] = $this->getProjectSetting('write-back-footer-text')[$index];
             foreach( $this->getProjectSetting('write-back-value')[$index] as $sub_index => $val ) {
                 $data['config'][$index]["write"][$sub_index]['val'] = $val;
+                $data['config'][$index]["write"][$sub_index]['overwrite'] = $this->getProjectSetting('write-back-overwrite')[$index][$sub_index];
                 $data['config'][$index]["write"][$sub_index]['eventStatic'] = $this->getProjectSetting('write-back-event')[$index][$sub_index];
                 $data['config'][$index]["write"][$sub_index]['var'] = $this->getProjectSetting('write-back-variable')[$index][$sub_index];
                 $data['config'][$index]["write"][$sub_index]['global'] = $this->getProjectSetting('write-back-global')[$index][$sub_index];

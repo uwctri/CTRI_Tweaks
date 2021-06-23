@@ -157,6 +157,11 @@
                             ]
                         },
                         {
+                            "key": "write-back-overwrite",
+                            "name": "<b>Overwrite:</b><br>Replace existing value if one exists",
+                            "type": "checkbox"
+                        },
+                        {
                             "key": "write-back-event",
                             "name": "<b>Write back target</b>",
                             "type": "event-list"

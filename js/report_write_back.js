@@ -64,7 +64,8 @@ function gatherDataforPost() {
                 'var': wb['var'],
                 'global': wb['global'],
                 'action': action,
-                'val': writeValue
+                'val': writeValue,
+                'overwrite': CTRItweaks.ReportWriteBack.config['0'].overwrite ? true : false
             } );
         });
     });

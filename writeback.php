@@ -20,8 +20,22 @@ if( isset($_POST['obj']) ) {
             if( $dd[$data->var]['form_name'] == $instrument )
                 $writeArray[$data->record]["repeat_instances"][$data->event][$data->instrument][$data->instance][$data->var] = $data->val;
         }
-        else
+        else {
             $writeArray[$data->record][$data->event][$data->var] = $data->val;
+        }
+        if ( $data->overwrite == "0") {
+            $existingData = REDCap::getData($pid, 'array', $data->record, $data->var, $data->event);
+            if( !empty($data->instrument) && !$data->ignoreInstance ) {
+                if ( !empty($existingData[$data->record]["repeat_instances"][$data->event][$data->instrument][$data->instance][$data->var]) ) {
+                    $writeArray[$data->record]["repeat_instances"][$data->event][$data->instrument][$data->instance][$data->var] = '';
+                }
+            }
+            else {
+                if ( !empty($existingData[$data->record][$data->event][$data->var]) ) {
+                    $writeArray[$data->record][$data->event][$data->var] = '';
+                }
+            }
+        }
     }
     $out = REDCap::saveData($pid, 'array', $writeArray);
     echo json_encode($out);
