@@ -49,7 +49,7 @@ class CTRItweaks extends AbstractExternalModule {
                 $this->passArgument('newRecordID', $this->getNextRecordID() );
                 $this->includeJs('js/add_edit_record_stop_dag_rename.js');
             }
-            setUIstate($project_id);
+            $this->setUIstate($project_id);
         }
         
         // Record Status Dashboard
@@ -59,7 +59,7 @@ class CTRItweaks extends AbstractExternalModule {
                 $this->passArgument('newRecordID', $this->getNextRecordID() );
                 $this->includeJs('js/add_edit_record_stop_dag_rename.js');
             }
-            setUIstate($project_id);
+            $this->setUIstate($project_id);
         }
         
         // Record Home Page
@@ -135,7 +135,7 @@ class CTRItweaks extends AbstractExternalModule {
             $this->passArgument('AlertText', $text);
             $this->includeJs('js/home_page_alert.js');
         }
-        setUIstate($project_id);
+        $this->setUIstate($project_id);
     }
     
     public function redcap_data_entry_form($project_id, $record, $instrument, $event_id) {
