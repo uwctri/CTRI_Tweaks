@@ -2,7 +2,7 @@ $(document).ready(function () {
     
     const notesFieldTemplate = `
     <td class="col-7 jsonNotesRow" colspan="2" style="background-color:#f5f5f5"> 
-        <div class="mb-3 mt-2 font-weight-bold"> LABEL </div>
+        <div class="mb-2 mt-1 font-weight-bold jsonNotesLabel"> LABEL </div>
         <div class="panel-container">
             <div class="panel-left">
                 <textarea class="jsonNotesCurrent" readonly placeholder="Previous notes will display here"></textarea>
@@ -107,6 +107,8 @@ $(document).ready(function () {
             CTRItweaks.jsonNotes.data[field]["historic"] = "Historic Notes:\n"+json; // Not JSON, just old non-json notes.
         }
         $(`#${field}-tr`).append(notesFieldTemplate.replace('LABEL',label));
+        if (!label)
+            $(`#${field}-tr .jsonNotesLabel`).remove();
         displayJSONnotes(field);
     });
     
