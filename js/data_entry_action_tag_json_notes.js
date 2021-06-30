@@ -168,10 +168,11 @@ $(document).ready(function () {
     },32);
 });
 
-function compileNotes( field ) {
-    let notes = CTRItweaks.jsonNotes.data[field]["historic"] || "";
+function compileNotes( field_or_jsonObject ) {
+    let dataSource = typeof field_or_jsonObject == "object" ? field_or_jsonObject : CTRItweaks.jsonNotes.data[field_or_jsonObject];
+    let notes = dataSource["historic"] || "";
     let importantNotes = "";
-    $.each(CTRItweaks.jsonNotes.data[field], function(ts, info) {
+    $.each(dataSource, function(ts, info) {
         if ( ["current","historic"].includes(ts) )
             return;
         let tmp = `${ts.slice(0,16)+ts.slice(19)} - ${info.author}: ${info.note.replace(/\^/g,'"')}\n\n`;
