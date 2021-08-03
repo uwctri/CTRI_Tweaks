@@ -111,6 +111,11 @@
             "type": "event-list"
         },
         {
+            "key": "cross-project-pipe",
+            "name": "<b>Cross Project Piep from:</b><br>Pipe in data from another project that shares record ids with this one.",
+            "type": "project-id"
+        },
+        {
             "key": "write-back-from-reports-group",
             "name": "<b>Write Back Button</b>",
             "type": "sub_settings",

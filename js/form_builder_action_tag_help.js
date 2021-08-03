@@ -76,6 +76,15 @@ $(document).ready(function() {
                     Perform a fuzzy search on text entered and return possible matches in a popover. By defauly fuzzy searches on its on variable in all other records. To search on a differant variable use @FUZZY=[example] .
                 </td>
             </tr>
+            <tr>
+                <td class="nowrap actionTagButton">
+                    <button class="btn btn-xs btn-rcred" >Add</button>
+                </td>
+                <td class="nowrap actionTagName">@CROSSPP</td>
+                <td class="actionTagInfo">
+                    Flag a field as using CTRI Tweaks Cross Project Piping, enable this feature via the CTRI EM config menu. Cross Project Piping works only in field labels, does not respect any of the colon modifiers (i.e. ":ampm" or ":value"), and always returns the value of the feild or, for checkboxes, as json encoded representation of field. Formatting is identical to regular piping, but "!!" must be prepended , i.e. !![event][field][instance] .
+                </td>
+            </tr>
         </tbody></table>
     </div>
     `

@@ -80,7 +80,10 @@ class CTRItweaks extends AbstractExternalModule {
             }
             $events = $this->getProjectSetting('hide-events')[0];
             if ( !is_null($events) ) {
-                $this->passArgument('HideEvents', $this->getEventNames($events));
+                foreach( array_filter($events) as $id ) {
+                    $eventNames[] = REDCap::getEventNames(false,false,$id);
+                }
+                $this->passArgument('HideEvents', $eventNames);
                 $this->includeJs('js/record_home_hide_event.js');
             }
             $forms = $this->getProjectSetting('hide-form-row')[0];
@@ -102,7 +105,7 @@ class CTRItweaks extends AbstractExternalModule {
             $tabevents = $this->getProjectSetting('tab-event');
             $tabbutton = $this->getProjectSetting('tab-event-button');
             if ( !is_null($tabnames[0]) ) {
-                $tabevents = $this->map_event_id_to_name($tabevents);
+                $tabevents = $this->mapEventIds2Names($tabevents);
                 $this->passArgument('TabConfig', array_combine($tabnames, $tabevents));
                 if ( !is_null($tabbutton) )
                     $this->passArgument('AddTabText', $tabbutton);
@@ -166,7 +169,6 @@ class CTRItweaks extends AbstractExternalModule {
         $this->includeJs('js/data_entry_stop_autocomplete.js');
         $this->includeJs('js/data_entry_mm_dd_yyyy.js');
         $this->includeJs('js/data_entry_prevent_scrolling_on_load.js');
-        
         $this->includeJs('js/data_entry_toggle_write.js');
     }
     
@@ -200,6 +202,46 @@ class CTRItweaks extends AbstractExternalModule {
                 $target = trim(explode(' ',explode('@LABEL=', $info['misc'])[1])[0],' []"');
                 if ( $Proj->metadata[$target] )
                     $Proj->metadata[$field_name]['element_label'] = $Proj->metadata[$target]['element_label'];
+            }
+            //@CROSSPP
+            $targetPid = $this->getProjectSetting('cross-project-pipe');
+            if ( strpos($info['misc'], '@CROSSPP') !== false && !empty($targetPid)) {
+                $label = $Proj->metadata[$field_name]['element_label'];
+                $count = preg_match_all('/!!(\[[A-Za-z1-9-_]+\]){1,3}/', $label, $match);
+                if ( $count > 0 ) {
+                    
+                    foreach ( $match[0] as $pipeInstance ) {
+                        $tmp = substr($pipeInstance, 3, strlen($pipeInstance)-4);
+                        $tmp = explode('][', $tmp);
+                        $event = null;
+                        $instance = null;
+                        $record = $_GET['id'];
+                        if ( count($tmp) == 1 ) {
+                            // Only a field, first event on non-long
+                            $field = $tmp[0];
+                        } elseif ( count($tmp) == 2 ) {
+                            // Event and field
+                            $event = $tmp[0];
+                            $field = $tmp[1];
+                        } else {
+                            // Repeating instrument
+                            $event = $tmp[0];
+                            $field = $tmp[1];
+                            $instance = $tmp[2];
+                        }
+                        if ( $event ) {
+                            // Lookup event id with the event name and skirt Redcap's rules
+                            $event = $this->getEventIdFromName( $targetPid, $event );
+                        }
+                        $data = REDCap::getData( $targetPid, 'array', $record, $field, $event );
+                        $data = end(end($data[$record]));
+                        $data = $instance ? $data[$instance] : $data;
+                        $data = is_array($data) ? json_encode($data) : $data;
+                        $data = is_bool($data) ? '' : $data;
+                        $label = $Proj->metadata[$field_name]['element_label'];
+                        $Proj->metadata[$field_name]['element_label'] = str_replace($pipeInstance, $data, $label);
+                    }
+                }
             }
         }
     }
@@ -365,7 +407,26 @@ class CTRItweaks extends AbstractExternalModule {
         }
     }
     
-    private function map_event_id_to_name( $array ){
+    private function getEventIdFromName( $project_id, $eventName ) {
+        $sql = "SELECT event_id, descrip FROM redcap_events_metadata WHERE event_id IN 
+                (SELECT DISTINCT event_id FROM redcap_data WHERE project_id = $project_id);";
+        $eventName = explode('_arm_',$eventName)[0];
+        $results = db_query($sql);
+        $out = false;
+        if($results && $results !== false && db_num_rows($results)) {
+            while ($row = db_fetch_assoc($results)) {
+                $tmp = strtolower($row['descrip']);
+                $tmp = preg_replace('/[^a-z\d\s:]*/','',$tmp);
+                $tmp = str_replace(' ', '_', $tmp);
+                if ( $tmp == $eventName ) {
+                    $out = $row['event_id'];
+                }
+            }
+        }
+        return $out;
+    }
+    
+    private function mapEventIds2Names( $array ){
         foreach( $array as $name => $set ) {
             foreach( $set as $key => $event ) {
                 $array[$name][$key] = REDCap::getEventNames(false,false,$event);
@@ -380,15 +441,6 @@ class CTRItweaks extends AbstractExternalModule {
         }
         foreach( REDCap::getEventNames(true) as $eventID => $unique ){
             $data[$eventID]['unique'] = $unique;
-        }
-        return $data;
-    }
-    
-    private function getEventNames( $id_list ){
-        $data = [];
-        foreach( $id_list as $index => $id ) {
-            if ( $id != "" )
-                $data[$index] = REDCap::getEventNames(false,false,$id);
         }
         return $data;
     }
