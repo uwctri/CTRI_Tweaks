@@ -142,7 +142,6 @@ class CTRItweaks extends AbstractExternalModule {
     }
     
     public function redcap_data_entry_form($project_id, $record, $instrument, $event_id) {
-        
         // If on a hidden event then redirect the user to the Record Home
         $instruments = $this->getProjectSetting('stop-nav-instrument')[0];
         if ( in_array($instrument, $instruments) ) {
@@ -151,7 +150,7 @@ class CTRItweaks extends AbstractExternalModule {
             return;
         }
 
-        $this->afterLoadActionTags();
+        $this->afterLoadActionTags($instrument);
         if ( $this->getProjectSetting('system-management-event') == $event_id )
             $this->includeJs('js/data_entry_system_event.js');
         if ( $this->getProjectSetting('support-12-hour-input') ) 
@@ -172,18 +171,18 @@ class CTRItweaks extends AbstractExternalModule {
         $this->includeJs('js/data_entry_toggle_write.js');
     }
     
-    public function redcap_data_entry_form_top() {
-        $this->beforeLoadActionTags();
+    public function redcap_data_entry_form_top($project_id, $record, $instrument, $event_id) {
+        $this->beforeLoadActionTags($instrument);
     }
     
-    public function redcap_survey_page() {
-        $this->afterLoadActionTags();
+    public function redcap_survey_page($project_id, $record, $instrument, $event_id) {
+        $this->afterLoadActionTags($instrument);
         $this->includeJs('js/data_entry_mm_dd_yyyy.js');
         $this->includeJs('js/data_entry_stop_autocomplete.js');
     }
     
-    public function redcap_survey_page_top() {
-        $this->beforeLoadActionTags();
+    public function redcap_survey_page_top($project_id, $record, $instrument, $event_id) {
+        $this->beforeLoadActionTags($instrument);
     }
     
     private function setUIstate($project_id) {
@@ -194,9 +193,11 @@ class CTRItweaks extends AbstractExternalModule {
     }
     
     // Action tags that don't touch JS
-    private function beforeLoadActionTags() {
+    private function beforeLoadActionTags($instrument) {
         global $Proj;
-        foreach ($Proj->metadata as $field_name => $info) {
+        $fields = REDCap::getFieldNames($instrument);
+        foreach ($fields as $field_name) {
+            $info = $Proj->metadata[$field_name];
             //@LABEL="[foo]"
             if ( strpos($info['misc'], '@LABEL=') !== false ) {
                 $target = trim(explode(' ',explode('@LABEL=', $info['misc'])[1])[0],' []"');
@@ -247,7 +248,7 @@ class CTRItweaks extends AbstractExternalModule {
     }
     
     // Action tags that are JS based
-    private function afterLoadActionTags() {
+    private function afterLoadActionTags($instrument) {
         global $Proj;
         $jsonNotes = [];
         $markAll = [];
@@ -256,7 +257,9 @@ class CTRItweaks extends AbstractExternalModule {
         $missingcode = [];
         $fuzzy = [];
         $default2 = [];
-        foreach ($Proj->metadata as $field_name => $info) {
+        $fields = REDCap::getFieldNames($instrument);
+        foreach ($fields as $field_name) {
+            $info = $Proj->metadata[$field_name];
             //@JSONNOTES
             if ( strpos($info['misc'], '@JSONNOTES') !== false && $info['element_type'] == 'textarea') {
                 if ( strpos($info['misc'], '@JSONNOTES-EVENTS') !== false ) {
