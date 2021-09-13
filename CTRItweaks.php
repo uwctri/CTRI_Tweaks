@@ -291,7 +291,7 @@ class CTRItweaks extends AbstractExternalModule {
                 $target = preg_replace('/\s+/', ' ', $info['misc']);
                 $target = str_replace('@DEFAULT2 =', '@DEFAULT2=', $target);
                 $rhs = explode('DEFAULT2=', $target)[1];
-                $target = trim(explode(' ',trim($rhs,' '))[0],' "');
+                $target = trim(explode(' ',trim($rhs,' '))[0],' "\'');
                 if ( $target[0] == "[" && substr($target, strlen($target)-1) == "]" ) {
                     list($event,$field) = explode('][', $target);
                     $event = trim($event,'[]');
