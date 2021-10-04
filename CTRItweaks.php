@@ -169,6 +169,7 @@ class CTRItweaks extends AbstractExternalModule {
         $this->includeJs('js/data_entry_mm_dd_yyyy.js');
         $this->includeJs('js/data_entry_prevent_scrolling_on_load.js');
         $this->includeJs('js/data_entry_toggle_write.js');
+        $this->includeJs('js/data_entry_show_all_rows.js');
     }
     
     public function redcap_data_entry_form_top($project_id, $record, $instrument, $event_id) {
