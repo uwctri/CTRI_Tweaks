@@ -88,8 +88,8 @@ function squashRowsCheck() {
             prev_id = id;
         });
     } else {
-        $("#report_table tr.squashRowHide").show();
-        $("#report_table td.squashedPopCell").addClass('nodesig').text('');
+        //$("#report_table tr.squashRowHide").show();
+        //$("#report_table td.squashedPopCell").addClass('nodesig').text('');
     }
     reStripeRows();
 }
@@ -134,7 +134,8 @@ function placeCheckBox() {
 }
 
 $(document).ready(function () {
-    if (getParameterByName('report_id') == "ALL" || (getParameterByName('pagenum') || "ALL") != "ALL")
+    if (getParameterByName('report_id') == "ALL") // Not sure when this happens tbh
         return;
-    placeCheckBox();
+    if (getParameterByName('pagenum') == "ALL" || getParameterByName('pagenum') == "")
+        placeCheckBox(); // No pages or all pages on 1 page. Show checkboxes
 });

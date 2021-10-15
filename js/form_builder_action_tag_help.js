@@ -73,7 +73,7 @@ $(document).ready(function() {
                 </td>
                 <td class="nowrap actionTagName">@FUZZY</td>
                 <td class="actionTagInfo">
-                    Perform a fuzzy search on text entered and return possible matches in a popover. By defauly fuzzy searches on its on variable in all other records. To search on a differant variable use @FUZZY=[example] .
+                    Perform a fuzzy search on text entered and return possible matches in a popover. By default fuzzy searches on its own variable in all other records. To search on a differant variable use @FUZZY=[example] .
                 </td>
             </tr>
             <tr>
