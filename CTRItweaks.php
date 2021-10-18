@@ -11,20 +11,12 @@ function printToScreen($string) {
 }
 
 class CTRItweaks extends AbstractExternalModule {
-    
-    private $module_prefix = 'CTRI_Tweaks';
     private $module_global = 'CTRItweaks';
-    private $module_name = 'CTRItweaks';
-    
     private $js_library_fuse = "https://cdn.jsdelivr.net/npm/fuse.js@6.0.0";
-
-    public function __construct() {
-        parent::__construct();
-    }
     
     public function redcap_every_page_top($project_id) {
         $this->initCTRIglobal();
-        
+        printToScreen($this->PREFIX);
         // Custom Config page
         if (strpos(PAGE, 'ExternalModules/manager/project.php') !== false && $project_id != NULL)
             $this->includeJs('js/config.js');
@@ -32,8 +24,10 @@ class CTRItweaks extends AbstractExternalModule {
         // Every page (edits to left-side nav bar)
         if ( $this->getProjectSetting('hide-survey-tools') )
             $this->includeJs('js/all_hide_survey_distribution_tools.js');
-        if ( $this->getProjectSetting('always-all-report') )
-            $this->includeJs('js/all_reports_one_page.js');
+        if ( !$this->getProjectSetting('disable-report-tweaks') ) {
+            if ( $this->getProjectSetting('always-all-report') ) # TODO
+                $this->includeJs('js/all_reports_one_page.js');
+        }
         
         // Form Designer Page
         if (PAGE== 'Design/online_designer.php') {
@@ -115,9 +109,11 @@ class CTRItweaks extends AbstractExternalModule {
         
         // Reports Page (not the Edit Reports Page)
         if (PAGE == 'DataExport/index.php' && $project_id != NULL && !$_GET['addedit'] && $_GET['report_id']){
-            $this->includeJs('js/report_checkbox_row_col.js');
-            $this->includeJs('js/report_range_filter.js');
-            $this->includeJs('js/report_copy_visible.js');
+            if ( !$this->getProjectSetting('disable-report-tweaks') ) { # TODO
+                $this->includeJs('js/report_checkbox_row_col.js'); # TODO
+                $this->includeJs('js/report_range_filter.js'); # TODO
+                $this->includeJs('js/report_copy_visible.js'); # TODO
+            }
             $wbSettings = $this->load_report_write_back_settings();
             if ( !empty($wbSettings['config']) ) {
                 $this->passArgument('ReportWriteBack', $wbSettings);
@@ -486,7 +482,7 @@ class CTRItweaks extends AbstractExternalModule {
         unset($s['user-activate-permission']);
         unset($s['version']);
         $data = array(
-            "modulePrefix" => $this->module_prefix,
+            "modulePrefix" => $this->PREFIX,
             "systemSettings" => $s,
         );
         echo "<script>var ".$this->module_global." = ".json_encode($data).";</script>";

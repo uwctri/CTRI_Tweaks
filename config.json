@@ -41,6 +41,11 @@
             "type": "descriptive"
         },
         {
+            "key": "disable-report-tweaks",
+            "name": "Disable features to be replaced by the Report Tweaks EM",
+            "type": "checkbox"
+        },
+        {
             "key": "support-12-hour-input",
             "name": "Add 12 hour validation to time fields",
             "type": "checkbox"
