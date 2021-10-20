@@ -3,9 +3,9 @@ $(document).ready(function () {
         if ( !$(this).val() )
             return;
         let time = $(this).val().toLowerCase();
-        let isPM = time.includes('pm');
-        let isAM = time.includes('am');
-        time = time.replace(/\s/g,'').replace('am','').replace('pm','');
+        let isPM = time.includes('p');
+        let isAM = time.includes('a');
+        time = time.replace(/[\sapm]/g,'');
         if ( time.replace(':','').length > 4 )
             return;
         let [hours,mins] = time.split(':');
@@ -21,7 +21,6 @@ $(document).ready(function () {
             hours = hours.slice(0,hours.length-2);
             hours = isPM ? (parseInt(hours)+12)%24 : hours;
         }
-        console.log(mins)
         $(this).val( String(hours).padStart(2,'0')+":"+String(mins).padStart(2,'0') );
     });
 });
