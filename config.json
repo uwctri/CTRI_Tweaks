@@ -107,7 +107,7 @@
         },
         {
             "key": "cross-project-pipe",
-            "name": "<b>Cross Project Piep from:</b><br>Pipe in data from another project that shares record ids with this one.",
+            "name": "<b>Cross Project Pipe from:</b><br>Pipe in data from another project that shares record ids with this one.",
             "type": "project-id"
         },
         {
