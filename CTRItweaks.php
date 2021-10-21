@@ -24,10 +24,6 @@ class CTRItweaks extends AbstractExternalModule {
         // Every page (edits to left-side nav bar)
         if ( $this->getProjectSetting('hide-survey-tools') )
             $this->includeJs('js/all_hide_survey_distribution_tools.js');
-        if ( !$this->getProjectSetting('disable-report-tweaks') ) {
-            if ( $this->getProjectSetting('always-all-report') ) # TODO
-                $this->includeJs('js/all_reports_one_page.js');
-        }
         
         // Form Designer Page
         if (PAGE== 'Design/online_designer.php') {
@@ -109,12 +105,7 @@ class CTRItweaks extends AbstractExternalModule {
         
         // Reports Page (not the Edit Reports Page)
         if (PAGE == 'DataExport/index.php' && $project_id != NULL && !$_GET['addedit'] && $_GET['report_id']){
-            if ( !$this->getProjectSetting('disable-report-tweaks') ) { # TODO
-                $this->includeJs('js/report_checkbox_row_col.js'); # TODO
-                $this->includeJs('js/report_range_filter.js'); # TODO
-                $this->includeJs('js/report_copy_visible.js'); # TODO
-            }
-            $wbSettings = $this->load_report_write_back_settings();
+            $wbSettings = $this->load_report_write_back_settings(); # TODO Port to Report Tweaks
             if ( !empty($wbSettings['config']) ) {
                 $this->passArgument('ReportWriteBack', $wbSettings);
                 $this->includeJs('js/report_write_back.js');

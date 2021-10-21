@@ -41,11 +41,6 @@
             "type": "descriptive"
         },
         {
-            "key": "disable-report-tweaks",
-            "name": "Disable features to be replaced by the Report Tweaks EM",
-            "type": "checkbox"
-        },
-        {
             "key": "support-12-hour-input",
             "name": "Add 12 hour validation to time fields",
             "type": "checkbox"
@@ -98,11 +93,6 @@
         {
             "key": "stop-dag-rename",
             "name": "Use incremental record ID when DAGs enabled",
-            "type": "checkbox"
-        },
-        {
-            "key": "always-all-report",
-            "name": "Default report pagenation to 'ALL'",
             "type": "checkbox"
         },
         {
