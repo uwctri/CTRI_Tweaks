@@ -105,10 +105,12 @@ class CTRItweaks extends AbstractExternalModule {
         
         // Reports Page (not the Edit Reports Page)
         if (PAGE == 'DataExport/index.php' && $project_id != NULL && !$_GET['addedit'] && $_GET['report_id']){
-            $wbSettings = $this->load_report_write_back_settings(); # TODO Port to Report Tweaks
-            if ( !empty($wbSettings['config']) ) {
-                $this->passArgument('ReportWriteBack', $wbSettings);
-                $this->includeJs('js/report_write_back.js');
+            if ( !$this->getProjectSetting('disable-em') ) {
+                $wbSettings = $this->load_report_write_back_settings(); # TODO Port to Report Tweaks
+                if ( !empty($wbSettings['config']) ) {
+                    $this->passArgument('ReportWriteBack', $wbSettings);
+                    $this->includeJs('js/report_write_back.js'); // TODO delete when ported
+                }
             }
         }
         
@@ -441,7 +443,7 @@ class CTRItweaks extends AbstractExternalModule {
         return end(array_keys(REDCap::getData( $Proj->project_id, 'array', NULL, REDCap::getRecordIdField() )))+1;
     }
     
-    private function load_report_write_back_settings() {
+    private function load_report_write_back_settings() { // TODO remove
         foreach( $this->getProjectSetting('write-back-button-text') as $index => $btn) {
             $data['config'][$index]["btn"] = $btn;
             $data['config'][$index]["text"] = $this->getProjectSetting('write-back-warning-text')[$index];

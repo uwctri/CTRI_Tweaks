@@ -4,11 +4,6 @@ function toTitleCase(str) {
     });
 }
 
-function getToday() {
-    var dt = new Date();
-    return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+dt.getDate();
-}
-
 function getEventID(eventDisplayName) {
     var r = ""
     $.each( CTRItweaks.ReportWriteBack['general']['eventMap'], function(eventID, data) {
@@ -41,7 +36,7 @@ function gatherDataforPost() {
             writeValue = wb['val'];
             action = wb['radio'];
             if (wb['val'].includes('@TODAY'))
-                writeValue = getToday();
+                writeValue = today;
             if (wb['val'].includes('@ASK'))
                 writeValue = $("#"+wb['var']).val() || $("#"+wb['var']).prop('placeholder')
             if (wb['val'].includes('@INCREMENT')) {
