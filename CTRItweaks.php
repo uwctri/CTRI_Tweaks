@@ -35,7 +35,6 @@ class CTRItweaks extends AbstractExternalModule {
         // Add / Edit Records Page
         if (PAGE == 'DataEntry/record_home.php' && is_null($_GET['id'])) {
             if ( $this->getProjectSetting('stop-dag-rename') ) {
-                $this->includeCss('stop_new_record.css');
                 $this->passArgument('newRecordID', $this->getNextRecordID() );
                 $this->includeJs('js/add_edit_record_stop_dag_rename.js');
             }
@@ -45,7 +44,6 @@ class CTRItweaks extends AbstractExternalModule {
         // Record Status Dashboard
         if ( PAGE == 'DataEntry/record_status_dashboard.php' && is_null($_GET['id'])) {
             if ( $this->getProjectSetting('stop-dag-rename') ) {
-                $this->includeCss('stop_new_record.css');
                 $this->passArgument('newRecordID', $this->getNextRecordID() );
                 $this->includeJs('js/add_edit_record_stop_dag_rename.js');
             }
@@ -487,10 +485,6 @@ class CTRItweaks extends AbstractExternalModule {
     
     private function includeJs($path) {
         echo '<script src="' . $this->getUrl($path) . '"></script>';
-    }
-    
-    private function includeCss($path) {
-        echo '<link rel="stylesheet" href="' . $this->getUrl($path) . '"/>';
     }
     
     private function passArgument($name, $value) {
