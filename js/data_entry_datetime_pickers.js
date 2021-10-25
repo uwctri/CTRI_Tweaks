@@ -1,8 +1,10 @@
-$(document).ready(function () {
-    $("input[fv=time]").on('change', function() {
-        if ( !$(this).val() )
+$(document).ready(() => {
+    $('input[fv=time]').on('change', (event) => {
+        event.preventDefault();
+        let el = event.target;
+        if ( !$(el).val() )
             return;
-        let time = $(this).val().toLowerCase();
+        let time = $(el).val().toLowerCase();
         let isPM = time.includes('p');
         let isAM = time.includes('a');
         time = time.replace(/[\sapm]/g,'');
@@ -21,6 +23,6 @@ $(document).ready(function () {
             hours = hours.slice(0,hours.length-2);
             hours = isPM ? (parseInt(hours)+12)%24 : hours;
         }
-        $(this).val( String(hours).padStart(2,'0')+":"+String(mins).padStart(2,'0') );
+        $(el).val( String(hours).padStart(2,'0')+":"+String(mins).padStart(2,'0') );
     });
 });
