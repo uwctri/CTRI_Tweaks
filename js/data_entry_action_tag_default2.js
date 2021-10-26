@@ -26,9 +26,19 @@ function loadDefault2() {
             if ( [field,field+'___radio'].includes($(this).attr('name')) || $(`*[name=${field}]`).val() != "" || $(`*[name=${field}___radio]:checked`).length )
                 return;
             setTimeout( function () { // Wait for branching logic to make things visible
-                if ( !defaultValue.includes('"') ) 
+                if ( !defaultValue.includes('"') && $(`*[name=${field}___radio][value="${defaultValue}"]:visible`).length > 0 ) 
                     $(`*[name=${field}___radio][value="${defaultValue}"]:visible`).prop('checked','checked');
-                $(`*[name=${field}]:visible`).val(defaultValue);
+                else { 
+                    let fv = $(`*[name=${field}]:visible`).attr("fv")
+                    if ( fv && fv.split('_')[0] == "date" ) {
+                        fv = fv.split('_')[1];
+                        if ( fv == "mdy" )
+                            defaultValue = date_ymd2mdy(defaultValue);
+                        if ( fv == "dmy" ) 
+                            defaultValue = date_ymd2dmy(defaultValue);
+                    }
+                    $(`*[name=${field}]:visible`).val(defaultValue);
+                }
             }, 100);
         });
     });

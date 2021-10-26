@@ -1,6 +1,5 @@
 $(document).ready(() => {
     $('input[fv=time]').on('change', (event) => {
-        event.preventDefault();
         let el = event.target;
         if ( !$(el).val() )
             return;
