@@ -2,13 +2,11 @@
     "name": "CTRI Tweaks",
     "description": "Various minor project tweaks.",
     "namespace": "UWMadison\\CTRItweaks",
-    "authors": [
-        {
-            "name": "Adam Nunez",
-            "email": "Adam.Nunez@ctri.wisc.edu",
-            "institution": "UW Madison - Center for Tobacco Research and Intervention "
-        }
-    ],
+    "authors": [{
+        "name": "Adam Nunez",
+        "email": "Adam.Nunez@ctri.wisc.edu",
+        "institution": "UW Madison - Center for Tobacco Research and Intervention "
+    }],
     "permissions": [
         "redcap_every_page_top",
         "redcap_data_entry_form",
@@ -17,15 +15,12 @@
         "redcap_survey_page",
         "redcap_survey_page_top"
     ],
-    "system-settings": [
-        {
-            "key": "testing-global",
-            "name": "<b>Testing Global:</b><br>Used for Testing and Staging projects",
-            "type": "text"
-        }
-    ],
-    "project-settings": [
-        {
+    "system-settings": [{
+        "key": "testing-global",
+        "name": "<b>Testing Global:</b><br>Used for Testing and Staging projects",
+        "type": "text"
+    }],
+    "project-settings": [{
             "key": "project-home-alert",
             "name": "<b>Home page alert</b>",
             "type": "textarea"
@@ -116,157 +111,66 @@
             "type": "project-id"
         },
         {
-            "key": "write-back-from-reports-group",
-            "name": "<b>Write Back Button</b>",
-            "type": "sub_settings",
-            "repeatable":true,
-            "sub_settings":[
-                {
-                    "key": "write-back-button-text",
-                    "name": "<b>Button text</b>",
-                    "type": "text"
-                },
-                {
-                    "key": "write-back-warning-text",
-                    "name": "<b>Warning modal text:</b><br>HTML enabled",
-                    "type": "textarea"
-                },
-                {
-                    "key": "write-back-footer-text",
-                    "name": "<b>Footer modal text:</b><br>HTML enabled",
-                    "type": "textarea"
-                },
-                {
-                    "key": "write-back-variable-list",
-                    "name": "<b>Save Data to</b>",
-                    "type": "sub_settings",
-                    "repeatable":true,
-                    "sub_settings":[
-                        {
-                            "key": "write-back-to",
-                            "name": "<b>Write back to</b>",
-                            "type": "radio",
-                            "choices": [
-                                {
-                                    "value": "var",
-                                    "name": "Project Field"
-                                },
-                                {
-                                    "value": "global",
-                                    "name": "CTRI Tweaks Global"
-                                },
-                                {
-                                    "value": "both",
-                                    "name": "Both"
-                                }
-                            ]
-                        },
-                        {
-                            "key": "write-back-overwrite",
-                            "name": "<b>Overwrite:</b><br>Replace existing value if one exists",
-                            "type": "checkbox"
-                        },
-                        {
-                            "key": "write-back-event",
-                            "name": "<b>Write back target</b>",
-                            "type": "event-list"
-                        },
-                        {
-                            "key": "write-back-variable",
-                            "name": "If no event is given, the event of the row is used",
-                            "type": "field-list"
-                        },
-                        {
-                            "key": "write-back-global",
-                            "name": "<b>Write back global</b>",
-                            "type": "text"
-                        },
-                        {
-                            "key": "write-back-value",
-                            "name": "<b>Write back value:</b><ul><li>Use '@TODAY' to populate with today's date</li><li>Use '@ASK' to ask for a value with a given default</li><li>Use '@INCREMENT' to ask for a value with a given default</li></ul></label><label class='d-none'>",
-                            "type": "text"
-                        }
-                    ]
-                },
-                {
-                    "key": "write-back-report",
-                    "name": "<b>Report ID(s):</b><br>Comma seperated",
-                    "type": "text"
-                }
-            ]
-        },
-        {
             "key": "hide-form-row-list",
             "name": "<b>Forms to hide</b><br>Record Home Page",
             "type": "sub_settings",
-            "sub_settings":[
-                {
-                    "key": "hide-form-row",
-                    "name": "<b>Form</b>",
-                    "type": "form-list",
-                    "repeatable":true
-                }
-            ]
+            "sub_settings": [{
+                "key": "hide-form-row",
+                "name": "<b>Form</b>",
+                "type": "form-list",
+                "repeatable": true
+            }]
         },
         {
             "key": "hide-events-list",
             "name": "<b>Events to Hide</b><br>Record Home Page",
             "type": "sub_settings",
-            "sub_settings":[
-                {
-                    "key": "hide-events",
-                    "name": "<b>Event</b>",
-                    "type": "event-list",
-                    "repeatable":true
-                }
-            ]
+            "sub_settings": [{
+                "key": "hide-events",
+                "name": "<b>Event</b>",
+                "type": "event-list",
+                "repeatable": true
+            }]
         },
         {
             "key": "prevent-navigation-instrument-list",
             "name": "<b>Intruments to Block Navigation to</b><br>Redirect to record home",
             "type": "sub_settings",
-            "sub_settings":[
-                {
-                    "key": "stop-nav-instrument",
-                    "name": "<b>Intruments</b>",
-                    "type": "form-list",
-                    "repeatable":true
-                }
-            ]
+            "sub_settings": [{
+                "key": "stop-nav-instrument",
+                "name": "<b>Intruments</b>",
+                "type": "form-list",
+                "repeatable": true
+            }]
         },
         {
             "key": "hide-repeating-table-list",
             "name": "<b>Repeating instrument tables to hide</b><br>Record Home Page",
             "type": "sub_settings",
-            "sub_settings":[
-                {
-                    "key": "hide-repeating-table",
-                    "name": "<b>Form</b>",
-                    "type": "form-list",
-                    "repeatable":true
-                }
-            ]
+            "sub_settings": [{
+                "key": "hide-repeating-table",
+                "name": "<b>Form</b>",
+                "type": "form-list",
+                "repeatable": true
+            }]
         },
         {
             "key": "full-size-repeating-table-list",
             "name": "<b>Repeating instrument tables to show at full width</b><br>Record Home Page",
             "type": "sub_settings",
-            "sub_settings":[
-                {
-                    "key": "full-size-repeating-table",
-                    "name": "<b>Form</b>",
-                    "type": "form-list",
-                    "repeatable":true
-                }
-            ]
+            "sub_settings": [{
+                "key": "full-size-repeating-table",
+                "name": "<b>Form</b>",
+                "type": "form-list",
+                "repeatable": true
+            }]
         },
         {
             "key": "event-tabs",
             "name": "<b>Event Group Tab</b>",
             "type": "sub_settings",
-            "repeatable":true,
-            "sub_settings":[
-                {
+            "repeatable": true,
+            "sub_settings": [{
                     "key": "tab-name",
                     "name": "<b>Tab Name</b>",
                     "type": "text"
@@ -275,7 +179,7 @@
                     "key": "tab-event",
                     "name": "<b>Include Event</b>",
                     "type": "event-list",
-                    "repeatable":true
+                    "repeatable": true
                 }
             ]
         },

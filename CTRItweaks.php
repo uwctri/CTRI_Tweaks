@@ -103,13 +103,7 @@ class CTRItweaks extends AbstractExternalModule {
         
         // Reports Page (not the Edit Reports Page)
         if (PAGE == 'DataExport/index.php' && $project_id != NULL && !$_GET['addedit'] && $_GET['report_id']){
-            if ( !$this->getProjectSetting('disable-em') ) {
-                $wbSettings = $this->load_report_write_back_settings(); # TODO Port to Report Tweaks
-                if ( !empty($wbSettings['config']) ) {
-                    $this->passArgument('ReportWriteBack', $wbSettings);
-                    $this->includeJs('js/report_write_back.js'); // TODO delete when ported
-                }
-            }
+            // All moved to Reports Tweaks EM
         }
         
         // "Save and Return Later" page of a survey
@@ -439,31 +433,6 @@ class CTRItweaks extends AbstractExternalModule {
     private function getNextRecordID() {
         global $Proj;
         return end(array_keys(REDCap::getData( $Proj->project_id, 'array', NULL, REDCap::getRecordIdField() )))+1;
-    }
-    
-    private function load_report_write_back_settings() { // TODO remove
-        foreach( $this->getProjectSetting('write-back-button-text') as $index => $btn) {
-            $data['config'][$index]["btn"] = $btn;
-            $data['config'][$index]["text"] = $this->getProjectSetting('write-back-warning-text')[$index];
-            $data['config'][$index]["footer"] = $this->getProjectSetting('write-back-footer-text')[$index];
-            foreach( $this->getProjectSetting('write-back-value')[$index] as $sub_index => $val ) {
-                $data['config'][$index]["write"][$sub_index]['val'] = $val;
-                $data['config'][$index]["write"][$sub_index]['overwrite'] = $this->getProjectSetting('write-back-overwrite')[$index][$sub_index];
-                $data['config'][$index]["write"][$sub_index]['eventStatic'] = $this->getProjectSetting('write-back-event')[$index][$sub_index];
-                $data['config'][$index]["write"][$sub_index]['var'] = $this->getProjectSetting('write-back-variable')[$index][$sub_index];
-                $data['config'][$index]["write"][$sub_index]['global'] = $this->getProjectSetting('write-back-global')[$index][$sub_index];
-                $data['config'][$index]["write"][$sub_index]['radio'] = $this->getProjectSetting('write-back-to')[$index][$sub_index];
-            }
-            $data['config'][$index]["report"] = $this->getProjectSetting('write-back-report')[$index];
-            if( !isset($data['config'][$index]["btn"]) || !isset($data['config'][$index]["text"]) ||
-                !in_array($_GET["report_id"], array_map('trim',explode(',', $data['config'][$index]["report"]))) )
-                unset($data['config'][$index]);
-        }
-        $data['config'] = array_values($data['config']);
-        $data['general']['post'] = $this->getUrl('writeback.php');
-        $data['general']['eventMap'] = $this->getEventNameMap();
-        $data['general']['record_id'] = REDCap::getRecordIdField();
-        return $data;
     }
     
     private function initCTRIglobal() {
