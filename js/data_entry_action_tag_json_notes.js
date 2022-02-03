@@ -173,7 +173,10 @@ function compileNotes( field_or_jsonObject ) {
     $.each(dataSource, function(ts, info) {
         if ( ["current","historic"].includes(ts) )
             return;
-        let tmp = `${ts.slice(0,16)+ts.slice(19)} - ${info.author}: ${info.note.replace(/\^/g,'"')}\n\n`;
+        let tmp = `${info.author}: ${info.note.replace(/\^/g,'"')}\n\n`;
+        if ( !CTRItweaks.jsonNotes.noDate ) {
+            tmp = `${ts.slice(0,16)+ts.slice(19)} - ${tmp}`;
+        }
         if ( info.important )
             importantNotes = tmp + importantNotes;
         else

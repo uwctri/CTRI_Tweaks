@@ -258,7 +258,8 @@ class CTRItweaks extends AbstractExternalModule {
                     $jsonData = is_null($data) ? null : end(end($data['repeat_instances'][$_GET['event_id']]))[$field_name];
                     $jsonData = is_null($jsonData) ? $data[$_GET['event_id']][$field_name] : $jsonData;
                 }
-                $jsonNotes[$field_name] = $jsonData;
+                $jsonNotes['noDate'] = (strpos($info['misc'], '@JSONNOTES-NODATE') !== false);
+                $jsonNotes['raw'][$field_name] = $jsonData;
             }
             //@MARKALL
             if ( strpos($info['misc'], '@MARKALL') !== false && $info['grid_name'] ) {
@@ -361,7 +362,7 @@ class CTRItweaks extends AbstractExternalModule {
             }
         }
         if ( !empty($jsonNotes) ) {
-            $this->passArgument('jsonNotes', ['raw'=>$jsonNotes]);
+            $this->passArgument('jsonNotes', $jsonNotes);
             $this->includeJs('js/data_entry_action_tag_json_notes.js');
         }
         if ( !empty($markAll) ) {
