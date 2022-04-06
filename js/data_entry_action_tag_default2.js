@@ -27,7 +27,7 @@ function loadDefault2() {
                 return;
             setTimeout( function () { // Wait for branching logic to make things visible
                 if ( !defaultValue.includes('"') && $(`*[name=${field}___radio][value="${defaultValue}"]:visible`).length > 0 ) 
-                    $(`*[name=${field}___radio][value="${defaultValue}"]:visible`).prop('checked','checked');
+                    $(`*[name=${field}___radio][value="${defaultValue}"]:visible`).prop('checked','checked').click();
                 else { 
                     let fv = $(`*[name=${field}]:visible`).attr("fv")
                     if ( fv && fv.split('_')[0] == "date" ) {
