@@ -37,17 +37,12 @@
         },
         {
             "key": "disable-em",
-            "name": "Disable features being ported to another EM",
+            "name": "Disable Record Home Page features being ported to another EM",
             "type": "checkbox"
         },
         {
             "key": "support-12-hour-input",
             "name": "Add 12 hour validation to time fields",
-            "type": "checkbox"
-        },
-        {
-            "key": "align-th-top",
-            "name": "Align record home page table headers to top of cell",
             "type": "checkbox"
         },
         {
@@ -101,92 +96,9 @@
             "type": "descriptive"
         },
         {
-            "key": "system-management-event",
-            "name": "<b>Move event to seperate table:</b><br>Used for System Managment event on the Record Home Page that don't represent a visit",
-            "type": "event-list"
-        },
-        {
             "key": "cross-project-pipe",
             "name": "<b>Cross Project Pipe from:</b><br>Pipe in data from another project that shares record ids with this one.",
             "type": "project-id"
-        },
-        {
-            "key": "hide-form-row-list",
-            "name": "<b>Forms to hide</b><br>Record Home Page",
-            "type": "sub_settings",
-            "sub_settings": [{
-                "key": "hide-form-row",
-                "name": "<b>Form</b>",
-                "type": "form-list",
-                "repeatable": true
-            }]
-        },
-        {
-            "key": "hide-events-list",
-            "name": "<b>Events to Hide</b><br>Record Home Page",
-            "type": "sub_settings",
-            "sub_settings": [{
-                "key": "hide-events",
-                "name": "<b>Event</b>",
-                "type": "event-list",
-                "repeatable": true
-            }]
-        },
-        {
-            "key": "prevent-navigation-instrument-list",
-            "name": "<b>Intruments to Block Navigation to</b><br>Redirect to record home",
-            "type": "sub_settings",
-            "sub_settings": [{
-                "key": "stop-nav-instrument",
-                "name": "<b>Intruments</b>",
-                "type": "form-list",
-                "repeatable": true
-            }]
-        },
-        {
-            "key": "hide-repeating-table-list",
-            "name": "<b>Repeating instrument tables to hide</b><br>Record Home Page",
-            "type": "sub_settings",
-            "sub_settings": [{
-                "key": "hide-repeating-table",
-                "name": "<b>Form</b>",
-                "type": "form-list",
-                "repeatable": true
-            }]
-        },
-        {
-            "key": "full-size-repeating-table-list",
-            "name": "<b>Repeating instrument tables to show at full width</b><br>Record Home Page",
-            "type": "sub_settings",
-            "sub_settings": [{
-                "key": "full-size-repeating-table",
-                "name": "<b>Form</b>",
-                "type": "form-list",
-                "repeatable": true
-            }]
-        },
-        {
-            "key": "event-tabs",
-            "name": "<b>Event Group Tab</b>",
-            "type": "sub_settings",
-            "repeatable": true,
-            "sub_settings": [{
-                    "key": "tab-name",
-                    "name": "<b>Tab Name</b>",
-                    "type": "text"
-                },
-                {
-                    "key": "tab-event",
-                    "name": "<b>Include Event</b>",
-                    "type": "event-list",
-                    "repeatable": true
-                }
-            ]
-        },
-        {
-            "key": "tab-event-button",
-            "name": "<b>Hide event tabs?</b><br>Hide the above tabs by default<br>and use a button to add them, specify button text",
-            "type": "text"
         }
     ],
     "compatibility": {

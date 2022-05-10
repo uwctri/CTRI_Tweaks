@@ -52,52 +52,10 @@ class CTRItweaks extends AbstractExternalModule {
         
         // Record Home Page
         if (PAGE == 'DataEntry/record_home.php' && $_GET['id']) {
-            $this->includeJs('js/record_home_always.js');
-            if ( $this->getProjectSetting('align-th-top') ) {
-                $this->includeJs('js/record_home_top_align_th.js');
-            }
             $name = $this->getProjectSetting('unverified-name');
             if ( !is_null($name) ) {
                 $this->passArgument('UnverifiedName', $name);
                 $this->includeJs('js/record_home_change_unverified.js');
-            }
-            $event = $this->getProjectSetting('system-management-event');
-            if ( !is_null($event) ) {
-                $this->passArgument('RecordHomeEvent', REDCap::getEventNames(false,false,$event));
-                $this->includeJs('js/record_home_system_event.js');
-            }
-            $events = $this->getProjectSetting('hide-events')[0];
-            if ( !is_null($events) ) {
-                foreach( array_filter($events) as $id ) {
-                    $eventNames[] = REDCap::getEventNames(false,false,$id);
-                }
-                $this->passArgument('HideEvents', $eventNames);
-                $this->includeJs('js/record_home_hide_event.js');
-            }
-            $forms = $this->getProjectSetting('hide-form-row')[0];
-            if ( !is_null($forms[0]) ) {
-                $this->passArgument('RecordHomeForms', $forms);
-                $this->includeJs('js/record_home_hide_row.js');
-            }
-            $forms = $this->getProjectSetting('hide-repeating-table')[0];
-            if ( !is_null($forms[0]) ){
-                $this->passArgument('HideRepeatingTable', $forms);
-                $this->includeJs('js/record_home_hide_repeating_table.js');
-            }
-            $forms = $this->getProjectSetting('full-size-repeating-table')[0];
-            if ( !is_null($forms[0]) ){
-                $this->passArgument('RepeatingTableFullSize', $forms);
-                $this->includeJs('js/record_home_full_size_repeating_table.js');
-            }
-            $tabnames  = $this->getProjectSetting('tab-name');
-            $tabevents = $this->getProjectSetting('tab-event');
-            $tabbutton = $this->getProjectSetting('tab-event-button');
-            if ( !is_null($tabnames[0]) ) {
-                $tabevents = $this->mapEventIds2Names($tabevents);
-                $this->passArgument('TabConfig', array_combine($tabnames, $tabevents));
-                if ( !is_null($tabbutton) )
-                    $this->passArgument('AddTabText', $tabbutton);
-                $this->includeJs('js/record_home_sub_tabs.js');
             }
         }
         
@@ -410,15 +368,6 @@ class CTRItweaks extends AbstractExternalModule {
             }
         }
         return $out;
-    }
-    
-    private function mapEventIds2Names( $array ){
-        foreach( $array as $name => $set ) {
-            foreach( $set as $key => $event ) {
-                $array[$name][$key] = REDCap::getEventNames(false,false,$event);
-            }
-        }
-        return $array;
     }
     
     private function getEventNameMap(){
