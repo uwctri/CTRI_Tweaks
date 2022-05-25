@@ -381,8 +381,7 @@ class CTRItweaks extends AbstractExternalModule {
     }
     
     private function getNextRecordID() {
-        global $Proj;
-        return end(array_keys(REDCap::getData( $Proj->project_id, 'array', NULL, REDCap::getRecordIdField() )))+1;
+        return end(array_keys(REDCap::getData('array', NULL, REDCap::getRecordIdField() )))+1;
     }
     
     private function initCTRIglobal() {
