@@ -20,7 +20,7 @@ function loadDefault2() {
         return;
     CTRItweaks.default2Loaded = true;
     $.each(CTRItweaks.default2, function(field,defaultValue) {
-        if ( defaultValue == "" )
+        if ( isEmpty(defaultValue) )
             return;
         $(`select, input, textarea, button`).on('change', function () {
             if ( [field,field+'___radio'].includes($(this).attr('name')) || $(`*[name=${field}]`).val() != "" || $(`*[name=${field}___radio]:checked`).length )

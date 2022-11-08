@@ -1,49 +1,50 @@
-$(document).ready(function () {
-    CTRItweaks.fuzzy.html = `
-    <tr class="fuzzyRow">
-        <td style="min-width:40px;padding-right:10px">Record</td>
-        <td>Value</td>
+$(document).ready(() => {
+    const makeHtml = (form, record, event, instance, matchedValue) => `
+    <tr>
+        <td style="min-width:40px;padding-right:10px">
+            <a href="${location.pathname}?pid=${pid}&page=${form}&id=${record}&event_id=${event}&instance=${instance}">
+                ${record}
+            </a>
+        </td>
+        <td>${matchedValue}</td>
     </tr>`
-    let url = new URLSearchParams(location.search);
+    const url = new URLSearchParams(location.search);
+    const record = url.get('id');
+    const eventid = url.get('event_id');
+    const instance = url.get('instance');
     
-    $('body').on('click', function (e) {
-        // Close popovers when we click outside an input or popover
-        if ( $(e.target).closest('.popover').length == 0
-            && !$(e.target).is('input')) { 
-            $('.ctriFuzzy').popover('dispose');
-        }
-    });
+    // Apply some CSS tweaks
+    $("head").append(`<style>
+        .popover-body:has(.fuzzyPop) {
+            max-height: 240px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+    }</style>`);
     
-    $.each( CTRItweaks.fuzzy.search, function(field, data) {
+    $.each( CTRItweaks.fuzzy.search, (field, data) => {
         const fuse = new Fuse(data, {
             keys: ['value'],
             threshold: 0.2
         });
         $(`input[name=${field}]`).on('keyup change', function() {
-            let search = fuse.search($(this).val());
-            let display;
-            if (search.length == 0) {
-                display = "No similar records found";
-            } else {
-                display = search.map( function(value) {
-                    value = value.item;
-                    if ( url.get('id') == value.record && url.get('event_id') == value.event && url.get('instance') == value.instance )
-                        return '';
-                    return CTRItweaks.fuzzy.html.replace('Value', `"${value.value}"`)
-                    .replace('Record', `<a href="${location.pathname}?pid=${pid}&page=${value.instrument}&id=${value.record}&event_id=${value.event}&instance=${value.instance}">${value.record}</a>`);
+            const search = fuse.search($(this).val());
+            let display = "No similar records found";
+            if (search.length != 0) {
+                display = search.map( (el) => {
+                    el = el.item;
+                    return ( record == el.record && eventid == el.event && instance == el.instance ) ? 
+                        '' : makeHtml(el.instrument, el.record, el.event, el.instance, el.value);
                 }).join('');
-                display = `<table>${display}</table>`;
+                display = `<table class="fuzzyPop">${display}</table>`;
             }
-            if ( $(this).data("bs.popover") )
-                $(this).popover('dispose');
-            $(this).popover({
+            $(this).popover('dispose').popover({
                 title: 'Possible Matches',
                 content: display,
                 html: true,
                 sanitize: false,
                 container: 'body',
-            }).addClass('ctriFuzzy');
-            $(this).popover('show');
+                trigger: 'focus'
+            }).popover('show');
         });
     });
 });
