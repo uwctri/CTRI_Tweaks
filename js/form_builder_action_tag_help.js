@@ -1,9 +1,9 @@
 $(document).ready(function() {
     
-    const actionTagHTML = `
-    <div id="actionTagDiv">
+    const html = `
+    <div id="ctriActionTags">
         <b>CTRI Custom Action Tags:</b>
-        <table id="actionTagTable"><tbody>
+        <table><tbody>
             <tr>
                 <td class="nowrap actionTagButton">
                     <button class="btn btn-xs btn-rcred" >Add</button>
@@ -89,12 +89,12 @@ $(document).ready(function() {
     </div>
     `
     
-    const actionTagCSS = `
+    $('head').append(`
     <style>
-    #actionTagDiv {
+    #ctriActionTags {
         margin:10px 0 5px;
     }
-    #actionTagTable {
+    #ctriActionTags table {
         margin-top:1px;
         width:100%;
         border-bottom:1px solid #ccc;
@@ -129,7 +129,7 @@ $(document).ready(function() {
         border-left:0;
     }
     </style>
-    `
+    `);
     
     // Checking if field annotation is present on this page.
     if ($('#div_field_annotation').length === 0) {
@@ -137,14 +137,8 @@ $(document).ready(function() {
     }
  
     $('body').on('dialogopen', function(event, ui) {
-        let $popup = $(event.target);
-        if ($popup.prop('id') !== 'action_tag_explain_popup') {
-            // That's not the popup we are looking for...
-            return;
-        }
-        $('head').append(actionTagCSS);
-        $popup.find('div').last().before(actionTagHTML);
-        
+        if ($(event.target).prop('id') !== 'action_tag_explain_popup') return;
+        $("#action_tag_explain_popup > div").last().before(html);
         $('.actionTagButton').on('click', function(){
             $('#field_annotation').val(trim($(this).next().text()+' '+$('#field_annotation').val())); 
             highlightTableRowOb($(this).parent(),2500);
