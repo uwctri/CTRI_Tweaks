@@ -42,11 +42,6 @@
             "type": "descriptive"
         },
         {
-            "key": "disable-em",
-            "name": "Disable Record Home Page features being ported to another EM",
-            "type": "checkbox"
-        },
-        {
             "key": "support-12-hour-input",
             "name": "Add 12 hour validation to time fields",
             "type": "checkbox"
