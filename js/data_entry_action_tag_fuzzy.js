@@ -12,7 +12,7 @@ $(document).ready(() => {
     const record = url.get('id');
     const eventid = url.get('event_id');
     const instance = url.get('instance');
-    
+
     // Apply some CSS tweaks
     $("head").append(`<style>
         .popover-body:has(.fuzzyPop) {
@@ -20,19 +20,19 @@ $(document).ready(() => {
             overflow-y: auto;
             scrollbar-width: thin;
     }</style>`);
-    
-    $.each( CTRItweaks.fuzzy.search, (field, data) => {
+
+    $.each(CTRItweaks.fuzzy.search, (field, data) => {
         const fuse = new Fuse(data, {
             keys: ['value'],
             threshold: 0.2
         });
-        $(`input[name=${field}]`).on('keyup change', function() {
+        $(`input[name=${field}]`).on('keyup change', function () {
             const search = fuse.search($(this).val());
             let display = "No similar records found";
             if (search.length != 0) {
-                display = search.map( (el) => {
+                display = search.map((el) => {
                     el = el.item;
-                    return ( record == el.record && eventid == el.event && instance == el.instance ) ? 
+                    return (record == el.record && eventid == el.event && instance == el.instance) ?
                         '' : makeHtml(el.instrument, el.record, el.event, el.instance, el.value);
                 }).join('');
                 display = `<table class="fuzzyPop">${display}</table>`;

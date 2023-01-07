@@ -1,5 +1,5 @@
-$(document).ready(function() {
-    
+$(document).ready(function () {
+
     const html = `
     <div id="ctriActionTags">
         <b>CTRI Custom Action Tags:</b>
@@ -88,7 +88,7 @@ $(document).ready(function() {
         </tbody></table>
     </div>
     `
-    
+
     $('head').append(`
     <style>
     #ctriActionTags {
@@ -130,18 +130,18 @@ $(document).ready(function() {
     }
     </style>
     `);
-    
+
     // Checking if field annotation is present on this page.
     if ($('#div_field_annotation').length === 0) {
         return;
     }
- 
-    $('body').on('dialogopen', function(event, ui) {
+
+    $('body').on('dialogopen', function (event, ui) {
         if ($(event.target).prop('id') !== 'action_tag_explain_popup') return;
         $("#action_tag_explain_popup > div").last().before(html);
-        $('.actionTagButton').on('click', function(){
-            $('#field_annotation').val(trim($(this).next().text()+' '+$('#field_annotation').val())); 
-            highlightTableRowOb($(this).parent(),2500);
+        $('.actionTagButton').on('click', function () {
+            $('#field_annotation').val(trim($(this).next().text() + ' ' + $('#field_annotation').val()));
+            highlightTableRowOb($(this).parent(), 2500);
         });
     });
 });

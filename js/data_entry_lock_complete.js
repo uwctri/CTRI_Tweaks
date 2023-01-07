@@ -1,7 +1,7 @@
 $(document).ready(function () {
-    if ( $("select[name$='_complete']").val()==="2" ) {
-        if ( !super_user )
-            $("#questiontable").css("pointer-events","none");
+    if ($("select[name$='_complete']").val() === "2") {
+        if (!super_user)
+            $("#questiontable").css("pointer-events", "none");
         $("#questiontable").before(`
         <div class="alert alert-danger" id="alertLockMsg" style="text-align:center" role="alert">
             <i class="fas fa-lock"></i>&nbsp;This record is marked as complete, verify that this is the correct record and instrument before making changes.
@@ -10,8 +10,8 @@ $(document).ready(function () {
                 <i class="fas fa-lock-open"></i>&nbsp;<b>Click here to unlock</b>
             </a>
         </div>`)
-        $("#alertUnlock").on("click",function() {
-            $("#questiontable").css("pointer-events","");
+        $("#alertUnlock").on("click", function () {
+            $("#questiontable").css("pointer-events", "");
             $("#alertLockMsg").remove();
         });
     }

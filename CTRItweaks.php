@@ -137,6 +137,7 @@ class CTRItweaks extends AbstractExternalModule
     {
         global $Proj;
         $fields = REDCap::getFieldNames($instrument);
+        $targetPid = $this->getProjectSetting('cross-project-pipe');
         foreach ($fields as $field_name) {
             $info = $Proj->metadata[$field_name];
             //@LABEL="[foo]"
@@ -146,45 +147,48 @@ class CTRItweaks extends AbstractExternalModule
                     $Proj->metadata[$field_name]['element_label'] = $Proj->metadata[$target]['element_label'];
             }
             //@CROSSPP
-            $targetPid = $this->getProjectSetting('cross-project-pipe');
             if (strpos($info['misc'], '@CROSSPP') !== false && !empty($targetPid)) {
-                $label = $Proj->metadata[$field_name]['element_label'];
-                $count = preg_match_all('/!!(\[[A-Za-z1-9-_]+\]){1,3}/', $label, $match);
-                if ($count > 0) {
-
-                    foreach ($match[0] as $pipeInstance) {
-                        $tmp = substr($pipeInstance, 3, strlen($pipeInstance) - 4);
-                        $tmp = explode('][', $tmp);
-                        $event = null;
-                        $instance = null;
-                        $record = $_GET['id'];
-                        if (count($tmp) == 1) {
-                            // Only a field, first event on non-long
-                            $field = $tmp[0];
-                        } elseif (count($tmp) == 2) {
-                            // Event and field
-                            $event = $tmp[0];
-                            $field = $tmp[1];
-                        } else {
-                            // Repeating instrument
-                            $event = $tmp[0];
-                            $field = $tmp[1];
-                            $instance = $tmp[2];
-                        }
-                        if ($event) {
-                            // Lookup event id with the event name and skirt Redcap's rules
-                            $event = $this->getEventIdFromName($targetPid, $event);
-                        }
-                        $data = REDCap::getData($targetPid, 'array', $record, $field, $event);
-                        $data = end(end($data[$record]));
-                        $data = $instance ? $data[$instance] : $data;
-                        $data = is_array($data) ? json_encode($data) : $data;
-                        $data = is_bool($data) ? '' : $data;
-                        $label = $Proj->metadata[$field_name]['element_label'];
-                        $Proj->metadata[$field_name]['element_label'] = str_replace($pipeInstance, $data, $label);
-                    }
-                }
+                $this->pipeCrossPP($field_name, $targetPid);
             }
+        }
+    }
+
+    private function pipeCrossPP($field, $targetPid)
+    {
+        global $Proj;
+        $label = $Proj->metadata[$field]['element_label'];
+        $count = preg_match_all('/!!(\[[A-Za-z1-9-_]+\]){1,3}/', $label, $match);
+        if (empty($count)) return;
+        foreach ($match[0] as $pipeInstance) {
+            $tmp = substr($pipeInstance, 3, strlen($pipeInstance) - 4);
+            $tmp = explode('][', $tmp);
+            $event = null;
+            $instance = null;
+            $record = $_GET['id'];
+            if (count($tmp) == 1) {
+                // Only a field, first event on non-long
+                $field = $tmp[0];
+            } elseif (count($tmp) == 2) {
+                // Event and field
+                $event = $tmp[0];
+                $field = $tmp[1];
+            } else {
+                // Repeating instrument
+                $event = $tmp[0];
+                $field = $tmp[1];
+                $instance = $tmp[2];
+            }
+            if ($event) {
+                // Lookup event id with the event name and skirt Redcap's rules
+                $event = $this->getEventIdFromName($targetPid, $event);
+            }
+            $data = REDCap::getData($targetPid, 'array', $record, $field, $event);
+            $data = end(end($data[$record]));
+            $data = $instance ? $data[$instance] : $data;
+            $data = is_array($data) ? json_encode($data) : $data;
+            $data = is_bool($data) ? '' : $data;
+            $label = $Proj->metadata[$field]['element_label'];
+            $Proj->metadata[$field]['element_label'] = str_replace($pipeInstance, $data, $label);
         }
     }
 
@@ -359,14 +363,14 @@ class CTRItweaks extends AbstractExternalModule
         $eventName = explode('_arm_', $eventName)[0];
         $results = db_query($sql);
         $out = false;
-        if ($results && $results !== false && db_num_rows($results)) {
-            while ($row = db_fetch_assoc($results)) {
-                $tmp = strtolower($row['descrip']);
-                $tmp = preg_replace('/[^a-z\d\s:]*/', '', $tmp);
-                $tmp = str_replace(' ', '_', $tmp);
-                if ($tmp == $eventName) {
-                    $out = $row['event_id'];
-                }
+        if (!$results || !db_num_rows($results))
+            return $out;
+        while ($row = db_fetch_assoc($results)) {
+            $tmp = strtolower($row['descrip']);
+            $tmp = preg_replace('/[^a-z\d\s:]*/', '', $tmp);
+            $tmp = str_replace(' ', '_', $tmp);
+            if ($tmp == $eventName) {
+                $out = $row['event_id'];
             }
         }
         return $out;
@@ -379,14 +383,8 @@ class CTRItweaks extends AbstractExternalModule
 
     private function initCTRIglobal()
     {
-        $s = $this->getSystemSettings();
-        unset($s['enabled']);
-        unset($s['discoverable-in-project']);
-        unset($s['user-activate-permission']);
-        unset($s['version']);
         $data = array(
-            "modulePrefix" => $this->PREFIX,
-            "systemSettings" => $s,
+            "prefix" => $this->getPrefix()
         );
         echo "<script>var " . $this->module_global . " = " . json_encode($data) . ";</script>";
     }

@@ -1,16 +1,17 @@
 $(document).ready(() => {
     console.log("Loaded CTRI tweaks config")
     let $modal = $('#external-modules-configure-modal');
+    let prefix = CTRItweaks.prefix;
     $modal.on('show.bs.modal', function () {
         // Making sure we are overriding this modules's modal only.
-        if ($(this).data('module') !== CTRItweaks.modulePrefix) return;
+        if ($(this).data('module') !== prefix) return;
 
         if (typeof ExternalModules.Settings.prototype.resetConfigInstancesOld === 'undefined')
             ExternalModules.Settings.prototype.resetConfigInstancesOld = ExternalModules.Settings.prototype.resetConfigInstances;
 
         ExternalModules.Settings.prototype.resetConfigInstances = function () {
             ExternalModules.Settings.prototype.resetConfigInstancesOld();
-            if ($modal.data('module') !== CTRItweaks.modulePrefix) return;
+            if ($modal.data('module') !== prefix) return;
 
             // Pretty up the form a bit
             $modal.find('thead').remove();
@@ -25,7 +26,7 @@ $(document).ready(() => {
 
     $modal.on('hide.bs.modal', function () {
         // Making sure we are overriding this modules's modal only.
-        if ($(this).data('module') !== CTRItweaks.modulePrefix) return;
+        if ($(this).data('module') !== prefix) return;
 
         if (typeof ExternalModules.Settings.prototype.resetConfigInstancesOld !== 'undefined')
             ExternalModules.Settings.prototype.resetConfigInstances = ExternalModules.Settings.prototype.resetConfigInstancesOld;
