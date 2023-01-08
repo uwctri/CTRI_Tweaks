@@ -18,13 +18,6 @@
         "redcap_survey_page_top"
     ],
     "framework-version": 11,
-    "system-settings": [
-        {
-            "key": "testing-global",
-            "name": "<b>Testing Global:</b><br>Used for Testing and Staging projects",
-            "type": "text"
-        }
-    ],
     "project-settings": [
         {
             "key": "project-home-alert",
