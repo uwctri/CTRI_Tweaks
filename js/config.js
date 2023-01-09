@@ -21,6 +21,20 @@ $(document).ready(() => {
             $("tr:contains(tableStart)").remove();
             $("tr:contains(tableEnd)").css('height', (45 * rowCount) + 'px');
             $("tr:contains(tableEnd)").html('');
+
+            // Insert a button to deploy Payemnts form
+            $("[field=deploy-payment] label").after('<button class="setupPayments" style="float:right">Deploy Payment Instrument</button>')
+            $(".setupPayments").on("click", () => {
+                $(".setupPayments").attr("disabled", true);
+                CTRItweaks.ajax("deploy_payment", {}).then((response) => {
+                    location.reload();
+                }).catch((err) => {
+                    console.log(err)
+                });
+            });
+
+            // We can only do this because there are no repeating options
+            $(".external-modules-instance-label").remove();
         };
     });
 
@@ -31,4 +45,5 @@ $(document).ready(() => {
         if (typeof ExternalModules.Settings.prototype.resetConfigInstancesOld !== 'undefined')
             ExternalModules.Settings.prototype.resetConfigInstances = ExternalModules.Settings.prototype.resetConfigInstancesOld;
     });
+
 });

@@ -17,6 +17,9 @@
         "redcap_survey_page",
         "redcap_survey_page_top"
     ],
+    "auth-ajax-actions": [
+        "deploy_payment"
+    ],
     "framework-version": 11,
     "project-settings": [
         {
@@ -93,6 +96,49 @@
             "key": "cross-project-pipe",
             "name": "<b>Cross Project Pipe from:</b><br>Pipe in data from another project that shares record ids with this one.",
             "type": "project-id"
+        },
+        {
+            "key": "payment-header",
+            "name": "<b>Payment Settings</b>",
+            "type": "sub_settings",
+            "repeatable": false,
+            "sub_settings": [
+                {
+                    "key": "deploy-payment",
+                    "name": "Basic infromation for the check is assumed to exist with names <b>name/full_name/display_name, street/address (1,2), city, state, zip</b>",
+                    "type": "descriptive"
+                },
+                {
+                    "key": "study-name",
+                    "name": "<b>Study Name</b>",
+                    "type": "text"
+                },
+                {
+                    "key": "signature",
+                    "name": "<b>Signature</b>",
+                    "type": "radio",
+                    "choices": [
+                        {
+                            "value": "kate",
+                            "name": "Kate Kobinsky"
+                        },
+                        {
+                            "value": "holly",
+                            "name": "Holly Prince"
+                        }
+                    ]
+                },
+                {
+                    "key": "check-print-report",
+                    "name": "<b>Bulk Print Report(s)</b><br>Report ID. Record ID, check memo, and ammount should be included on the report",
+                    "type": "text"
+                },
+                {
+                    "key": "check-number",
+                    "name": "<b>Check Number Seed</b><br>Check number to start at for this report. For multi-project check numbers leave blank and use system settings",
+                    "type": "text"
+                }
+            ]
         }
     ],
     "compatibility": {

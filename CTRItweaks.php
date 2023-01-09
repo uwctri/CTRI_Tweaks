@@ -5,6 +5,9 @@ namespace UWMadison\CTRItweaks;
 use ExternalModules\AbstractExternalModule;
 use REDCap;
 use UIState;
+use Design;
+use MetaData;
+use Project;
 
 class CTRItweaks extends AbstractExternalModule
 {
@@ -12,7 +15,7 @@ class CTRItweaks extends AbstractExternalModule
 
     public function redcap_every_page_top($project_id)
     {
-        $this->initCTRIglobal();
+        $this->initModule();
         $record = $_GET['id'];
         $instrument = $_GET['page'];
 
@@ -122,6 +125,46 @@ class CTRItweaks extends AbstractExternalModule
     public function redcap_survey_page_top($project_id, $record, $instrument, $event_id)
     {
         $this->beforeLoadActionTags($instrument);
+    }
+
+    public function redcap_module_ajax($action, $payload, $project_id)
+    {
+        if ($action == "deploy_payment") {
+            $this->deployPaymentInstrument($project_id);
+            return true;
+        }
+    }
+
+    private function deployPaymentInstrument($project_id)
+    {
+        // Check if deployed
+        $instruments = array_keys(REDCap::getInstrumentNames(null, $project_id));
+        if (in_array("payment", $instruments)) return;
+
+        // Prep to correct the dd
+        global $Proj;
+        $Proj = new Project($project_id);
+        $dd = Design::excel_to_array($this->getUrl("payment.csv"), ",");
+        db_query("SET AUTOCOMMIT=0");
+        db_query("BEGIN");
+
+        //Create a data dictionary snapshot of the *current* metadata and store the file in the edocs table
+        // This is why we need to define a Project above
+        MetaData::createDataDictionarySnapshot();
+
+        // Update the dd
+        $sql_errors = MetaData::save_metadata($dd, true);
+        if (count($sql_errors) > 0) {
+            // ERRORS OCCURRED, so undo any changes made
+            db_query("ROLLBACK");
+            // Set back to previous value
+            db_query("SET AUTOCOMMIT=1");
+        } else {
+            // COMMIT CHANGES
+            db_query("COMMIT");
+            // Set back to previous value
+            db_query("SET AUTOCOMMIT=1");
+        }
     }
 
     private function setUIstate($project_id)
@@ -381,12 +424,11 @@ class CTRItweaks extends AbstractExternalModule
         return end(array_keys(REDCap::getData('array', NULL, REDCap::getRecordIdField()))) + 1;
     }
 
-    private function initCTRIglobal()
+    private function initModule()
     {
-        $data = array(
-            "prefix" => $this->getPrefix()
-        );
-        echo "<script>var " . $this->module_global . " = " . json_encode($data) . ";</script>";
+        $this->initializeJavascriptModuleObject();
+        echo "<script>var " . $this->module_global . " = " . json_encode(["prefix" => $this->getPrefix()]) . ";</script>";
+        echo "<script>" . $this->module_global . ".ajax = " . $this->getJavascriptModuleObjectName() . ".ajax;</script>";
     }
 
     private function includeJs($path)

@@ -1,0 +1,32 @@
+Variable / Field Name,Form Name,Section Header,Field Type,Field Label,"Choices, Calculations, OR Slider Labels",Field Note,Text Validation Type OR Show Slider Number,Text Validation Min,Text Validation Max,Identifier?,Branching Logic (Show field only if...),Required Field?,Custom Alignment,Question Number (surveys only),Matrix Group Name,Matrix Ranking?,Field Annotation
+bg_payment_date,payment,,text,,,,date_mdy,,,,,,,,,, @HIDDEN @TODAY
+bg_payment_time,payment,,text,,,,time,,,,,,,,,, @HIDDEN @NOW
+bg_payment_user,payment,,text,,,,,,,,,,,,,, @HIDDEN @USERNAME
+check_system_generated,payment,,text,System Generated Flag,,,,,,,,,,,,, @HIDDEN
+check_printed,payment,,text,Check Printed Flag,,,,,,,,,,,,, @HIDDEN
+payments_header,payment,,descriptive,"<div class = ""formHeader"">Payments </div>",,,,,,,,,,,,,
+hdr_user_det_payment,payment,,descriptive,,,,,,,,,,,,,, @LABEL=[hdr_user_det_demo]
+payments_issue_header,payment,,descriptive,"<div class = ""formSxnHeader""> Issue a Check </div>",,,,,,,,,,,,,
+check_warning,payment,,descriptive,"<div class=""alert alert-danger"" role=""alert"">This form is tracking historical information for a voided check. It should not be altered unless information for that check was entered incorrectly. To issue a new check please start a new version of this form.</div>",,,,,,,"[check_void(1)]=""1""",,,,,,
+check_opt_out,payment,,descriptive,"<div class=""alert alert-danger mb-0"">The Subject has indicated that they do not wish to receive any compensation for this study.</div>",,,,,,,"[payment_withhold(1)] = ""1""",,,,,,
+check_system_info,payment,,descriptive,"<div class=""alert alert-warning mb-0"" style=""border-color:#aaaaaa!important"">This check was system generated. To print this check the ""Print Checks"" report should be used.</div>",,,,,,,"[check_system_generated]=""1""",,,,,,
+check_system_printed,payment,,descriptive,"<div class=""alert alert-success mb-0"" style=""border-color:#228B22	!important"">This check has been printed as apart of a bulk print process.</div>",,,,,,,"[check_printed]=""1""",,,,,,
+check_visit,payment,,dropdown,Payout for Visit(s):,"b, Baseline | m6, 06 month Semi-Annual Follow-Up | m12, 12 month Semi-Annual Follow-Up | co1, CO Visit 1 | m18, 18 month Semi-Annual Follow-Up | co2, CO Visit 2 | ad, Adhoc",,,,,,,y,,,,,
+check_date,payment,,text,Date Check Issued:,,,date_mdy,,,,,,,,,,
+check_attend_info,payment,,descriptive,"<div class=""alert alert-warning"" style=""border-color:#856404!important;""><div class=""container row""><div class=""col-1""><i class=""fas fa-exclamation-triangle h4 mt-1""></i></div><div class=""col-11"">The current visit isn't marked as ""Attended"" on the ""Visit Check Out"" form.
+You may need to increase the Check Amount manually to correct for this.</div>
+</div></div>",,,,,,,"if([check_visit]=""1"", [call_1_arm_1][appt_outcome]!=""1"", 
+if([check_visit]=""2"", [visit_2_arm_1][appt_outcome]!=""1"", 
+if([check_visit]=""3"", [visit_3_arm_1][appt_outcome]!=""1"", 
+if([check_visit]=""4"", [call_5_arm_1][appt_outcome]!=""1"", false ))))",,,,,,
+check_amt,payment,,text,Check Amount:,,,number_2dp,0,200,,,,,,,,
+check_number,payment,,text,Check Number:,,,,,,,,,,,,,
+check_activity,payment,,text,List activity check covers:,,"The ""memo"" on the issued check",,,,,,,,,,," @DEFAULT=""New Research Study"""
+check_individual_print,payment,,yesno,Check Printed,,,,,,,"[check_printed] != ""1""",,,,,,
+shazam_payments,payment,,descriptive,,,,,,,,,,,,,,
+payments_addition_header,payment,,descriptive,"<div class = ""formSxnHeader""> Additional Information </div>",,,,,,,,,,,,,
+check_void,payment,,checkbox,Void Check,"1,",,,,,,,,,,,,
+pipe_check_void,payment,,text,Check Void Text,,Used on Record Home Page,,,,,,,,,,, @HIDDEN
+check_void_date,payment,,text,Void Date:,,,date_mdy,,,,"[check_void(1)]=""1""",,,,,,
+check_notes,payment,,notes,Notes:,,,,,,,,,,,,,
+end_payments_header,payment,,descriptive,"<h1 style = ""background-color:#675186; color:#FBE5D6""><center> End Of Assessment</center></h1>",,,,,,,,,,,,,
