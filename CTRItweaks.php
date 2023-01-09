@@ -12,12 +12,17 @@ use Project;
 class CTRItweaks extends AbstractExternalModule
 {
     private $module_global = 'CTRItweaks';
+    private $signatures = [
+        'kate' => 'js/signature_kate_kobinsky.js',
+        'holly' => 'js/signature_holly_prince.js'
+    ];
 
     public function redcap_every_page_top($project_id)
     {
         $this->initModule();
         $record = $_GET['id'];
         $instrument = $_GET['page'];
+        $report_id = $_GET['report_id'];
 
         // Custom Config page
         if ($this->isPage('ExternalModules/manager/project.php') && $project_id)
@@ -61,6 +66,15 @@ class CTRItweaks extends AbstractExternalModule
             }
         }
 
+        if (($this->isPage('DataExport/index.php') && $project_id && $report_id && !$_GET['addedit'] && !$_GET['stats_charts'])) {
+            $this->passArgument('eventMap', array_flip(REDCap::getEventNames(false)));
+            $this->includeJs('js/lib/pdfmake.min.js');
+            $this->includeJs('js/lib/vfs_fonts.js');
+            // $this->loadPaymentConfig($project_id, null); TODO
+            $this->includeJs('js/payment_common.js');
+            // $this->includeJs('js/payment_report.js');
+        }
+
         // "Save and Return Later" page of a survey
         if ($_GET['__return'] != NULL) {
             if ($this->getProjectSetting('hide-send-survey-link'))
@@ -86,6 +100,15 @@ class CTRItweaks extends AbstractExternalModule
             $arm = $_GET['arm'] ? $_GET['arm'] : '1';
             header("Location: https://" . $_SERVER['HTTP_HOST'] . "/redcap/redcap_v" . REDCAP_VERSION . "/DataEntry/record_home.php?pid=" . $project_id . "&arm=" . $arm . "&id=" . $record);
             return;
+        }
+
+        // Payment load
+        if ($instrument == "payment") {
+            $this->includeJs('js/lib/pdfmake.min.js');
+            $this->includeJs('js/lib/vfs_fonts.js');
+            // $this->loadPaymentConfig($record); TODO
+            $this->includeJs('js/payment_common.js');
+            // $this->includeJs('js/payment_form.js');
         }
 
         $this->afterLoadActionTags($instrument);
@@ -133,6 +156,51 @@ class CTRItweaks extends AbstractExternalModule
             $this->deployPaymentInstrument($project_id);
             return true;
         }
+    }
+
+    // TODO broken function
+    private function loadPaymentConfig($project_id, $record)
+    {
+        $dataConfig = [
+            'name' => $this->getProjectSetting('name-field'),
+            'street1' => $this->getProjectSetting('street1-field'),
+            'street2' => $this->getProjectSetting('street2-field'),
+            'city' => $this->getProjectSetting('city-field'),
+            'state' => $this->getProjectSetting('state-field'),
+            'zip' => $this->getProjectSetting('zip-field'),
+            'record' => REDCap::getRecordIdField()
+        ];
+        $data = REDCap::getData($project_id, 'array', $record, array_values($dataConfig));
+        foreach ($data as $recordID => $recordData) {
+            foreach ($recordData as $eventID => $eventData) {
+                if ($eventID == 'repeat_instances')
+                    continue;
+                foreach ($eventData as $var => $val) {
+                    if ($val == '')
+                        continue;
+                    $generalData[$recordID][array_search($var, $dataConfig)] = $val;
+                }
+            }
+        }
+        if ($record)
+            $generalData = $generalData[$record];
+        $this->passArgument('data', $generalData);
+        foreach ($this->getProjectSetting('print-field') as $index => $printButton) {
+            $config[$printButton]['amount'] = $this->getProjectSetting('amount-field')[$index];
+            $config[$printButton]['memo'] = $this->getProjectSetting('memo-field')[$index];
+            $config[$printButton]['logo'] = $this->getProjectSetting('show-logo')[$index] == '1';
+            $config[$printButton]['oneLine'] = $this->getProjectSetting('address-format')[$index] == true;
+            $config[$printButton]['report'] = $this->getProjectSetting('check-print-report')[$index];
+            $config[$printButton]['localCheckSeed'] = $this->getProjectSetting('local-check-number')[$index];
+            if (empty($record)) {
+                $config[$printButton]['printed'] = $this->getProjectSetting('printed-field')[$index];
+                $config[$printButton]['date'] = $this->getProjectSetting('date-field')[$index];
+                $config[$printButton]['checkNumber'] = $this->getProjectSetting('check-number-field')[$index];
+            }
+        }
+        $this->passArgument('config', $config);
+        $this->passArgument('study', $this->getProjectSetting('study-name'));
+        $this->includeJs($this->signatures[$this->getProjectSetting('signature')]);
     }
 
     private function deployPaymentInstrument($project_id)
@@ -394,7 +462,7 @@ class CTRItweaks extends AbstractExternalModule
         }
         if (!empty($fuzzy)) {
             $this->passArgument('fuzzy', $fuzzy);
-            $this->includeJs('js/fuse.min.js');
+            $this->includeJs('js/lib/fuse.min.js');
             $this->includeJs('js/data_entry_action_tag_fuzzy.js');
         }
     }
