@@ -109,7 +109,7 @@ class CTRItweaks extends AbstractExternalModule
             $this->includeJs('js/lib/vfs_fonts.js');
             $this->loadPaymentConfig($record);
             $this->includeJs('js/payment_common.js');
-            // $this->includeJs('js/payment_form.js'); TODO
+            $this->includeJs('js/payment_form.js');
         }
 
         $this->afterLoadActionTags($instrument);
@@ -198,7 +198,10 @@ class CTRItweaks extends AbstractExternalModule
         }
         $this->passArgument('logo', $this->getProjectSetting('show-logo') == '1');
         $this->passArgument('study', $this->getProjectSetting('study-name'));
-        $this->includeJs($this->signatures[$this->getProjectSetting('signature')]);
+        $sig = $this->getProjectSetting('signature');
+        if ($sig) {
+            $this->includeJs($this->signatures[$sig]);
+        }
     }
 
     private function deployPaymentInstrument($project_id)

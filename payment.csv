@@ -23,7 +23,7 @@ check_amt,payment,,text,Check Amount:,,,number_2dp,0,200,,,,,,,,
 check_number,payment,,text,Check Number:,,,,,,,,,,,,,
 check_activity,payment,,text,List activity check covers:,,"The ""memo"" on the issued check",,,,,,,,,,," @DEFAULT=""New Research Study"""
 check_individual_print,payment,,yesno,Check Printed,,,,,,,"[check_printed] != ""1""",,,,,,
-shazam_payments,payment,,descriptive,,,,,,,,,,,,,,
+payments_print_btn,payment,,descriptive,"<button type=""button"" class=""btn btn-success printCheckButton"">Print Check</button>",,,,,,,,,,,,,
 payments_addition_header,payment,,descriptive,"<div class = ""formSxnHeader""> Additional Information </div>",,,,,,,,,,,,,
 check_void,payment,,checkbox,Void Check,"1,",,,,,,,,,,,,
 pipe_check_void,payment,,text,Check Void Text,,Used on Record Home Page,,,,,,,,,,, @HIDDEN
