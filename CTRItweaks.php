@@ -66,13 +66,14 @@ class CTRItweaks extends AbstractExternalModule
             }
         }
 
+        // View Report Page
         if (($this->isPage('DataExport/index.php') && $project_id && $report_id && !$_GET['addedit'] && !$_GET['stats_charts'])) {
             $this->passArgument('eventMap', array_flip(REDCap::getEventNames(false)));
             $this->includeJs('js/lib/pdfmake.min.js');
             $this->includeJs('js/lib/vfs_fonts.js');
-            // $this->loadPaymentConfig($project_id, null); TODO
+            $this->loadPaymentConfig(null, $report_id);
             $this->includeJs('js/payment_common.js');
-            // $this->includeJs('js/payment_report.js');
+            // $this->includeJs('js/payment_report.js'); TODO
         }
 
         // "Save and Return Later" page of a survey
@@ -106,9 +107,9 @@ class CTRItweaks extends AbstractExternalModule
         if ($instrument == "payment") {
             $this->includeJs('js/lib/pdfmake.min.js');
             $this->includeJs('js/lib/vfs_fonts.js');
-            // $this->loadPaymentConfig($record); TODO
+            $this->loadPaymentConfig($record);
             $this->includeJs('js/payment_common.js');
-            // $this->includeJs('js/payment_form.js');
+            // $this->includeJs('js/payment_form.js'); TODO
         }
 
         $this->afterLoadActionTags($instrument);
@@ -158,47 +159,44 @@ class CTRItweaks extends AbstractExternalModule
         }
     }
 
-    // TODO broken function
-    private function loadPaymentConfig($project_id, $record)
+    private function loadPaymentConfig($record, $report = null)
     {
+        $generalData = [];
         $dataConfig = [
-            'name' => $this->getProjectSetting('name-field'),
-            'street1' => $this->getProjectSetting('street1-field'),
-            'street2' => $this->getProjectSetting('street2-field'),
-            'city' => $this->getProjectSetting('city-field'),
-            'state' => $this->getProjectSetting('state-field'),
-            'zip' => $this->getProjectSetting('zip-field'),
-            'record' => REDCap::getRecordIdField()
+            'name' => ['name', 'display_name', 'full_name', 'fullname'],
+            'street1' => ['street1', 'address1', 'street', 'address'],
+            'street2' => ['street2', 'address2'],
+            'city' => ['city'],
+            'state' => ['state'],
+            'zip' => ['zip'],
+            'record' => [REDCap::getRecordIdField()]
         ];
-        $data = REDCap::getData($project_id, 'array', $record, array_values($dataConfig));
-        foreach ($data as $recordID => $recordData) {
-            foreach ($recordData as $eventID => $eventData) {
-                if ($eventID == 'repeat_instances')
-                    continue;
-                foreach ($eventData as $var => $val) {
-                    if ($val == '')
-                        continue;
-                    $generalData[$recordID][array_search($var, $dataConfig)] = $val;
+        $data = REDCap::getData('array', $record, array_merge(...array_values($dataConfig)));
+        foreach ($data as $record_id => $record_data) {
+            foreach ($record_data as $event_id => $event_data) {
+                if ($event_id == 'repeat_instances') continue;
+                foreach ($event_data as $field => $val) {
+                    if ($val == '') continue;
+                    foreach ($dataConfig as $alias => $possibleField) {
+                        if (in_array($field, $possibleField)) {
+                            $generalData[$record_id][$alias] = $val;
+                            break;
+                        }
+                    }
                 }
             }
         }
-        if ($record)
-            $generalData = $generalData[$record];
-        $this->passArgument('data', $generalData);
-        foreach ($this->getProjectSetting('print-field') as $index => $printButton) {
-            $config[$printButton]['amount'] = $this->getProjectSetting('amount-field')[$index];
-            $config[$printButton]['memo'] = $this->getProjectSetting('memo-field')[$index];
-            $config[$printButton]['logo'] = $this->getProjectSetting('show-logo')[$index] == '1';
-            $config[$printButton]['oneLine'] = $this->getProjectSetting('address-format')[$index] == true;
-            $config[$printButton]['report'] = $this->getProjectSetting('check-print-report')[$index];
-            $config[$printButton]['localCheckSeed'] = $this->getProjectSetting('local-check-number')[$index];
-            if (empty($record)) {
-                $config[$printButton]['printed'] = $this->getProjectSetting('printed-field')[$index];
-                $config[$printButton]['date'] = $this->getProjectSetting('date-field')[$index];
-                $config[$printButton]['checkNumber'] = $this->getProjectSetting('check-number-field')[$index];
-            }
+        $generalData = empty($record) ? $generalData : $generalData[$record];
+        $this->passArgument('paymentData', $generalData);
+
+        // Static settings
+        if ($report) {
+            $reports = explode(',', $this->getProjectSetting('check-report'));
+            $index = array_search($report, $reports);
+            $seed = explode(',', $this->getProjectSetting('check-number'))[$index];
+            $this->passArgument('seed', $seed);
         }
-        $this->passArgument('config', $config);
+        $this->passArgument('logo', $this->getProjectSetting('show-logo') == '1');
         $this->passArgument('study', $this->getProjectSetting('study-name'));
         $this->includeJs($this->signatures[$this->getProjectSetting('signature')]);
     }

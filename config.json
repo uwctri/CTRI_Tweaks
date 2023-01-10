@@ -129,7 +129,22 @@
                     ]
                 },
                 {
-                    "key": "check-print-report",
+                    "key": "show-logo",
+                    "name": "<b>Show Logo</b>",
+                    "type": "radio",
+                    "choices": [
+                        {
+                            "value": "1",
+                            "name": "Yes"
+                        },
+                        {
+                            "value": "0",
+                            "name": "No"
+                        }
+                    ]
+                },
+                {
+                    "key": "check-report",
                     "name": "<b>Bulk Print Report(s)</b><br>Report ID. Record ID, check memo, and ammount should be included on the report",
                     "type": "text"
                 },
