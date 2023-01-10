@@ -158,7 +158,7 @@ class CTRItweaks extends AbstractExternalModule
             $this->deployPaymentInstrument($project_id);
             $status = true;
         } elseif ($action == "bulk_payment") {
-            //TODO
+            return $this->bulkPaymentPrint($project_id, $payload['report'], $payload['write']);
         }
         return $status;
     }
@@ -207,6 +207,47 @@ class CTRItweaks extends AbstractExternalModule
         if ($sig) {
             $this->includeJs($this->signatures[$sig]);
         }
+    }
+
+    private function bulkPaymentPrint($project_id, $report_id, $data)
+    {
+        $instrument = "payment";
+        $new_seed = 0;
+
+        // Grab event knowing that their is only one event with the form
+        $sql = "
+        SELECT B.event_id FROM
+        (SELECT event_id FROM redcap_events_forms where form_name = '$instrument') AS A
+        LEFT JOIN redcap_events_metadata AS B
+        ON A.event_id = B.event_id 
+        LEFT JOIN redcap_events_arms AS C
+        ON B.arm_id = C.arm_id
+        WHERE C.project_id = $project_id;";
+        $result = db_query($sql);
+        $event = db_fetch_assoc($result)['event_id'];
+
+        // Grab the seed values
+        $reports = explode(',', $this->getProjectSetting('check-report'));
+        $index = array_search($report_id, $reports);
+        $seeds = explode(',', $this->getProjectSetting('check-number'));
+
+        foreach ($data as $row) {
+            $write[$row->record]["repeat_instances"][$event][$instrument][$data->instance] = [
+                'check_number' => $data->checkNumber,
+                'check_printed' => '1',
+                'check_date' => date('Y-m-d')
+            ];
+            $new_seed = $data->checkNumber;
+        }
+
+        if (strtolower($seeds['index']) == 'global') {
+            $this->setSystemSetting('check-number', $new_seed);
+        } else {
+            $seeds[$index] = $new_seed;
+            $this->setProjectSetting('check-number', implode(', ', $seeds), $project_id);
+        }
+
+        return REDCap::saveData($project_id, 'array', $write);
     }
 
     private function deployPaymentInstrument($project_id)
