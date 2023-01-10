@@ -73,7 +73,7 @@ class CTRItweaks extends AbstractExternalModule
             $this->includeJs('js/lib/vfs_fonts.js');
             $this->loadPaymentConfig(null, $report_id);
             $this->includeJs('js/payment_common.js');
-            // $this->includeJs('js/payment_report.js'); TODO
+            $this->includeJs('js/payment_report.js');
         }
 
         // "Save and Return Later" page of a survey
@@ -153,10 +153,14 @@ class CTRItweaks extends AbstractExternalModule
 
     public function redcap_module_ajax($action, $payload, $project_id)
     {
+        $status = false;
         if ($action == "deploy_payment") {
             $this->deployPaymentInstrument($project_id);
-            return true;
+            $status = true;
+        } elseif ($action == "bulk_payment") {
+            //TODO
         }
+        return $status;
     }
 
     private function loadPaymentConfig($record, $report = null)
@@ -194,6 +198,7 @@ class CTRItweaks extends AbstractExternalModule
             $reports = explode(',', $this->getProjectSetting('check-report'));
             $index = array_search($report, $reports);
             $seed = explode(',', $this->getProjectSetting('check-number'))[$index];
+            $seed = strtolower($seed) == 'global' ? $this->getSystemSetting('check-number') : $seed;
             $this->passArgument('seed', $seed);
         }
         $this->passArgument('logo', $this->getProjectSetting('show-logo') == '1');

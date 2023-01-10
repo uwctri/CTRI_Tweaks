@@ -18,10 +18,16 @@
         "redcap_survey_page_top"
     ],
     "auth-ajax-actions": [
-        "deploy_payment"
+        "deploy_payment",
+        "bulk_payment"
     ],
     "framework-version": 11,
     "project-settings": [
+        {
+            "key": "action-tag-text",
+            "name": "This EM adds several action tags to the project. Documentation can be found in the action tag menu on form designer.",
+            "type": "descriptive"
+        },
         {
             "key": "project-home-alert",
             "name": "<b>Home page alert</b>",
@@ -94,7 +100,7 @@
         },
         {
             "key": "cross-project-pipe",
-            "name": "<b>Cross Project Pipe from:</b><br>Pipe in data from another project that shares record ids with this one.",
+            "name": "<b>Action Tag - Cross Project Pipe from:</b><br>Pipe in data from another project that shares record ids with this one",
             "type": "project-id"
         },
         {
@@ -105,7 +111,7 @@
             "sub_settings": [
                 {
                     "key": "deploy-payment",
-                    "name": "Basic infromation for the check is assumed to exist with names <b>name/full_name/display_name, street/address (1,2), city, state, zip</b>",
+                    "name": "Basic infromation for the check is assumed to exist with names <b>name/full_name/display_name, street/address (1,2), city, state, zip</b>. After adding the instrument to your project you should assign it to one event and enable it as repeating.",
                     "type": "descriptive"
                 },
                 {
@@ -145,12 +151,12 @@
                 },
                 {
                     "key": "check-report",
-                    "name": "<b>Bulk Print Report(s)</b><br>Report ID. Record ID, check memo, and ammount should be included on the report",
+                    "name": "<b>Bulk Print Report(s)</b><br>Comma delimited list of Report IDs. Record ID, check memo, and amount should be included on the report",
                     "type": "text"
                 },
                 {
                     "key": "check-number",
-                    "name": "<b>Check Number Seed</b><br>Check number to start at for this report. For multi-project check numbers leave blank and use system settings",
+                    "name": "<b>Check Number Seed</b><br>Comma delimited list of check numbers to start at for this report. For multi-project check numbers use 'global'",
                     "type": "text"
                 }
             ]
