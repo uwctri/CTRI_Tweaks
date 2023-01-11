@@ -1,9 +1,10 @@
+$("head").append("<style>button.btn-rcgreen { pointer-events: none; }</style>");
 $(document).ready(() => {
-    $("head").append("<style>.btn.btn-xs.btn-rcgreen.fs13 { pointer-events: none; }</style>");
-    let newRecordPage = "DataEntry/record_home.php";
-    $(".btn.btn-xs.btn-rcgreen.fs13").attr('onClick', '').off().on('click', () => {
-        window.location.href = app_path_webroot + newRecordPage + '?pid=' + pid + '&id=' + CTRItweaks.newRecordID + '&auto=1&arm=' + ($('#arm_name_newid').length ? $('#arm_name_newid').val() : '1');
-        return false;
-    });
-    $(".btn.btn-xs.btn-rcgreen.fs13").css('pointer-events', 'all');
+    let url = new URL(`${app_path_webroot_full}redcap_v${redcap_version}/DataEntry/record_home.php`);
+    url.searchParams.set('pid', pid);
+    url.searchParams.set('id', CTRItweaks.newRecordID);
+    url.searchParams.set('auto', 1);
+    url.searchParams.set('arm', $('#arm_name_newid').length ? $('#arm_name_newid').val() : '1');
+    $("button.btn-rcgreen").attr('onclick', '').off().on('click', () => window.location.href = url);
+    $("button.btn-rcgreen").css('pointer-events', 'all');
 });
