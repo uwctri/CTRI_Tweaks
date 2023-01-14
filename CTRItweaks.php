@@ -268,18 +268,9 @@ class CTRItweaks extends AbstractExternalModule
         MetaData::createDataDictionarySnapshot();
 
         // Update the dd
-        $sql_errors = MetaData::save_metadata($dd, true);
-        if (count($sql_errors) > 0) {
-            // ERRORS OCCURRED, so undo any changes made
-            db_query("ROLLBACK");
-            // Set back to previous value
-            db_query("SET AUTOCOMMIT=1");
-        } else {
-            // COMMIT CHANGES
-            db_query("COMMIT");
-            // Set back to previous value
-            db_query("SET AUTOCOMMIT=1");
-        }
+        $sql_errors = MetaData::save_metadata($dd, true, false, $project_id);
+        db_query(count($sql_errors) > 0 ? "ROLLBACK" : "COMMIT");
+        db_query("SET AUTOCOMMIT=1");
     }
 
     private function setUIstate($project_id)
