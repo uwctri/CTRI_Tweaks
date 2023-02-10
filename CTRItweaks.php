@@ -14,7 +14,8 @@ class CTRItweaks extends AbstractExternalModule
     private $module_global = 'CTRItweaks';
     private $signatures = [
         'kate' => 'js/signature_kate_kobinsky.js',
-        'holly' => 'js/signature_holly_prince.js'
+        'holly' => 'js/signature_holly_prince.js',
+        'kari' => 'js/signature_kari_giacalone.js'
     ];
 
     public function redcap_every_page_top($project_id)
@@ -117,7 +118,7 @@ class CTRItweaks extends AbstractExternalModule
             $this->includeJs('js/data_entry_system_event.js');
         if ($this->getProjectSetting('support-12-hour-input'))
             $this->includeJs('js/data_entry_datetime_pickers.js');
-        if ($this->getProjectSetting('lock-complete-instruments'))
+        if ($this->getProjectSetting('lock-complete-instruments') && $instrument != "call_log")
             $this->includeJs('js/data_entry_lock_complete.js');
         if ($this->getProjectSetting('prevent-enter-submit'))
             $this->includeJs('js/data_entry_prevent_enter_submission.js');
