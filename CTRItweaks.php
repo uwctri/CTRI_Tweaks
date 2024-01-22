@@ -69,12 +69,19 @@ class CTRItweaks extends AbstractExternalModule
 
         // View Report Page
         if (($this->isPage('DataExport/index.php') && $project_id && $report_id && !$_GET['addedit'] && !$_GET['stats_charts'])) {
-            $this->passArgument('eventMap', array_flip(REDCap::getEventNames(false)));
-            $this->includeJs('js/lib/pdfmake.min.js');
-            $this->includeJs('js/lib/vfs_fonts.js');
-            $this->loadPaymentConfig(null, $report_id);
-            $this->includeJs('js/payment_common.js');
-            $this->includeJs('js/payment_report.js');
+            
+            // Check printing report
+            $reports = array_merge(...array_map( function($val) {
+                return array_map('trim', explode(',', $val));
+            }, $this->getProjectSetting('check-report')));
+            if (in_array($_GET["report_id"], $reports)) {
+                $this->passArgument('eventMap', array_flip(REDCap::getEventNames(false)));
+                $this->includeJs('js/lib/pdfmake.min.js');
+                $this->includeJs('js/lib/vfs_fonts.js');
+                $this->loadPaymentConfig(null, $report_id);
+                $this->includeJs('js/payment_common.js');
+                $this->includeJs('js/payment_report.js');
+            }
         }
 
         // "Save and Return Later" page of a survey
@@ -203,7 +210,9 @@ class CTRItweaks extends AbstractExternalModule
             $this->passArgument('seed', $seed);
         }
         $this->passArgument('logo', $this->getProjectSetting('show-logo') == '1');
-        $this->passArgument('study', $this->getProjectSetting('study-name'));
+        $study = $this->getProjectSetting('study-name');
+        $study = is_array($study) ? $study[0] : $study;
+        $this->passArgument('study', $study);
         $sig = $this->getProjectSetting('signature');
         if ($sig) {
             $this->includeJs($this->signatures[$sig]);
