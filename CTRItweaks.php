@@ -69,9 +69,9 @@ class CTRItweaks extends AbstractExternalModule
 
         // View Report Page
         if (($this->isPage('DataExport/index.php') && $project_id && $report_id && !$_GET['addedit'] && !$_GET['stats_charts'])) {
-            
+
             // Check printing report
-            $reports = array_merge(...array_map( function($val) {
+            $reports = array_merge(...array_map(function ($val) {
                 return array_map('trim', explode(',', $val));
             }, $this->getProjectSetting('check-report')));
             if (in_array($_GET["report_id"], $reports)) {
@@ -209,7 +209,8 @@ class CTRItweaks extends AbstractExternalModule
             $seed = strtolower($seed) == 'global' ? $this->getSystemSetting('check-number') : $seed;
             $this->passArgument('seed', $seed);
         }
-        $this->passArgument('logo', $this->getProjectSetting('show-logo') == '1');
+        $this->passArgument('showLogo', $this->getProjectSetting('show-logo') == '1');
+        $this->passArgument('showVoid', $this->getProjectSetting('show-void') == '1');
         $study = $this->getProjectSetting('study-name');
         $study = is_array($study) ? $study[0] : $study;
         $this->passArgument('study', $study);
@@ -242,12 +243,12 @@ class CTRItweaks extends AbstractExternalModule
         $seeds = explode(',', $this->getProjectSetting('check-number'));
 
         foreach ($data as $row) {
-            $write[$row->record]["repeat_instances"][$event][$instrument][$data->instance] = [
-                'check_number' => $data->checkNumber,
+            $write[$row['record']]["repeat_instances"][$event][$instrument][$row['instance']] = [
+                'check_number' => $row['check'],
                 'check_printed' => '1',
                 'check_date' => date('Y-m-d')
             ];
-            $new_seed = $data->checkNumber;
+            $new_seed = $data['check'];
         }
 
         if (strtolower($seeds['index']) == 'global') {
@@ -257,6 +258,7 @@ class CTRItweaks extends AbstractExternalModule
             $this->setProjectSetting('check-number', implode(', ', $seeds), $project_id);
         }
 
+        //return $write;
         return REDCap::saveData($project_id, 'array', $write);
     }
 

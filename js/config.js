@@ -33,6 +33,14 @@ $(document).ready(() => {
                 });
             });
 
+            // Default options
+            if ($("[field=show-logo] input:checked").length == 0) {
+                $("[field=show-logo] input").eq(0).click(); // Show logo by default
+            }
+            if ($("[field=show-void] input:checked").length == 0) {
+                $("[field=show-void] input").eq(0).click(); // Show void by default
+            }
+
             // We can only do this because there are no repeating options
             $(".external-modules-instance-label").remove();
         };

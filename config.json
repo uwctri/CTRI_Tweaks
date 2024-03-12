@@ -154,6 +154,21 @@
                     ]
                 },
                 {
+                    "key": "show-void",
+                    "name": "<b>Show 'Void in 90 days' text</b>",
+                    "type": "radio",
+                    "choices": [
+                        {
+                            "value": "1",
+                            "name": "Yes"
+                        },
+                        {
+                            "value": "0",
+                            "name": "No"
+                        }
+                    ]
+                },
+                {
                     "key": "check-report",
                     "name": "<b>Bulk Print Report(s)</b><br>Comma delimited list of Report IDs. Record ID, check memo, and amount should be included on the report",
                     "type": "text"

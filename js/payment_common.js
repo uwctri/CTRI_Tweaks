@@ -41,7 +41,7 @@ CTRItweaks.makePrintObject = () => {
     };
 }
 
-CTRItweaks.makePageObject = (subject, study, memo, cash, addr, study_addr, showLogo) => {
+CTRItweaks.makePageObject = (subject, study, memo, cash, addr, study_addr, showLogo, showVoid) => {
 
     let [dollars, cents] = cash.split('.');
     cents = typeof cents === 'undefined' ? '00' : cents.padEnd(2, '0');
@@ -189,7 +189,7 @@ CTRItweaks.makePageObject = (subject, study, memo, cash, addr, study_addr, showL
             absolutePosition: { x: 357, y: 412 }
         },
         {
-            text: 'VOID AFTER 90 DAYS',
+            text: showVoid ? 'VOID AFTER 90 DAYS' : ' ',
             absolutePosition: { x: 376, y: 395 }
         },
         { text: ' ', style: 'buffer' },

@@ -29,7 +29,9 @@ $(document).ready(() => {
         const t = CTRItweaks.paymentData;
         const addr = CTRItweaks.makeAddressObject(t.street1, t.street2, t.city, t.state, t.zip, true);
         let print = CTRItweaks.makePrintObject();
-        print.content.push(...CTRItweaks.makePageObject(t.name, CTRItweaks.study, memo, cash, addr, CTRItweaks.studyAddr, CTRItweaks.logo));
+        print.content.push(...CTRItweaks.makePageObject(t.name, CTRItweaks.study, memo, cash, addr, CTRItweaks.studyAddr, CTRItweaks.showLogo, CTRItweaks.showVoid));
         pdfMake.createPdf(print).open();
     });
+
+    $(".printCheckButton").prop('disabled', false);
 });

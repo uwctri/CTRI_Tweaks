@@ -50,12 +50,12 @@ $(document).ready(() => {
         pdfMake.createPdf(master).open();
     }
 
-    const gatherDataforPost = () => {
+    const gatherDataforPost = (checkNumber) => {
+        let instanceIndex = $("#report_table th:contains('redcap_repeat_instance')").index();
         let data = {
             'report': Number(getParameterByName('report_id')),
             'write': []
         };
-        let checkNumber = $("#askCheckNumber").val() || 0;
         $(".rl:visible").each(function (_, el) {
             let row = $(el).closest('tr').find('td');
             data['write'].push({
@@ -118,7 +118,8 @@ $(document).ready(() => {
             confirmButtonText: 'Flag as Printed'
         }).then(function (result) {
             if (!result.value) return;
-            CTRItweaks.ajax("bulk_payment", gatherDataforPost()).then((response) => {
+            let checkNumber = result.value || 0;
+            CTRItweaks.ajax("bulk_payment", gatherDataforPost(checkNumber)).then((response) => {
                 console.log(response);
                 CTRItweaks.bulkPrintDone = true;
                 Swal.fire({
