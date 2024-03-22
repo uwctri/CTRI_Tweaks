@@ -202,17 +202,15 @@ class CTRItweaks extends AbstractExternalModule
 
         // Static settings
         if ($report) {
-            $reports = explode(',', $this->getProjectSetting('check-report'));
+            $reports = explode(',', $this->getProjectSetting('check-report')[0]);
             $index = array_search($report, $reports);
-            $seed = explode(',', $this->getProjectSetting('check-number'))[$index];
+            $seed = explode(',', $this->getProjectSetting('check-number')[0])[$index];
             $seed = strtolower($seed) == 'global' ? $this->getSystemSetting('check-number') : $seed;
             $this->passArgument('seed', $seed);
         }
-        $this->passArgument('showLogo', $this->getProjectSetting('show-logo') == '1');
-        $this->passArgument('showVoid', $this->getProjectSetting('show-void') == '1');
-        $study = $this->getProjectSetting('study-name');
-        $study = is_array($study) ? $study[0] : $study;
-        $this->passArgument('study', $study);
+        $this->passArgument('showLogo', $this->getProjectSetting('show-logo')[0] == '1');
+        $this->passArgument('showVoid', $this->getProjectSetting('show-void')[0] == '1');
+        $this->passArgument('study', $this->getProjectSetting('study-name')[0]);
         $sig = ($this->getProjectSetting('signature') ?? ["none"])[0];
         $this->includeJs($this->signatures[$sig]);
         $this->includeJs('js/payment_logo.js');
@@ -238,7 +236,7 @@ class CTRItweaks extends AbstractExternalModule
         // Grab the seed values
         $reports = explode(',', $this->getProjectSetting('check-report'));
         $index = array_search($report_id, $reports);
-        $seeds = explode(',', $this->getProjectSetting('check-number'));
+        $seeds = explode(',', $this->getProjectSetting('check-number')[0]);
 
         foreach ($data as $row) {
             $write[$row['record']]["repeat_instances"][$event][$instrument][$row['instance']] = [
