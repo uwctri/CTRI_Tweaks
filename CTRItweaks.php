@@ -14,8 +14,7 @@ class CTRItweaks extends AbstractExternalModule
     private $module_global = 'CTRItweaks';
     private $signatures = [
         'kate' => 'js/signature_kate_kobinsky.js',
-        'holly' => 'js/signature_holly_prince.js',
-        'kari' => 'js/signature_kari_giacalone.js'
+        'none' => 'js/signature_none.js'
     ];
 
     public function redcap_every_page_top($project_id)
@@ -214,10 +213,9 @@ class CTRItweaks extends AbstractExternalModule
         $study = $this->getProjectSetting('study-name');
         $study = is_array($study) ? $study[0] : $study;
         $this->passArgument('study', $study);
-        $sig = $this->getProjectSetting('signature');
-        if ($sig) {
-            $this->includeJs($this->signatures[$sig]);
-        }
+        $sig = ($this->getProjectSetting('signature') ?? ["none"])[0];
+        $this->includeJs($this->signatures[$sig]);
+        $this->includeJs('js/payment_logo.js');
     }
 
     private function bulkPaymentPrint($project_id, $report_id, $data)
@@ -551,11 +549,11 @@ class CTRItweaks extends AbstractExternalModule
 
     private function includeJs($path)
     {
-        echo '<script src="' . $this->getUrl($path) . '"></script>';
+        echo '<script src="' . $this->getUrl($path) . '"></script>' . "\n";
     }
 
     private function passArgument($name, $value)
     {
-        echo "<script>" . $this->module_global . "." . $name . " = " . json_encode($value) . ";</script>";
+        echo "<script>" . $this->module_global . "." . $name . " = " . json_encode($value) . ";</script>" . "\n";
     }
 }
