@@ -70,9 +70,7 @@ class CTRItweaks extends AbstractExternalModule
         if (($this->isPage('DataExport/index.php') && $project_id && $report_id && !$_GET['addedit'] && !$_GET['stats_charts'])) {
 
             // Check printing report
-            $reports = array_merge(...array_map(function ($val) {
-                return array_map('trim', explode(',', $val));
-            }, $this->getProjectSetting('check-report')));
+            $reports = array_map("trim", explode(',', $this->getProjectSetting('check-report')));
             if (in_array($_GET["report_id"], $reports)) {
                 $this->passArgument('eventMap', array_flip(REDCap::getEventNames(false)));
                 $this->includeJs('js/lib/pdfmake.min.js');
@@ -202,16 +200,16 @@ class CTRItweaks extends AbstractExternalModule
 
         // Static settings
         if ($report) {
-            $reports = explode(',', $this->getProjectSetting('check-report')[0]);
+            $reports = array_map("trim", explode(',', $this->getProjectSetting('check-report')));
             $index = array_search($report, $reports);
-            $seed = explode(',', $this->getProjectSetting('check-number')[0])[$index];
+            $seed = array_map("trim", explode(',', $this->getProjectSetting('check-number')))[$index];
             $seed = strtolower($seed) == 'global' ? $this->getSystemSetting('check-number') : $seed;
             $this->passArgument('seed', $seed);
         }
-        $this->passArgument('showLogo', $this->getProjectSetting('show-logo')[0] == '1');
-        $this->passArgument('showVoid', $this->getProjectSetting('show-void')[0] == '1');
-        $this->passArgument('study', $this->getProjectSetting('study-name')[0]);
-        $sig = ($this->getProjectSetting('signature') ?? ["none"])[0];
+        $this->passArgument('showLogo', $this->getProjectSetting('show-logo') == '1');
+        $this->passArgument('showVoid', $this->getProjectSetting('show-void') == '1');
+        $this->passArgument('study', $this->getProjectSetting('study-name'));
+        $sig = ($this->getProjectSetting('signature') ?? ["none"]);
         $this->includeJs($this->signatures[$sig]);
         $this->includeJs('js/payment_logo.js');
     }
@@ -234,9 +232,9 @@ class CTRItweaks extends AbstractExternalModule
         $event = db_fetch_assoc($result)['event_id'];
 
         // Grab the seed values
-        $reports = explode(',', $this->getProjectSetting('check-report'));
+        $reports = array_map('trim', explode(',', $this->getProjectSetting('check-report')));
         $index = array_search($report_id, $reports);
-        $seeds = explode(',', $this->getProjectSetting('check-number')[0]);
+        $seeds = array_map('trim', explode(',', $this->getProjectSetting('check-number')));
 
         foreach ($data as $row) {
             $write[$row['record']]["repeat_instances"][$event][$instrument][$row['instance']] = [
@@ -244,14 +242,14 @@ class CTRItweaks extends AbstractExternalModule
                 'check_printed' => '1',
                 'check_date' => date('Y-m-d')
             ];
-            $new_seed = $data['check'];
+            $new_seed = $row['check'];
         }
 
         if (strtolower($seeds['index']) == 'global') {
             $this->setSystemSetting('check-number', $new_seed);
         } else {
             $seeds[$index] = $new_seed;
-            $this->setProjectSetting('check-number', implode(', ', $seeds), $project_id);
+            $this->setProjectSetting('check-number', implode(',', $seeds), $project_id);
         }
 
         //return $write;

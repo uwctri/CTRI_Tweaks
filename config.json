@@ -98,75 +98,72 @@
         {
             "key": "payment-header",
             "name": "<b>Payment Settings</b>",
-            "type": "sub_settings",
-            "repeatable": false,
-            "sub_settings": [
+            "type": "descriptive"
+        },
+        {
+            "key": "deploy-payment",
+            "name": "Basic infromation for the check is assumed to exist with names <b>name/full_name/display_name, street/address (1,2), city, state, zip</b>. After adding the instrument to your project you should assign it to one event and enable it as repeating.",
+            "type": "descriptive"
+        },
+        {
+            "key": "study-name",
+            "name": "<b>Study Name</b>",
+            "type": "text"
+        },
+        {
+            "key": "signature",
+            "name": "<b>Signature</b>",
+            "type": "radio",
+            "choices": [
                 {
-                    "key": "deploy-payment",
-                    "name": "Basic infromation for the check is assumed to exist with names <b>name/full_name/display_name, street/address (1,2), city, state, zip</b>. After adding the instrument to your project you should assign it to one event and enable it as repeating.",
-                    "type": "descriptive"
+                    "value": "kate",
+                    "name": "Kate Kobinsky"
                 },
                 {
-                    "key": "study-name",
-                    "name": "<b>Study Name</b>",
-                    "type": "text"
-                },
-                {
-                    "key": "signature",
-                    "name": "<b>Signature</b>",
-                    "type": "radio",
-                    "choices": [
-                        {
-                            "value": "kate",
-                            "name": "Kate Kobinsky"
-                        },
-                        {
-                            "value": "none",
-                            "name": "No Signature"
-                        }
-                    ]
-                },
-                {
-                    "key": "show-logo",
-                    "name": "<b>Show Logo</b>",
-                    "type": "radio",
-                    "choices": [
-                        {
-                            "value": "1",
-                            "name": "Yes"
-                        },
-                        {
-                            "value": "0",
-                            "name": "No"
-                        }
-                    ]
-                },
-                {
-                    "key": "show-void",
-                    "name": "<b>Show 'Void in 90 days' text</b>",
-                    "type": "radio",
-                    "choices": [
-                        {
-                            "value": "1",
-                            "name": "Yes"
-                        },
-                        {
-                            "value": "0",
-                            "name": "No"
-                        }
-                    ]
-                },
-                {
-                    "key": "check-report",
-                    "name": "<b>Bulk Print Report(s)</b><br>Comma delimited list of Report IDs. Record ID, check memo, and amount should be included on the report",
-                    "type": "text"
-                },
-                {
-                    "key": "check-number",
-                    "name": "<b>Check Number Seed</b><br>Comma delimited list of check numbers to start at for this report. For multi-project check numbers use 'global'",
-                    "type": "text"
+                    "value": "none",
+                    "name": "No Signature"
                 }
             ]
+        },
+        {
+            "key": "show-logo",
+            "name": "<b>Show Logo</b>",
+            "type": "radio",
+            "choices": [
+                {
+                    "value": "1",
+                    "name": "Yes"
+                },
+                {
+                    "value": "0",
+                    "name": "No"
+                }
+            ]
+        },
+        {
+            "key": "show-void",
+            "name": "<b>Show 'Void in 90 days' text</b>",
+            "type": "radio",
+            "choices": [
+                {
+                    "value": "1",
+                    "name": "Yes"
+                },
+                {
+                    "value": "0",
+                    "name": "No"
+                }
+            ]
+        },
+        {
+            "key": "check-report",
+            "name": "<b>Bulk Print Report(s)</b><br>Comma delimited list of Report IDs. Record ID, check memo, and amount should be included on the report",
+            "type": "text"
+        },
+        {
+            "key": "check-number",
+            "name": "<b>Check Number Seed</b><br>Comma delimited list of check numbers to start at for this report. For multi-project check numbers use 'global'",
+            "type": "text"
         }
     ],
     "compatibility": {

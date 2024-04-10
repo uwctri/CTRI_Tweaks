@@ -97,19 +97,18 @@ $(document).ready(() => {
         // Open the real modal
         const modal = `
         You are about to mark <b>all</b> checks visible on this report as printed. 
-        The check issue date will be updated to today in Redcap and the check numbers will be logged starting at the number below.
-        <div class="form-group mb-0">
-            <label class='font-weight-bold float-left mt-4'>Check Number</label>
-            <input type="text" class="swal2-input mt-0 mb-0" id="askCheckNumber" placeholder="SEED">
-        </div>`;
+        The check issue date will be updated to today in Redcap and the check numbers will be logged starting at the number below.`;
 
         const footer = `
         <span><b>Reminder:</b> The recommended check number above may be incorrect if a check has been skipped, individually printed, or issued outside of Redcap.</span>`;
 
+        const seed = Number(CTRItweaks.seed)
         Swal.fire({
             icon: 'question',
             title: 'Are you sure?',
-            html: modal.replace('SEED', Number(CTRItweaks.seed) + 1),
+            html: modal,
+            input: 'number',
+            inputPlaceholder: seed + 1,
             footer: footer,
             showCloseButton: true,
             showCancelButton: true,
@@ -117,8 +116,7 @@ $(document).ready(() => {
             cancelButtonColor: '#d33',
             confirmButtonText: 'Flag as Printed'
         }).then(function (result) {
-            if (!result.value) return;
-            let checkNumber = result.value || 0;
+            const checkNumber = result.value || (seed + 1);
             CTRItweaks.ajax("bulk_payment", gatherDataforPost(checkNumber)).then((response) => {
                 console.log(response);
                 CTRItweaks.bulkPrintDone = true;
