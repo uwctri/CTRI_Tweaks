@@ -83,14 +83,14 @@ class CTRItweaks extends AbstractExternalModule
 
     public function redcap_module_ajax($action, $payload, $project_id)
     {
-        $status = false;
         if ($action == "deploy_payment") {
             $this->deployPaymentInstrument($project_id);
-            $status = true;
-        } elseif ($action == "bulk_payment") {
+            return true;
+        }
+        if ($action == "bulk_payment") {
             return $this->bulkPaymentPrint($project_id, $payload['report'], $payload['write']);
         }
-        return $status;
+        return false;
     }
 
     private function loadPaymentConfig($record, $report = null)
@@ -131,17 +131,21 @@ class CTRItweaks extends AbstractExternalModule
             $this->passArgument(['seed' => $seed]);
         }
 
+        $this->includeJs('js/payment_images.js');
+        $sigFile = $this->getProjectSetting('file-signature');
+        $sig64 = "";
+        if ($sigFile) {
+            list($mimeType, $docName, $fileContent) = REDCap::getFile($sigFile);
+            $sig64 = "data:$mimeType;base64," . base64_encode($fileContent);
+        }
+
         $this->passArgument([
             'paymentData' => $generalData,
             'showLogo' => $this->getProjectSetting('show-logo') == '1',
             'showVoid' => $this->getProjectSetting('show-void') == '1',
-            'study'  => $this->getProjectSetting('study-name')
+            'study'  => $this->getProjectSetting('study-name'),
+            "signature" => $sig64
         ]);
-
-        // $sig = ($this->getProjectSetting('signature') ?? ["none"]);
-        // $this->includeJs($this->signatures[$sig]);
-        $sigFile = $this->getProjectSetting('file-signature');
-        $this->includeJs('js/payment_images.js');
     }
 
     private function bulkPaymentPrint($project_id, $report_id, $data)
@@ -465,9 +469,9 @@ class CTRItweaks extends AbstractExternalModule
         echo '<script src="' . $this->getUrl($path) . '"></script>' . "\n";
     }
 
-    private function passArgument($args)
+    private function passArgument($arr)
     {
         $obj = $this->getJavascriptModuleObjectName();
-        echo "<script> Object.assign($obj, " . json_encode($args) . ");</script>";
+        echo "<script> Object.assign($obj, " . json_encode($arr) . ");</script>";
     }
 }
