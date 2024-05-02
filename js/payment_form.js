@@ -14,7 +14,7 @@ $(document).ready(() => {
     `);
 
     $(document).on('click', '.printCheckButton', () => {
-        let missing = Object.filter(CTRItweaks.paymentData, x => x == "");
+        let missing = Object.filter(ExternalModules.UWMadison.CTRItweaks.paymentData, x => x == "");
         delete missing['street2'];
         if (Object.keys(missing).length) {
             Swal.fire({
@@ -26,10 +26,10 @@ $(document).ready(() => {
         }
         const memo = $("[name=check_activity]").val();
         const cash = $("[name=check_amt]").val() || '00.00';
-        const t = CTRItweaks.paymentData;
-        const addr = CTRItweaks.makeAddressObject(t.street1, t.street2, t.city, t.state, t.zip, true);
-        let print = CTRItweaks.makePrintObject();
-        print.content.push(...CTRItweaks.makePageObject(t.name, CTRItweaks.study, memo, cash, addr, CTRItweaks.studyAddr, CTRItweaks.showLogo, CTRItweaks.showVoid));
+        const t = ExternalModules.UWMadison.CTRItweaks.paymentData;
+        const addr = ExternalModules.UWMadison.CTRItweaks.makeAddressObject(t.street1, t.street2, t.city, t.state, t.zip, true);
+        let print = ExternalModules.UWMadison.CTRItweaks.makePrintObject();
+        print.content.push(...ExternalModules.UWMadison.CTRItweaks.makePageObject(t.name, ExternalModules.UWMadison.CTRItweaks.study, memo, cash, addr, ExternalModules.UWMadison.CTRItweaks.studyAddr, ExternalModules.UWMadison.CTRItweaks.showLogo, ExternalModules.UWMadison.CTRItweaks.showVoid));
         pdfMake.createPdf(print).open();
     });
 

@@ -1,14 +1,14 @@
 $(document).ready(function () {
 
     function compileNotes(field_or_jsonObject) {
-        let dataSource = typeof field_or_jsonObject == "object" ? field_or_jsonObject : CTRItweaks.jsonNotes.data[field_or_jsonObject];
+        let dataSource = typeof field_or_jsonObject == "object" ? field_or_jsonObject : ExternalModules.UWMadison.CTRItweaks.jsonNotes.data[field_or_jsonObject];
         let notes = dataSource["historic"] || "";
         let importantNotes = "";
         $.each(dataSource, function (ts, info) {
             if (["current", "historic"].includes(ts))
                 return;
             let tmp = `${info.author}: ${info.note.replace(/\^/g, '"')}\n\n`;
-            if (!CTRItweaks.jsonNotes.noDate) {
+            if (!ExternalModules.UWMadison.CTRItweaks.jsonNotes.noDate) {
                 tmp = `${ts.slice(0, 16) + ts.slice(19)} - ${tmp}`;
             }
             if (info.important)
@@ -20,7 +20,7 @@ $(document).ready(function () {
     }
 
     function displayJSONnotes(field) {
-        if ($.isEmptyObject(CTRItweaks.jsonNotes.data[field])) {
+        if ($.isEmptyObject(ExternalModules.UWMadison.CTRItweaks.jsonNotes.data[field])) {
             $(`#${field}-tr .jsonNotesCurrent`).val('');
             return;
         }
@@ -28,24 +28,24 @@ $(document).ready(function () {
     }
 
     function saveCurrentJSONnotes(field, ts) {
-        $(`[name=${field}]`).val(JSON.stringify(CTRItweaks.jsonNotes.data[field]));
+        $(`[name=${field}]`).val(JSON.stringify(ExternalModules.UWMadison.CTRItweaks.jsonNotes.data[field]));
         if (typeof ts !== "undefined")
-            CTRItweaks.jsonNotes.data[field].current = ts;
+            ExternalModules.UWMadison.CTRItweaks.jsonNotes.data[field].current = ts;
     }
 
     function saveNewJSONnotes(field) {
-        if (CTRItweaks.jsonNotes.editState[field])
+        if (ExternalModules.UWMadison.CTRItweaks.jsonNotes.editState[field])
             return;
-        if (CTRItweaks.jsonNotes.data[field].current) {
-            delete CTRItweaks.jsonNotes.data[field][CTRItweaks.jsonNotes.data[field].current];
-            delete CTRItweaks.jsonNotes.data[field].current;
+        if (ExternalModules.UWMadison.CTRItweaks.jsonNotes.data[field].current) {
+            delete ExternalModules.UWMadison.CTRItweaks.jsonNotes.data[field][ExternalModules.UWMadison.CTRItweaks.jsonNotes.data[field].current];
+            delete ExternalModules.UWMadison.CTRItweaks.jsonNotes.data[field].current;
         }
         let ts = formatDate(new Date(), 'MM/dd/yyyy hh:mm:ssa').toLowerCase();
 
         if (!$(`#${field}-tr .jsonNotesNew`).val().trim())
             return;
 
-        CTRItweaks.jsonNotes.data[field][ts] = {
+        ExternalModules.UWMadison.CTRItweaks.jsonNotes.data[field][ts] = {
             important: $(`#${field}-tr .importantJson`).prop('checked'),
             author: $("#username-reference").text(),
             note: $(`#${field}-tr .jsonNotesNew`).val().replace(/\"/g, "^")
@@ -146,18 +146,18 @@ $(document).ready(function () {
     </style>
     `;
     $('head').append(css);
-    CTRItweaks.jsonNotes.data = {};
-    CTRItweaks.jsonNotes.editState = {};
+    ExternalModules.UWMadison.CTRItweaks.jsonNotes.data = {};
+    ExternalModules.UWMadison.CTRItweaks.jsonNotes.editState = {};
 
     // Load all the JSON data
-    $.each(CTRItweaks.jsonNotes.raw, function (field, json) {
+    $.each(ExternalModules.UWMadison.CTRItweaks.jsonNotes.raw, function (field, json) {
         $(`#${field}-tr td`).hide()
         let label = $(`#label-${field} td`).first().text().trim();
         try {
-            CTRItweaks.jsonNotes.data[field] = json ? JSON.parse(json) : {};
+            ExternalModules.UWMadison.CTRItweaks.jsonNotes.data[field] = json ? JSON.parse(json) : {};
         } catch (e) {
-            CTRItweaks.jsonNotes.data[field] = {};
-            CTRItweaks.jsonNotes.data[field]["historic"] = "Historic Notes:\n" + json; // Not JSON, just old non-json notes.
+            ExternalModules.UWMadison.CTRItweaks.jsonNotes.data[field] = {};
+            ExternalModules.UWMadison.CTRItweaks.jsonNotes.data[field]["historic"] = "Historic Notes:\n" + json; // Not JSON, just old non-json notes.
         }
         $(`#${field}-tr`).append(notesFieldTemplate.replace('LABEL', label));
         if (!label)
@@ -177,7 +177,7 @@ $(document).ready(function () {
     // Save any new text entered
     $(".jsonNotesNew").on("change", function () {
         let field = $(this).closest('tr').prop('id').replace('-tr', '');
-        if (CTRItweaks.jsonNotes.editState[field])
+        if (ExternalModules.UWMadison.CTRItweaks.jsonNotes.editState[field])
             return;
         saveNewJSONnotes(field);
         displayJSONnotes(field);
@@ -191,24 +191,24 @@ $(document).ready(function () {
     // Enable edit button
     $(".editLink").on('click', function () {
         let field = $(this).closest('tr').prop('id').replace('-tr', '');
-        if (CTRItweaks.jsonNotes.editState[field]) {
+        if (ExternalModules.UWMadison.CTRItweaks.jsonNotes.editState[field]) {
             let notes = $(`#${field}-tr .jsonNotesNew`).val().split('---').map(x => x.trim());
-            let keys = Object.keys(CTRItweaks.jsonNotes.data[field]);
+            let keys = Object.keys(ExternalModules.UWMadison.CTRItweaks.jsonNotes.data[field]);
             $.each(notes, function (index, note) {
                 if (note.trim())
-                    CTRItweaks.jsonNotes.data[field][keys[index]].note = note;
+                    ExternalModules.UWMadison.CTRItweaks.jsonNotes.data[field][keys[index]].note = note;
                 else
-                    delete CTRItweaks.jsonNotes.data[field][keys[index]];
+                    delete ExternalModules.UWMadison.CTRItweaks.jsonNotes.data[field][keys[index]];
             });
             $(this).find('a').text('edit');
-            CTRItweaks.jsonNotes.editState[field] = false;
+            ExternalModules.UWMadison.CTRItweaks.jsonNotes.editState[field] = false;
             saveCurrentJSONnotes(field);
             displayJSONnotes(field);
             $(`#${field}-tr .jsonNotesNew`).val('');
         } else {
             $(this).find('a').text('save changes');
-            CTRItweaks.jsonNotes.editState[field] = true;
-            let notes = Object.entries(CTRItweaks.jsonNotes.data[field]).map(x => x[1]['note'].trim());
+            ExternalModules.UWMadison.CTRItweaks.jsonNotes.editState[field] = true;
+            let notes = Object.entries(ExternalModules.UWMadison.CTRItweaks.jsonNotes.data[field]).map(x => x[1]['note'].trim());
             $(`#${field}-tr .jsonNotesNew`).val(notes.join('\n---\n'));
         }
     });

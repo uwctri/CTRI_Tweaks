@@ -11,7 +11,6 @@ use Project;
 
 class CTRItweaks extends AbstractExternalModule
 {
-    private $module_global = 'CTRItweaks';
     private $signatures = [
         'kate' => 'js/signature_kate_kobinsky.js',
         'none' => 'js/signature_none.js'
@@ -21,50 +20,23 @@ class CTRItweaks extends AbstractExternalModule
     {
         $this->initModule();
         $record = $_GET['id'];
-        $instrument = $_GET['page'];
         $report_id = $_GET['report_id'];
 
         // Custom Config page
         if ($this->isPage('ExternalModules/manager/project.php') && $project_id)
             $this->includeJs('js/config.js');
 
-        // Every page (edits to left-side nav bar)
-        if ($this->getProjectSetting('hide-survey-tools'))
-            $this->includeJs('js/all_hide_survey_distribution_tools.js');
-
-        // Form Designer Page
-        if ($this->isPage('Design/online_designer.php') && $instrument) {
-            $this->includeJs('js/form_builder_action_tag_help.js');
-            if ($this->getProjectSetting('support-12-hour-input'))
-                $this->includeJs('js/data_entry_datetime_pickers.js');
-        }
-
         // Add / Edit Records Page
-        if ($this->isPage('DataEntry/record_home.php') && is_null($record)) {
-            if ($this->getProjectSetting('stop-dag-rename')) {
-                $this->passArgument('newRecordID', $this->getNextRecordID());
-                $this->includeJs('js/add_edit_record_stop_dag_rename.js');
-            }
+        if ($this->isPage('DataEntry/record_home.php') && is_null($record))
             $this->setUIstate($project_id);
-        }
 
         // Record Status Dashboard
-        if ($this->isPage('DataEntry/record_status_dashboard.php') && is_null($record)) {
-            if ($this->getProjectSetting('stop-dag-rename')) {
-                $this->passArgument('newRecordID', $this->getNextRecordID());
-                $this->includeJs('js/add_edit_record_stop_dag_rename.js');
-            }
+        if ($this->isPage('DataEntry/record_status_dashboard.php') && is_null($record))
             $this->setUIstate($project_id);
-        }
 
-        // Record Home Page
-        if ($this->isPage('DataEntry/record_home.php') && $record) {
-            $name = $this->getProjectSetting('unverified-name');
-            if (!is_null($name)) {
-                $this->passArgument('UnverifiedName', $name);
-                $this->includeJs('js/record_home_change_unverified.js');
-            }
-        }
+        // Project Home/Setup Page
+        if ($this->isPage('ProjectSetup/index.php') || $this->isPage('index.php'))
+            $this->setUIstate($project_id);
 
         // View Report Page
         if (($this->isPage('DataExport/index.php') && $project_id && $report_id && !$_GET['addedit'] && !$_GET['stats_charts'])) {
@@ -72,7 +44,7 @@ class CTRItweaks extends AbstractExternalModule
             // Check printing report
             $reports = array_map("trim", explode(',', $this->getProjectSetting('check-report')));
             if (in_array($_GET["report_id"], $reports)) {
-                $this->passArgument('eventMap', array_flip(REDCap::getEventNames(false)));
+                $this->passArgument(['eventMap' => array_flip(REDCap::getEventNames(false))]);
                 $this->includeJs('js/lib/pdfmake.min.js');
                 $this->includeJs('js/lib/vfs_fonts.js');
                 $this->loadPaymentConfig(null, $report_id);
@@ -81,33 +53,11 @@ class CTRItweaks extends AbstractExternalModule
             }
         }
 
-        // "Save and Return Later" page of a survey
-        if ($_GET['__return'] != NULL) {
-            if ($this->getProjectSetting('hide-send-survey-link'))
-                $this->includeJs('js/survey_hide_send_survey_link.js');
-        }
+        $this->includeJs('js/bundle.js');
     }
 
-    public function redcap_project_home_page($project_id)
+    public function redcap_data_entry_form($project_id, $record, $instrument)
     {
-        $text = $this->getProjectSetting('project-home-alert');
-        if (!empty($text)) {
-            $this->passArgument('AlertText', $text);
-            $this->includeJs('js/home_page_alert.js');
-        }
-        $this->setUIstate($project_id);
-    }
-
-    public function redcap_data_entry_form($project_id, $record, $instrument, $event_id)
-    {
-        // If on a hidden event then redirect the user to the Record Home
-        $instruments = $this->getProjectSetting('stop-nav-instrument')[0];
-        if (in_array($instrument, $instruments)) {
-            $arm = $_GET['arm'] ? $_GET['arm'] : '1';
-            header("Location: https://" . $_SERVER['HTTP_HOST'] . "/redcap/redcap_v" . REDCAP_VERSION . "/DataEntry/record_home.php?pid=" . $project_id . "&arm=" . $arm . "&id=" . $record);
-            return;
-        }
-
         // Payment load
         if ($instrument == "payment") {
             $this->includeJs('js/lib/pdfmake.min.js');
@@ -118,25 +68,7 @@ class CTRItweaks extends AbstractExternalModule
         }
 
         $this->afterLoadActionTags($instrument);
-        if ($this->getProjectSetting('system-management-event') == $event_id)
-            $this->includeJs('js/data_entry_system_event.js');
-        if ($this->getProjectSetting('support-12-hour-input'))
-            $this->includeJs('js/data_entry_datetime_pickers.js');
-        if ($this->getProjectSetting('lock-complete-instruments') && $instrument != "call_log")
-            $this->includeJs('js/data_entry_lock_complete.js');
-        if ($this->getProjectSetting('prevent-enter-submit'))
-            $this->includeJs('js/data_entry_prevent_enter_submission.js');
-        if ($this->getProjectSetting('hide-save-next-record'))
-            $this->includeJs('js/data_entry_hide_save_goto_next_record.js');
-        if ($this->getProjectSetting('hide-send-survey-email'))
-            $this->includeJs('js/data_entry_hide_survey_option_email.js');
-        if ($this->getProjectSetting('hide-instruments-on-forms'))
-            $this->includeJs('js/data_entry_hide_instruments.js');
-        $this->includeJs('js/data_entry_stop_autocomplete.js');
-        $this->includeJs('js/data_entry_mm_dd_yyyy.js');
-        $this->includeJs('js/data_entry_prevent_scrolling_on_load.js');
-        $this->includeJs('js/data_entry_toggle_write.js');
-        $this->includeJs('js/data_entry_show_all_rows.js');
+        $this->includeJs('js/bundle.js');
     }
 
     public function redcap_data_entry_form_top($project_id, $record, $instrument, $event_id)
@@ -147,8 +79,6 @@ class CTRItweaks extends AbstractExternalModule
     public function redcap_survey_page($project_id, $record, $instrument, $event_id)
     {
         $this->afterLoadActionTags($instrument);
-        $this->includeJs('js/data_entry_mm_dd_yyyy.js');
-        $this->includeJs('js/data_entry_stop_autocomplete.js');
     }
 
     public function redcap_survey_page_top($project_id, $record, $instrument, $event_id)
@@ -196,7 +126,6 @@ class CTRItweaks extends AbstractExternalModule
             }
         }
         $generalData = empty($record) ? $generalData : $generalData[$record];
-        $this->passArgument('paymentData', $generalData);
 
         // Static settings
         if ($report) {
@@ -204,11 +133,16 @@ class CTRItweaks extends AbstractExternalModule
             $index = array_search($report, $reports);
             $seed = array_map("trim", explode(',', $this->getProjectSetting('check-number')))[$index];
             $seed = strtolower($seed) == 'global' ? $this->getSystemSetting('check-number') : $seed;
-            $this->passArgument('seed', $seed);
+            $this->passArgument(['seed' => $seed]);
         }
-        $this->passArgument('showLogo', $this->getProjectSetting('show-logo') == '1');
-        $this->passArgument('showVoid', $this->getProjectSetting('show-void') == '1');
-        $this->passArgument('study', $this->getProjectSetting('study-name'));
+
+        $this->passArgument([
+            'paymentData' => $generalData,
+            'showLogo' => $this->getProjectSetting('show-logo') == '1',
+            'showVoid' => $this->getProjectSetting('show-void') == '1',
+            'study'  => $this->getProjectSetting('study-name')
+        ]);
+
         $sig = ($this->getProjectSetting('signature') ?? ["none"]);
         $this->includeJs($this->signatures[$sig]);
         $this->includeJs('js/payment_logo.js');
@@ -252,7 +186,6 @@ class CTRItweaks extends AbstractExternalModule
             $this->setProjectSetting('check-number', implode(',', $seeds), $project_id);
         }
 
-        //return $write;
         return REDCap::saveData($project_id, 'array', $write);
     }
 
@@ -287,9 +220,9 @@ class CTRItweaks extends AbstractExternalModule
         }
     }
 
-    // Action tags that don't touch JS
     private function beforeLoadActionTags($instrument)
     {
+        // Action tags that don't touch JS
         global $Proj;
         $fields = REDCap::getFieldNames($instrument);
         $targetPid = $this->getProjectSetting('cross-project-pipe');
@@ -347,9 +280,9 @@ class CTRItweaks extends AbstractExternalModule
         }
     }
 
-    // Action tags that are JS based
     private function afterLoadActionTags($instrument)
     {
+        // Action tags that are JS based
         global $Proj;
         $jsonNotes = [];
         $markAll = [];
@@ -479,35 +412,18 @@ class CTRItweaks extends AbstractExternalModule
                 }
             }
         }
-        if (!empty($jsonNotes)) {
-            $this->passArgument('jsonNotes', $jsonNotes);
-            $this->includeJs('js/data_entry_action_tag_json_notes.js');
-        }
-        if (!empty($markAll)) {
-            $this->passArgument('markAll', $markAll);
-            $this->includeJs('js/data_entry_action_tag_matrix_mark_all.js');
-        }
-        if (!empty($readonly2)) {
-            $this->passArgument('readonly2', $readonly2);
-            $this->includeJs('js/data_entry_action_tag_readonly2.js');
-        }
-        if (!empty($default2)) {
-            $this->passArgument('default2', $default2);
-            $this->includeJs('js/data_entry_action_tag_default2.js');
-        }
-        if (!empty($tomorrow)) {
-            $this->passArgument('tomorrowButton', $tomorrow);
-            $this->includeJs('js/data_entry_action_tag_tomorrow.js');
-        }
-        if (!empty($missingcode)) {
-            $this->passArgument('missingcode', ['config' => []]);
-            $this->passArgument('missingcode.config', $missingcode);
-            $this->includeJs('js/data_entry_action_tag_missingcode.js');
-        }
+        $this->passArgument([
+            "@JSONNOTES" => $jsonNotes,
+            "@MARKALL" => $markAll,
+            "@READONLY2" => $readonly2,
+            "@DEFAULT2" => $default2,
+            "@TOMORROWBUTTON" => $tomorrow,
+            "@MISSINGCODE" => $missingcode,
+            "@FUZZY" => $fuzzy
+        ]);
+
         if (!empty($fuzzy)) {
-            $this->passArgument('fuzzy', $fuzzy);
             $this->includeJs('js/lib/fuse.min.js');
-            $this->includeJs('js/data_entry_action_tag_fuzzy.js');
         }
     }
 
@@ -539,8 +455,13 @@ class CTRItweaks extends AbstractExternalModule
     private function initModule()
     {
         $this->initializeJavascriptModuleObject();
-        echo "<script>var " . $this->module_global . " = " . json_encode(["prefix" => $this->getPrefix()]) . ";</script>";
-        echo "<script>" . $this->module_global . ".ajax = " . $this->getJavascriptModuleObjectName() . ".ajax;</script>";
+        $obj = $this->getJavascriptModuleObjectName();
+        $settings = [
+            "project_settings" => $this->getProjectSettings(),
+            "prefix" => $this->getPrefix(),
+            'next_record_id' => $this->getNextRecordID()
+        ];
+        echo "<script> Object.assign($obj, " . json_encode($settings) . ");</script>";
     }
 
     private function includeJs($path)
@@ -548,8 +469,9 @@ class CTRItweaks extends AbstractExternalModule
         echo '<script src="' . $this->getUrl($path) . '"></script>' . "\n";
     }
 
-    private function passArgument($name, $value)
+    private function passArgument($args)
     {
-        echo "<script>" . $this->module_global . "." . $name . " = " . json_encode($value) . ";</script>" . "\n";
+        $obj = $this->getJavascriptModuleObjectName();
+        echo "<script> Object.assign($obj, " . json_encode($args) . ");</script>";
     }
 }

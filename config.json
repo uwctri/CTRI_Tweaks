@@ -14,6 +14,44 @@
         "bulk_payment"
     ],
     "framework-version": 12,
+    "action-tags": [
+        {
+            "tag": "@MISSINGCODES",
+            "description": "Add buttons below a text box to allow for discrete coded answers. Full documentation on using this tag can be found <a href='https://aanunez.io/missingcodes.html'>here</a>"
+        },
+        {
+            "tag": "@LABEL",
+            "description": "Pipes the label of another element into the current element's label i.e. @LABEL=[foo] . Useful for creating consistant instrument headers."
+        },
+        {
+            "tag": "@JSONNOTES",
+            "description": "Transforms a notes box into a full-width persistant notes area that can be used to track multiple notes over time. Date, time and username are recorded with every note. On repeating instruments all notes are propogated forward for easy viewing. To sync the notes across multiple events append the '-EVENTS' modifier, i.e. @JSONNOTES-EVENTS. The form should not be a repeating instrument when using the '-EVENTS' modifier."
+        },
+        {
+            "tag": "@MARKALL",
+            "description": "Adds a \"Mark All as ____\" button below a matrix when used in the \"Field Annotation\" of any matrix feild. The coded value should be specified i.e. @MARKALL=0 ."
+        },
+        {
+            "tag": "@READONLY2",
+            "description": "Similar to the default \"@READONLY\", but only styles the actual input box rather than the whole row. Cosmetic only."
+        },
+        {
+            "tag": "@DEFAULT2",
+            "description": "Similar to \"@DEFAULT\", but attempts to apply the default any time the feild is made visible (to prevent REDCap errors) and every time the form is loaded."
+        },
+        {
+            "tag": "@TOMORROWBUTTON",
+            "description": "Adds a \"Tomorrow\" button below date feilds that populates the feild with the next work day."
+        },
+        {
+            "tag": "@FUZZY",
+            "description": "Perform a fuzzy search on text entered and return possible matches in a popover. By default fuzzy searches on its own variable in all other records. To search on a differant variable use @FUZZY=[example] ."
+        },
+        {
+            "tag": "@CROSSPP",
+            "description": "Flag a field as using CTRI Tweaks Cross Project Piping, enable this feature via the CTRI EM config menu. Cross Project Piping works only in field labels, does not respect any of the colon modifiers (i.e.\":ampm\" or \":value\"), and always returns the value of the feild or, for checkboxes, as json encoded representation of field. Formatting is identical to regular piping, but \"!!\" must be prepended , i.e. !![event][field][instance] ."
+        }
+    ],
     "project-settings": [
         {
             "key": "action-tag-text",
@@ -31,9 +69,9 @@
             "type": "text"
         },
         {
-            "key": "toggle-tweaks-start",
-            "name": "tableStart",
-            "type": "descriptive"
+            "key": "cross-project-pipe",
+            "name": "<b>Action Tag - Cross Project Pipe from:</b><br>Pipe in data from another project that shares record ids with this one",
+            "type": "project-id"
         },
         {
             "key": "support-12-hour-input",
@@ -71,11 +109,6 @@
             "type": "checkbox"
         },
         {
-            "key": "lock-complete-instruments",
-            "name": "Lock (readonly, easily unlocked by user) instruments as read only when they are saved as complete?",
-            "type": "checkbox"
-        },
-        {
             "key": "hide-instruments-on-forms",
             "name": "Hide all instruments when on data entry forms",
             "type": "checkbox"
@@ -84,16 +117,6 @@
             "key": "stop-dag-rename",
             "name": "Use incremental record ID when DAGs enabled",
             "type": "checkbox"
-        },
-        {
-            "key": "toggle-tweaks-end",
-            "name": "tableEnd",
-            "type": "descriptive"
-        },
-        {
-            "key": "cross-project-pipe",
-            "name": "<b>Action Tag - Cross Project Pipe from:</b><br>Pipe in data from another project that shares record ids with this one",
-            "type": "project-id"
         },
         {
             "key": "payment-header",

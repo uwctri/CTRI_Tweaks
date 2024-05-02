@@ -3,15 +3,15 @@ Object.filter = (obj, predicate) =>
         .filter(key => predicate(obj[key]))
         .reduce((res, key) => (res[key] = obj[key], res), {});
 
-CTRItweaks.studyAddr = [
-    CTRItweaks.study || "",
+ExternalModules.UWMadison.CTRItweaks.studyAddr = [
+    ExternalModules.UWMadison.CTRItweaks.study || "",
     'University of Wisconsin',
     'School of Medicine and Public Health',
     '1930 Monroe St. Suite 200',
     'Madison, WI 53711-2027'
 ];
 
-CTRItweaks.makePrintObject = () => {
+ExternalModules.UWMadison.CTRItweaks.makePrintObject = () => {
     return {
         pageSize: 'LETTER',
         pageMargins: [20, 30, 20, 40],
@@ -35,18 +35,18 @@ CTRItweaks.makePrintObject = () => {
             }
         },
         images: {
-            logo: CTRItweaks.img_logo,
-            signature: CTRItweaks.signature
+            logo: ExternalModules.UWMadison.CTRItweaks.img_logo,
+            signature: ExternalModules.UWMadison.CTRItweaks.signature
         }
     };
 }
 
-CTRItweaks.makePageObject = (subject, study, memo, cash, addr, study_addr, showLogo, showVoid) => {
+ExternalModules.UWMadison.CTRItweaks.makePageObject = (subject, study, memo, cash, addr, study_addr, showLogo, showVoid) => {
 
     let [dollars, cents] = cash.split('.');
     cents = typeof cents === 'undefined' ? '00' : cents.padEnd(2, '0');
     const cash_format = (dollars + '.' + cents).padStart(7, '*');
-    let words = CTRItweaks.inWords(dollars) || 'Zero ';
+    let words = ExternalModules.UWMadison.CTRItweaks.inWords(dollars) || 'Zero ';
     words = words.charAt(0).toUpperCase() + words.slice(1);
     const date = today_mdy.replace(/-/g, '/');
     const addrLength = 3; // Lines the address should use
@@ -237,7 +237,7 @@ CTRItweaks.makePageObject = (subject, study, memo, cash, addr, study_addr, showL
     return page;
 }
 
-CTRItweaks.inWords = (num) => {
+ExternalModules.UWMadison.CTRItweaks.inWords = (num) => {
     const a = ['', 'one ', 'two ', 'three ', 'four ', 'five ', 'six ', 'seven ', 'eight ', 'nine ', 'ten ', 'eleven ', 'twelve ', 'thirteen ', 'fourteen ', 'fifteen ', 'sixteen ', 'seventeen ', 'eighteen ', 'nineteen '];
     const b = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
     if ((num = num.toString()).length > 6) return 'overflow';
@@ -250,7 +250,7 @@ CTRItweaks.inWords = (num) => {
     return str;
 }
 
-CTRItweaks.makeAddressObject = (street1, street2, city, state, zip, oneLine) => {
+ExternalModules.UWMadison.CTRItweaks.makeAddressObject = (street1, street2, city, state, zip, oneLine) => {
     oneLine = typeof oneLine === "undefined" ? false : oneLine;
     street1 = street1 || '';
     street2 = street2 || '';

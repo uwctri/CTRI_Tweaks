@@ -1,32 +1,31 @@
 $(document).ready(() => {
-    console.log("Loaded CTRI tweaks config")
-    let $modal = $('#external-modules-configure-modal');
-    let prefix = CTRItweaks.prefix;
+    const $modal = $('#external-modules-configure-modal');
+    const module = ExternalModules.UWMadison.CTRItweaks;
     $modal.on('show.bs.modal', function () {
         // Making sure we are overriding this modules's modal only.
-        if ($(this).data('module') !== prefix) return;
+        if ($(this).data('module') !== module.prefix) return;
 
         if (typeof ExternalModules.Settings.prototype.resetConfigInstancesOld === 'undefined')
             ExternalModules.Settings.prototype.resetConfigInstancesOld = ExternalModules.Settings.prototype.resetConfigInstances;
 
         ExternalModules.Settings.prototype.resetConfigInstances = function () {
             ExternalModules.Settings.prototype.resetConfigInstancesOld();
-            if ($modal.data('module') !== prefix) return;
+            if ($modal.data('module') !== module.prefix) return;
 
             // Pretty up the form a bit
             $modal.find('thead').remove();
-            $("tr:contains(tableStart)").first().closest('tr').nextUntil("tr:contains(tableEnd)").wrapAll(`
-                <table style='width:98%' class='table table-no-top-row-border position-absolute'><tbody></tbody></table>`);
-            let rowCount = $("tr:contains(tableStart)").next().find('tr').length;
-            $("tr:contains(tableStart)").remove();
-            $("tr:contains(tableEnd)").css('height', (45 * rowCount) + 'px');
-            $("tr:contains(tableEnd)").html('');
+            $header = $modal.find("tr[field=payment-header] td")
+            $header.css("background-color", "#e6e6e6").css("height", "27em")
+            $header.find("label").css("padding-top", "24em")
+
+            $("input[type=checkbox].external-modules-input-element").slice(1).parent().parent().
+                wrapAll(`<table style='width:97%' class='table table-no-top-row-border position-absolute'><tbody></tbody></table>`);
 
             // Insert a button to deploy Payemnts form
             $("[field=deploy-payment] label").after('<button class="setupPayments" style="float:right">Deploy Payment Instrument</button>')
             $(".setupPayments").on("click", () => {
                 $(".setupPayments").attr("disabled", true);
-                CTRItweaks.ajax("deploy_payment", {}).then((response) => {
+                module.ajax("deploy_payment", {}).then((response) => {
                     location.reload();
                 }).catch((err) => {
                     console.log(err)
@@ -41,14 +40,12 @@ $(document).ready(() => {
                 $("[field=show-void] input").eq(0).click(); // Show void by default
             }
 
-            // We can only do this because there are no repeating options
-            $(".external-modules-instance-label").remove();
         };
     });
 
     $modal.on('hide.bs.modal', function () {
         // Making sure we are overriding this modules's modal only.
-        if ($(this).data('module') !== prefix) return;
+        if ($(this).data('module') !== module.prefix) return;
 
         if (typeof ExternalModules.Settings.prototype.resetConfigInstancesOld !== 'undefined')
             ExternalModules.Settings.prototype.resetConfigInstances = ExternalModules.Settings.prototype.resetConfigInstancesOld;
