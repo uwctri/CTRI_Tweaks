@@ -134,19 +134,9 @@
             "type": "text"
         },
         {
-            "key": "signature",
-            "name": "<b>Signature</b>",
-            "type": "radio",
-            "choices": [
-                {
-                    "value": "kate",
-                    "name": "Kate Kobinsky"
-                },
-                {
-                    "value": "none",
-                    "name": "No Signature"
-                }
-            ]
+            "key": "file-signature",
+            "name": "<b>Signature</b><br>Should be 800x255 or similar",
+            "type": "file"
         },
         {
             "key": "show-logo",

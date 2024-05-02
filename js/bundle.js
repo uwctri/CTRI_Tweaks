@@ -1,6 +1,7 @@
 (() => {
 
     const module = ExternalModules.UWMadison.CTRItweaks
+    const settings = ExternalModules.UWMadison.CTRItweaks.project_settings
     const page = Object.fromEntries(new URLSearchParams(location.search))
     const isDataEntry = location.href.includes("DataEntry/index.php")
     const isRecordHome = location.href.includes("DataEntry/record_home.php")
@@ -629,7 +630,9 @@
             "@MISSINGCODE": at_missingcode,
             "@FUZZY": at_fuzzy
         }, (settingName, func) => {
-            if (module.project_settings[settingName])
+            if ((settingName[0] == "@" && module[settingName]) ||
+                (settingName[0] != "@" && module.project_settings[settingName])
+            )
                 func()
         })
     })

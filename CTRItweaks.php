@@ -11,11 +11,6 @@ use Project;
 
 class CTRItweaks extends AbstractExternalModule
 {
-    private $signatures = [
-        'kate' => 'js/signature_kate_kobinsky.js',
-        'none' => 'js/signature_none.js'
-    ];
-
     public function redcap_every_page_top($project_id)
     {
         $this->initModule();
@@ -143,9 +138,10 @@ class CTRItweaks extends AbstractExternalModule
             'study'  => $this->getProjectSetting('study-name')
         ]);
 
-        $sig = ($this->getProjectSetting('signature') ?? ["none"]);
-        $this->includeJs($this->signatures[$sig]);
-        $this->includeJs('js/payment_logo.js');
+        // $sig = ($this->getProjectSetting('signature') ?? ["none"]);
+        // $this->includeJs($this->signatures[$sig]);
+        $sigFile = $this->getProjectSetting('file-signature');
+        $this->includeJs('js/payment_images.js');
     }
 
     private function bulkPaymentPrint($project_id, $report_id, $data)
