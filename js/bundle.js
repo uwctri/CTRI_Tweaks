@@ -194,71 +194,70 @@
         </td>
         `
 
-        const css = `
+        $('head').append(`
         <style>
             .panel-right .container {
-                height: 100%
+                height: 100%;
             }
             .jsonTextRow {
-                height: 90%
+                height: 90%;
             }
             .jsonNotesRow {
-                border-bottom: 1px solid #ddd
-                padding-left: 0.25rem
-                padding-right: 0
+                border-bottom: 1px solid #ddd;
+                padding-left: 0.25rem;
+                padding-right: 0;
             }
             .jsonNotesRow .container {
-                padding-right: 0
+                padding-right: 0;
             }
             .panel-container textarea{
-                border:none
-                resize: none!important
-                width:100%
-                height:100%
+                border:none;
+                resize: none!important;
+                width:100%;
+                height:100%;
             }
             .panel-container {
-                display: flex
-                flex-direction: row
-                border: 1px solid silver
-                overflow: hidden
-                xtouch-action: none
-                margin-right: 0.25rem
+                display: flex;
+                flex-direction: row;
+                border: 1px solid silver;
+                overflow: hidden;
+                xtouch-action: none;
+                margin-right: 0.25rem;
             }
             .panel-left {
-                flex: 0 0 auto
-                width: 300px
-                min-height: 200px
-                min-width: 186px
-                max-width:550px!important
-                white-space: nowrap
+                flex: 0 0 auto;
+                width: 300px;
+                min-height: 200px;
+                min-width: 186px;
+                max-width:550px!important;
+                white-space: nowrap;
             }
             .splitter {
-                flex: 0 0 auto
-                width: 3px  
-                background-color: #535353
-                min-height: 200px
-                cursor: col-resize  
+                flex: 0 0 auto;
+                width: 3px;
+                background-color: #535353;
+                min-height: 200px;
+                cursor: col-resize;
             }
             .panel-right {
-                flex: 1 1 auto
-                min-height: 200px
+                flex: 1 1 auto;
+                min-height: 200px;
             }
             .panel-right textarea {
-                background-color: white
+                background-color: white;
             }
             .panel-left textarea {
-                background-color: #eee
+                background-color: #eee;
             }
             .jsonNotesNew {
-                height: 180px
-                width: 97%!important
+                height: 180px;
+                width: 97%!important;
             }
             .importantJson {
-                transform: translateY(2px)
+                transform: translateY(2px);
             }
-        </style>
-        `
-        $('head').append(css)
+        </style>`)
+
         jmodule.data = {}
         jmodule.editState = {}
 
@@ -455,15 +454,15 @@
         $('head').append(`
         <style>
             .stateSelected {
-                background-color: #DBF7DF
+                background-color: #DBF7DF;
             }
             .fieldDisabled {
-                background-color: #CECECE !important
+                background-color: #CECECE !important;
             }
             .missingCodeButton {
-                margin-top: 2px !important
-                display: inline-block
-                padding: 3px !important
+                margin-top: 2px !important;
+                display: inline-block;
+                padding: 3px !important;
             }
         </style>`)
 
@@ -573,12 +572,14 @@
             </tr>`
 
         // Apply some CSS tweaks
-        $("head").append(`<style>
+        $("head").append(`
+        <style>
             .popover-body:has(.fuzzyPop) {
-                max-height: 240px
-                overflow-y: auto
-                scrollbar-width: thin
-        }</style>`)
+                max-height: 240px;
+                overflow-y: auto;
+                scrollbar-width: thin;
+            }
+        </style>`)
 
         $.each(module["@FUZZY"].search, (field, data) => {
             const fuse = new Fuse(data, {

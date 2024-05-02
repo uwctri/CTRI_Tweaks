@@ -1,6 +1,7 @@
 $(document).ready(() => {
     // Don't load if older EM is enabeld
     if (typeof CTRIpayments === "object") return;
+    const module = ExternalModules.UWMadison.CTRItweaks
 
     const waitForLoad = () => {
         if ($("#report_table thead").length == 0 ||
@@ -36,13 +37,13 @@ $(document).ready(() => {
         const cashIndex = $("#report_table th:contains(check_amt)").index();
         const memoIndex = $("#report_table th:contains(check_activity)").index();
 
-        let master = ExternalModules.UWMadison.CTRItweaks.makePrintObject();
-        $.each(ExternalModules.UWMadison.CTRItweaks.paymentData, function (record, data) {
+        let master = module.makePrintObject();
+        $.each(module.paymentData, function (record, data) {
             if (!recordList.includes(record)) return;
             const memo = $(`#report_table td:contains(${record}):visible`).closest('tr').find('td').eq(memoIndex).text();
             const cash = $(`#report_table td:contains(${record}):visible`).closest('tr').find('td').eq(cashIndex).text();
-            const addr = ExternalModules.UWMadison.CTRItweaks.makeAddressObject(data['street1'], data['street2'], data['city'], data['state'], data['zip']);
-            master.content.push(...ExternalModules.UWMadison.CTRItweaks.makePageObject(data['name'], ExternalModules.UWMadison.CTRItweaks.study, memo, cash, addr, ExternalModules.UWMadison.CTRItweaks.studyAddr));
+            const addr = module.makeAddressObject(data['street1'], data['street2'], data['city'], data['state'], data['zip']);
+            master.content.push(...module.makePageObject(data['name'], module.study, memo, cash, addr, module.studyAddr));
             master.content.push({ pageBreak: 'after', text: '' });
         });
 
@@ -83,7 +84,7 @@ $(document).ready(() => {
         }
 
         // Check if already printed
-        if (ExternalModules.UWMadison.CTRItweaks.bulkPrintDone) {
+        if (module.bulkPrintDone) {
             Swal.fire({
                 icon: 'info',
                 iconHtml: "<i class='fas fa-database'></i>",
@@ -102,7 +103,7 @@ $(document).ready(() => {
         const footer = `
         <span><b>Reminder:</b> The recommended check number above may be incorrect if a check has been skipped, individually printed, or issued outside of Redcap.</span>`;
 
-        const seed = Number(ExternalModules.UWMadison.CTRItweaks.seed)
+        const seed = Number(module.seed)
         Swal.fire({
             icon: 'question',
             title: 'Are you sure?',
@@ -117,9 +118,9 @@ $(document).ready(() => {
             confirmButtonText: 'Flag as Printed'
         }).then(function (result) {
             const checkNumber = result.value || (seed + 1);
-            ExternalModules.UWMadison.CTRItweaks.ajax("bulk_payment", gatherDataforPost(checkNumber)).then((response) => {
+            module.ajax("bulk_payment", gatherDataforPost(checkNumber)).then((response) => {
                 console.log(response);
-                ExternalModules.UWMadison.CTRItweaks.bulkPrintDone = true;
+                module.bulkPrintDone = true;
                 Swal.fire({
                     icon: 'success',
                     title: 'Write Back Complete',
