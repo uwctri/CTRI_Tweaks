@@ -14,52 +14,51 @@ class CTRItweaks extends AbstractExternalModule
     public function redcap_every_page_top($project_id)
     {
         $this->initModule();
-        $record = $_GET['id'];
-        $report_id = $_GET['report_id'];
+        $record = $_GET["id"];
+        $report_id = $_GET["report_id"];
 
         // Custom Config page
-        if ($this->isPage('ExternalModules/manager/project.php') && $project_id)
-            $this->includeJs('js/config.js');
+        if ($this->isPage("ExternalModules/manager/project.php") && $project_id)
+            $this->includeJs("js/config.js");
 
         // Add / Edit Records Page
-        if ($this->isPage('DataEntry/record_home.php') && is_null($record))
+        if ($this->isPage("DataEntry/record_home.php") && is_null($record))
             $this->setUIstate($project_id);
 
         // Record Status Dashboard
-        if ($this->isPage('DataEntry/record_status_dashboard.php') && is_null($record))
+        if ($this->isPage("DataEntry/record_status_dashboard.php") && is_null($record))
             $this->setUIstate($project_id);
 
         // Project Home/Setup Page
-        if ($this->isPage('ProjectSetup/index.php') || $this->isPage('index.php'))
+        if ($this->isPage("ProjectSetup/index.php") || $this->isPage("index.php"))
             $this->setUIstate($project_id);
 
         // View Report Page
-        if (($this->isPage('DataExport/index.php') && $project_id && $report_id && !$_GET['addedit'] && !$_GET['stats_charts'])) {
+        if (($this->isPage("DataExport/index.php") && $project_id && $report_id && !$_GET["addedit"] && !$_GET["stats_charts"])) {
 
             // Check printing report
-            $reports = array_map("trim", explode(',', $this->getProjectSetting('check-report')));
+            $reports = array_map("trim", explode(",", $this->getProjectSetting("check-report")));
             if (in_array($_GET["report_id"], $reports)) {
-                $this->passArgument(['eventMap' => array_flip(REDCap::getEventNames(false))]);
-                $this->includeJs('js/lib/pdfmake.min.js');
-                $this->includeJs('js/lib/vfs_fonts.js');
+                $this->includeJs("js/lib/pdfmake.min.js");
+                $this->includeJs("js/lib/vfs_fonts.js");
                 $this->loadPaymentConfig(null, $report_id);
             }
         }
 
-        $this->includeJs('js/bundle.js');
+        $this->includeJs("js/bundle.js");
     }
 
     public function redcap_data_entry_form($project_id, $record, $instrument)
     {
         // Payment load
         if ($instrument == "payment") {
-            $this->includeJs('js/lib/pdfmake.min.js');
-            $this->includeJs('js/lib/vfs_fonts.js');
+            $this->includeJs("js/lib/pdfmake.min.js");
+            $this->includeJs("js/lib/vfs_fonts.js");
             $this->loadPaymentConfig($record);
         }
 
         $this->afterLoadActionTags($instrument);
-        $this->includeJs('js/bundle.js');
+        $this->includeJs("js/bundle.js");
     }
 
     public function redcap_data_entry_form_top($project_id, $record, $instrument, $event_id)
@@ -84,7 +83,7 @@ class CTRItweaks extends AbstractExternalModule
             return true;
         }
         if ($action == "bulk_payment") {
-            return $this->bulkPaymentPrint($project_id, $payload['report'], $payload['write']);
+            return $this->bulkPaymentPrint($project_id, $payload["report"], $payload["write"]);
         }
         return false;
     }
@@ -93,20 +92,20 @@ class CTRItweaks extends AbstractExternalModule
     {
         $generalData = [];
         $dataConfig = [
-            'name' => ['name', 'display_name', 'full_name', 'fullname'],
-            'street1' => ['street1', 'address1', 'street', 'address'],
-            'street2' => ['street2', 'address2'],
-            'city' => ['city'],
-            'state' => ['state'],
-            'zip' => ['zip'],
-            'record' => [REDCap::getRecordIdField()]
+            "name" => ["name", "display_name", "full_name", "fullname"],
+            "street1" => ["street1", "address1", "street", "address"],
+            "street2" => ["street2", "address2"],
+            "city" => ["city"],
+            "state" => ["state"],
+            "zip" => ["zip"],
+            "record" => [REDCap::getRecordIdField()]
         ];
-        $data = REDCap::getData('array', $record, array_merge(...array_values($dataConfig)));
+        $data = REDCap::getData("array", $record, array_merge(...array_values($dataConfig)));
         foreach ($data as $record_id => $record_data) {
             foreach ($record_data as $event_id => $event_data) {
-                if ($event_id == 'repeat_instances') continue;
+                if ($event_id == "repeat_instances") continue;
                 foreach ($event_data as $field => $val) {
-                    if ($val == '') continue;
+                    if ($val == "") continue;
                     foreach ($dataConfig as $alias => $possibleField) {
                         if (in_array($field, $possibleField)) {
                             $generalData[$record_id][$alias] = $val;
@@ -119,16 +118,18 @@ class CTRItweaks extends AbstractExternalModule
         $generalData = empty($record) ? $generalData : $generalData[$record];
 
         // Static settings
+        $seed = null;
+        $eventMap = null;
         if ($report) {
-            $reports = array_map("trim", explode(',', $this->getProjectSetting('check-report')));
+            $reports = array_map("trim", explode(",", $this->getProjectSetting("check-report")));
             $index = array_search($report, $reports);
-            $seed = array_map("trim", explode(',', $this->getProjectSetting('check-number')))[$index];
-            $seed = strtolower($seed) == 'global' ? $this->getSystemSetting('check-number') : $seed;
-            $this->passArgument(['seed' => $seed]);
+            $seed = array_map("trim", explode(",", $this->getProjectSetting("check-number")))[$index];
+            $seed = strtolower($seed) == "global" ? $this->getSystemSetting("check-number") : $seed;
+            $eventMap = array_flip(REDCap::getEventNames(false));
         }
 
         // Grab signature
-        $sigFile = $this->getProjectSetting('file-signature');
+        $sigFile = $this->getProjectSetting("file-signature");
         $sig64 = "";
         if ($sigFile) {
             list($mimeType, $docName, $fileContent) = REDCap::getFile($sigFile);
@@ -137,14 +138,16 @@ class CTRItweaks extends AbstractExternalModule
 
         // Pass everything down to JS
         $this->passArgument([
-            'paymentData' => $generalData,
-            'showLogo' => $this->getProjectSetting('show-logo') == '1',
-            'showVoid' => $this->getProjectSetting('show-void') == '1',
-            'study'  => $this->getProjectSetting('study-name'),
-            "signature" => $sig64
+            "paymentData" => $generalData,
+            "showLogo" => $this->getProjectSetting("show-logo") == "1",
+            "showVoid" => $this->getProjectSetting("show-void") == "1",
+            "study"  => $this->getProjectSetting("study-name"),
+            "signature" => $sig64,
+            "seed" => $seed,
+            "eventMap" => $eventMap
         ]);
-        $this->includeJs('js/payment_images.js');
-        $this->includeJs('js/payment.js');
+        $this->includeJs("js/payment_images.js");
+        $this->includeJs("js/payment.js");
     }
 
     private function bulkPaymentPrint($project_id, $report_id, $data)
@@ -162,30 +165,30 @@ class CTRItweaks extends AbstractExternalModule
         ON B.arm_id = C.arm_id
         WHERE C.project_id = $project_id;";
         $result = db_query($sql);
-        $event = db_fetch_assoc($result)['event_id'];
+        $event = db_fetch_assoc($result)["event_id"];
 
         // Grab the seed values
-        $reports = array_map('trim', explode(',', $this->getProjectSetting('check-report')));
+        $reports = array_map("trim", explode(",", $this->getProjectSetting("check-report")));
         $index = array_search($report_id, $reports);
-        $seeds = array_map('trim', explode(',', $this->getProjectSetting('check-number')));
+        $seeds = array_map("trim", explode(",", $this->getProjectSetting("check-number")));
 
         foreach ($data as $row) {
-            $write[$row['record']]["repeat_instances"][$event][$instrument][$row['instance']] = [
-                'check_number' => $row['check'],
-                'check_printed' => '1',
-                'check_date' => date('Y-m-d')
+            $write[$row["record"]]["repeat_instances"][$event][$instrument][$row["instance"]] = [
+                "check_number" => $row["check"],
+                "check_printed" => "1",
+                "check_date" => date("Y-m-d")
             ];
-            $new_seed = $row['check'];
+            $new_seed = $row["check"];
         }
 
-        if (strtolower($seeds['index']) == 'global') {
-            $this->setSystemSetting('check-number', $new_seed);
+        if (strtolower($seeds["index"]) == "global") {
+            $this->setSystemSetting("check-number", $new_seed);
         } else {
             $seeds[$index] = $new_seed;
-            $this->setProjectSetting('check-number', implode(',', $seeds), $project_id);
+            $this->setProjectSetting("check-number", implode(",", $seeds), $project_id);
         }
 
-        return REDCap::saveData($project_id, 'array', $write);
+        return REDCap::saveData($project_id, "array", $write);
     }
 
     private function deployPaymentInstrument($project_id)
@@ -213,9 +216,9 @@ class CTRItweaks extends AbstractExternalModule
 
     private function setUIstate($project_id)
     {
-        if ($this->getProjectSetting('force-save-next-form')) {
-            if (UIState::getUIStateValue($project_id, 'form', 'submit-btn') != 'savenextform')
-                UIState::saveUIStateValue($project_id, 'form', 'submit-btn', 'savenextform');
+        if ($this->getProjectSetting("force-save-next-form")) {
+            if (UIState::getUIStateValue($project_id, "form", "submit-btn") != "savenextform")
+                UIState::saveUIStateValue($project_id, "form", "submit-btn", "savenextform");
         }
     }
 
@@ -224,17 +227,17 @@ class CTRItweaks extends AbstractExternalModule
         // Action tags that don't touch JS
         global $Proj;
         $fields = REDCap::getFieldNames($instrument);
-        $targetPid = $this->getProjectSetting('cross-project-pipe');
+        $targetPid = $this->getProjectSetting("cross-project-pipe");
         foreach ($fields as $field_name) {
             $info = $Proj->metadata[$field_name];
             //@LABEL="[foo]"
-            if (strpos($info['misc'], '@LABEL=') !== false) {
-                $target = trim(explode(' ', explode('@LABEL=', $info['misc'])[1])[0], ' []"');
+            if (strpos($info["misc"], "@LABEL=") !== false) {
+                $target = trim(explode(" ", explode("@LABEL=", $info["misc"])[1])[0], ' []"');
                 if ($Proj->metadata[$target])
-                    $Proj->metadata[$field_name]['element_label'] = $Proj->metadata[$target]['element_label'];
+                    $Proj->metadata[$field_name]["element_label"] = $Proj->metadata[$target]["element_label"];
             }
             //@CROSSPP
-            if (strpos($info['misc'], '@CROSSPP') !== false && !empty($targetPid)) {
+            if (strpos($info["misc"], "@CROSSPP") !== false && !empty($targetPid)) {
                 $this->pipeCrossPP($field_name, $targetPid);
             }
         }
@@ -243,7 +246,7 @@ class CTRItweaks extends AbstractExternalModule
     private function pipeCrossPP($field, $targetPid)
     {
         global $Proj;
-        $label = $Proj->metadata[$field]['element_label'];
+        $label = $Proj->metadata[$field]["element_label"];
         $count = preg_match_all('/!!(\[[A-Za-z1-9-_]+\]){1,3}/', $label, $match);
         if (empty($count)) return;
         foreach ($match[0] as $pipeInstance) {
