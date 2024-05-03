@@ -55,7 +55,7 @@
     "project-settings": [
         {
             "key": "action-tag-text",
-            "name": "This EM adds several action tags to the project. Documentation can be found in the action tag menu on form designer.",
+            "name": "This EM adds several action tags to the project. Documentation can be found in the action tag menu.",
             "type": "descriptive"
         },
         {

@@ -43,8 +43,6 @@ class CTRItweaks extends AbstractExternalModule
                 $this->includeJs('js/lib/pdfmake.min.js');
                 $this->includeJs('js/lib/vfs_fonts.js');
                 $this->loadPaymentConfig(null, $report_id);
-                $this->includeJs('js/payment_common.js');
-                $this->includeJs('js/payment_report.js');
             }
         }
 
@@ -58,8 +56,6 @@ class CTRItweaks extends AbstractExternalModule
             $this->includeJs('js/lib/pdfmake.min.js');
             $this->includeJs('js/lib/vfs_fonts.js');
             $this->loadPaymentConfig($record);
-            $this->includeJs('js/payment_common.js');
-            $this->includeJs('js/payment_form.js');
         }
 
         $this->afterLoadActionTags($instrument);
@@ -131,7 +127,7 @@ class CTRItweaks extends AbstractExternalModule
             $this->passArgument(['seed' => $seed]);
         }
 
-        $this->includeJs('js/payment_images.js');
+        // Grab signature
         $sigFile = $this->getProjectSetting('file-signature');
         $sig64 = "";
         if ($sigFile) {
@@ -139,6 +135,7 @@ class CTRItweaks extends AbstractExternalModule
             $sig64 = "data:$mimeType;base64," . base64_encode($fileContent);
         }
 
+        // Pass everything down to JS
         $this->passArgument([
             'paymentData' => $generalData,
             'showLogo' => $this->getProjectSetting('show-logo') == '1',
@@ -146,6 +143,8 @@ class CTRItweaks extends AbstractExternalModule
             'study'  => $this->getProjectSetting('study-name'),
             "signature" => $sig64
         ]);
+        $this->includeJs('js/payment_images.js');
+        $this->includeJs('js/payment.js');
     }
 
     private function bulkPaymentPrint($project_id, $report_id, $data)
