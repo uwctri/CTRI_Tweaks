@@ -3,7 +3,7 @@
     const module = ExternalModules.UWMadison.CTRItweaks
     const page = Object.fromEntries(new URLSearchParams(location.search))
     const isDataEntry = location.href.includes("DataEntry/index.php")
-    const isRecordHome = location.href.includes("DataEntry/record_home.php")
+    const isRecordHome = location.href.includes("DataEntry/record_home.php") && page.id
     const isRecordDashboad = location.href.includes("DataEntry/record_status_dashboard.php")
     const isHomeOrSetup = ["ProjectSetup", "index.php"].includes(location.pathname.split('/')[2])
 
@@ -94,10 +94,10 @@
 
     const rename_unverified_record = () => {
         const name = module.project_settings["unverified-name"]
-        if (!isDataEntry || !name)
+        if (!isRecordHome || !name)
             return
         let html = $("td.nowrap:contains(Unverified)").html()
-        $("td.nowrap:contains(Unverified)").html(html.replace('Unverified', name))
+        $("td.nowrap:contains(Unverified)").html(html.replaceAll('Unverified', name))
     }
 
     const show_home_page_alert = () => {
