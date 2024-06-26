@@ -37,7 +37,7 @@ class CTRItweaks extends AbstractExternalModule
         if (($this->isPage("DataExport/index.php") && $project_id && $report_id && !$_GET["addedit"] && !$_GET["stats_charts"])) {
 
             // Check printing report
-            $reports = array_map("trim", explode(",", $this->getProjectSetting("check-report")));
+            $reports = array_map("trim", explode(',', $this->getProjectSetting('check-report') ?? ""));
             if (in_array($_GET["report_id"], $reports)) {
                 $this->includeJs("js/lib/pdfmake.min.js");
                 $this->includeJs("js/lib/vfs_fonts.js");
@@ -216,9 +216,9 @@ class CTRItweaks extends AbstractExternalModule
 
     private function setUIstate($project_id)
     {
-        if ($this->getProjectSetting("force-save-next-form")) {
-            if (UIState::getUIStateValue($project_id, "form", "submit-btn") != "savenextform")
-                UIState::saveUIStateValue($project_id, "form", "submit-btn", "savenextform");
+        if ($this->getProjectSetting('force-save-next-form')) {
+            if (!empty(USERID) && (UIState::getUIStateValue($project_id, 'form', 'submit-btn') != 'savenextform'))
+                UIState::saveUIStateValue($project_id, 'form', 'submit-btn', 'savenextform');
         }
     }
 
@@ -309,8 +309,7 @@ class CTRItweaks extends AbstractExternalModule
                     $jsonData = empty($jsonData) ? "{}" : json_encode($jsonData);
                 } else {
                     $data = REDCap::getData($Proj->project_id, 'array', $_GET['id'], $field_name, $_GET['event_id'])[$_GET['id']];
-                    $jsonData = is_null($data) ? null : end(end($data['repeat_instances'][$_GET['event_id']]))[$field_name];
-                    $jsonData = is_null($jsonData) ? $data[$_GET['event_id']][$field_name] : $jsonData;
+                    $jsonData = is_null($data) || !is_array($data['repeat_instances'][$_GET['event_id']]) ? $data[$_GET['event_id']][$field_name] : end(end($data['repeat_instances'][$_GET['event_id']]))[$field_name];
                 }
                 $jsonNotes['noDate'] = (strpos($info['misc'], '@JSONNOTES-NODATE') !== false);
                 $jsonNotes['raw'][$field_name] = $jsonData;
