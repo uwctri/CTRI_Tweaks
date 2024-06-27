@@ -5,7 +5,7 @@
     const isDataEntry = location.href.includes("DataEntry/index.php")
     const isRecordHome = location.href.includes("DataEntry/record_home.php") && page.id
     const isRecordDashboad = location.href.includes("DataEntry/record_status_dashboard.php")
-    const isHomeOrSetup = ["ProjectSetup", "index.php"].includes(location.pathname.split('/')[2])
+    const isHomeOrSetup = ["ProjectSetup", "index.php"].some(v => location.pathname.split('/').includes(v))
 
     const time_picker = () => {
         $('input[fv=time]').on('change', (event) => {
