@@ -450,7 +450,7 @@ class CTRItweaks extends AbstractExternalModule
 
     private function getNextRecordID()
     {
-        return end(array_keys(REDCap::getData('array', NULL, REDCap::getRecordIdField()))) + 1;
+        return intval(end(array_keys(REDCap::getData('array', NULL, REDCap::getRecordIdField())))) + 1;
     }
 
     private function initModule()
