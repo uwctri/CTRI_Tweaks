@@ -13,6 +13,9 @@ class CTRItweaks extends AbstractExternalModule
 {
     public function redcap_every_page_top($project_id)
     {
+        if (!defined("USERID"))
+            return;
+
         $this->initModule();
         $record = $_GET["id"];
         $report_id = $_GET["report_id"];
