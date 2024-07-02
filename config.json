@@ -13,7 +13,7 @@
         "deploy_payment",
         "bulk_payment"
     ],
-    "framework-version": 12,
+    "framework-version": 14,
     "action-tags": [
         {
             "tag": "@MISSINGCODES",
@@ -180,6 +180,6 @@
         }
     ],
     "compatibility": {
-        "redcap-version-min": "13.0.1"
+        "redcap-version-min": "13.7.0"
     }
 }
