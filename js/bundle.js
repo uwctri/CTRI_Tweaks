@@ -213,8 +213,9 @@
             .panel-container textarea{
                 border:none;
                 resize: none!important;
-                width:100%;
-                height:100%;
+                width: 100%!important;
+                max-width: 100%!important;
+                height: 100%;
             }
             .panel-container {
                 display: flex;
