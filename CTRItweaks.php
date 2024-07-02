@@ -48,7 +48,9 @@ class CTRItweaks extends AbstractExternalModule
             }
         }
 
-        $this->includeJs("js/bundle.js");
+        // Skip Data Entry Form
+        if (!($this->isPage("DataEntry/index.php") && $_GET["id"] && $_GET["page"]))
+            $this->includeJs("js/bundle.js");
     }
 
     public function redcap_data_entry_form($project_id, $record, $instrument)
