@@ -459,6 +459,7 @@ Object.assign(ExternalModules.UWMadison.CTRItweaks, {
     $(document).ready(() => {
         const isDataEntry = location.href.includes("DataEntry/index.php")
         const func = isDataEntry ? on_form : on_report
+        if (typeof CTRIpayments === "object") return
         func()
     })
 
