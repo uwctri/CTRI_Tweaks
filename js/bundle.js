@@ -7,34 +7,6 @@
     const isRecordDashboad = location.href.includes("DataEntry/record_status_dashboard.php")
     const isHomeOrSetup = ["ProjectSetup", "index.php"].some(v => location.pathname.split('/').includes(v))
 
-    const time_picker = () => {
-        $('input[fv=time]').on('change', (event) => {
-            let el = event.target
-            if (!$(el).val())
-                return
-            let time = $(el).val().toLowerCase()
-            let isPM = time.includes('p')
-            let isAM = time.includes('a')
-            time = time.replace(/[\sapm]/g, '')
-            if (time.replace(':', '').length > 4)
-                return
-            let [hours, mins] = time.split(':')
-            hours = isAM && hours.slice(0, 2) == 12 ? "00" + hours.slice(2, hours.length) : hours
-            isPM = isPM && hours.slice(0, 2) == 12 ? false : isPM
-            if (hours && mins) {
-                hours = isPM ? (parseInt(hours) + 12) % 24 : hours
-            } else if (hours.length <= 2) { // Only hour
-                mins = 0
-                hours = isPM ? (parseInt(hours) + 12) % 24 : hours
-            } else if (hours.length <= 4) {
-                mins = hours.slice(-2)
-                hours = hours.slice(0, hours.length - 2)
-                hours = isPM ? (parseInt(hours) + 12) % 24 : hours
-            }
-            $(el).val(String(hours).padStart(2, '0') + ":" + String(mins).padStart(2, '0'))
-        })
-    }
-
     const hide_survey_tools = () => {
         let dc = $("#west .x-panel:contains(Data Collection)").first()
         dc.find(".hang:contains(Survey Distribution Tools)").remove()
@@ -396,39 +368,6 @@
         }, wait_time)
     }
 
-    const at_tomorrowbtn = () => {
-        const formatRedcapDate = (date, format) => {
-            let month = (date.getMonth() + 1).padStart(2, '0')
-            let day = (date.getDate()).padStart(2, '0')
-            let year = date.getFullYear()
-            format = format.split("_").slice(-1)
-            return {
-                "mdy": `${month}-${day}-${year}`,
-                "dmy": `${day}-${month}-${year}`,
-            }[format] ?? `${year}-${month}-${day}`
-        }
-
-        // Returns the Date Object for the next weekday
-        const getNextWeekDay = () => {
-            let t = new Date(new Date().setDate(new Date().getDate() + 1))
-            if (t.getDay() == "6")
-                t.setDate(t.getDate() + 2)
-            return t
-        }
-
-        const buttonTemplate = `
-            <button class= "jqbuttonsm ui-button ui-corner-all ui-widget tomorrowButton" style="margin:5px 0 5px 5px" > Tomorrow</button>`
-
-        $.each(module["@TOMORROWBUTTON"], function () {
-            let $inputBox = $(`input[name = ${this}]`)
-            $inputBox.parent().find('span').before(buttonTemplate)
-            $inputBox.parent().find('.tomorrowButton').on('click', function (event) {
-                event.preventDefault()
-                $inputBox.val(formatRedcapDate(getNextWeekDay(), $inputBox.attr('fv')))
-            })
-        })
-    }
-
     const at_missingcode = () => {
         // Helper function, returns true if the field shouldn't be modified
         function ignoreCheck(field) {
@@ -612,7 +551,6 @@
 
     $(document).ready(() => {
         $.each({
-            "support-12-hour-input": time_picker,
             "hide-survey-tools": hide_survey_tools,
             "hide-instruments-on-forms": hide_instruments,
             "hide-send-survey-email": hide_survey_option_email,
@@ -626,7 +564,6 @@
             "@MARKALL": at_matrix_markall,
             "@READONLY2": at_readonly,
             "@DEFAULT2": at_default2,
-            "@TOMORROWBUTTON": at_tomorrowbtn,
             "@MISSINGCODE": at_missingcode,
             "@FUZZY": at_fuzzy
         }, (settingName, func) => {

@@ -294,7 +294,6 @@ class CTRItweaks extends AbstractExternalModule
         $jsonNotes = [];
         $markAll = [];
         $readonly2 = [];
-        $tomorrow = [];
         $missingcode = [];
         $fuzzy = [];
         $default2 = [];
@@ -354,10 +353,6 @@ class CTRItweaks extends AbstractExternalModule
                         $target = $rhs;
                     $default2[$field_name] = trim($target, '"\' ');
                 }
-            }
-            //@TOMORROWBUTTON
-            if (strpos($info['misc'], '@TOMORROWBUTTON') !== false && strpos($info['element_validation_type'], 'date_') !== false) {
-                array_push($tomorrow, $field_name);
             }
             //@MISSINGCODE
             if (strpos($info['misc'], '@MISSINGCODE') !== false) {
@@ -423,7 +418,6 @@ class CTRItweaks extends AbstractExternalModule
             "@MARKALL" => $markAll,
             "@READONLY2" => $readonly2,
             "@DEFAULT2" => $default2,
-            "@TOMORROWBUTTON" => $tomorrow,
             "@MISSINGCODE" => $missingcode,
             "@FUZZY" => $fuzzy
         ]);

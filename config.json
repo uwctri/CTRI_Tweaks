@@ -40,10 +40,6 @@
             "description": "Similar to \"@DEFAULT\", but attempts to apply the default any time the feild is made visible (to prevent REDCap errors) and every time the form is loaded."
         },
         {
-            "tag": "@TOMORROWBUTTON",
-            "description": "Adds a \"Tomorrow\" button below date feilds that populates the feild with the next work day."
-        },
-        {
             "tag": "@FUZZY",
             "description": "Perform a fuzzy search on text entered and return possible matches in a popover. By default fuzzy searches on its own variable in all other records. To search on a differant variable use @FUZZY=[example] ."
         },
@@ -72,11 +68,6 @@
             "key": "cross-project-pipe",
             "name": "<b>Action Tag - Cross Project Pipe from:</b><br>Pipe in data from another project that shares record ids with this one",
             "type": "project-id"
-        },
-        {
-            "key": "support-12-hour-input",
-            "name": "Add 12 hour validation to time fields",
-            "type": "checkbox"
         },
         {
             "key": "force-save-next-form",
