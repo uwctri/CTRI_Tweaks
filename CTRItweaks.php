@@ -459,7 +459,7 @@ class CTRItweaks extends AbstractExternalModule
         $settings = [
             "project_settings" => $this->getProjectSettings(),
             "prefix" => $this->getPrefix(),
-            'next_record_id' => $this->getNextRecordID()
+            'next_record_id' => $this->getProjectSetting("stop-dag-rename") == "1" ? $this->getNextRecordID() : "",
         ];
         echo "<script> Object.assign($obj, " . json_encode($settings) . ");</script>";
     }
