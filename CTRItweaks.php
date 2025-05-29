@@ -16,7 +16,14 @@ class CTRItweaks extends AbstractExternalModule
         if (!defined("USERID"))
             return;
 
-        $this->initModule();
+        try {
+            $this->initModule();
+        } catch (\Exception $e) {
+            // Bail out if we can't initialize the module,
+            // common due to 2fa
+            return;
+        }
+
         $record = $_GET["id"];
         $report_id = $_GET["report_id"];
 
