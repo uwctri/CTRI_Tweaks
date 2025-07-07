@@ -247,6 +247,18 @@
             $(`#${field}-tr`).append(notesFieldTemplate.replace('LABEL', label))
             if (!label)
                 $(`#${field}-tr .jsonNotesLabel`).remove()
+            try {
+                let localData = JSON.parse($(`[name=${field}]`).val())
+                Object.assign(jmodule.data[field], localData);
+            } catch (e) { }
+            
+            let sortedObj = {}
+            Object.keys(jmodule.data[field]).sort(function(a, b) {
+              return a.split('/').reverse().join('').localeCompare(b.split('/').reverse().join(''));
+            }).forEach(function(key) {
+                sortedObj[key] = jmodule.data[field][key]
+            })
+            jmodule.data[field] = sortedObj
             displayJSONnotes(field)
         })
 
