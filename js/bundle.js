@@ -89,7 +89,12 @@
             let dataSource = typeof field_or_jsonObject == "object" ? field_or_jsonObject : jmodule.data[field_or_jsonObject]
             let notes = dataSource["historic"] || ""
             let importantNotes = ""
-            $.each(dataSource, function (ts, info) {
+            let sortedKeys = Object.keys(dataSource).sort((a, b) => {
+                return new Date(date_mdy2ymd(a.replaceAll('/', '-').split(' ')[0])) - new Date(date_mdy2ymd(b.replaceAll('/', '-').split(' ')[0])); // Sorts in ascending order
+            })
+            $.each(sortedKeys, function (_, key) {
+                let ts = key
+                let info = dataSource[ts]
                 if (["current", "historic"].includes(ts))
                     return
                 let tmp = `${info.author}: ${info.note.replace(/\^/g, '"')}\n\n`
@@ -251,11 +256,11 @@
                 let localData = JSON.parse($(`[name=${field}]`).val())
                 Object.assign(jmodule.data[field], localData);
             } catch (e) { }
-            
+
             let sortedObj = {}
-            Object.keys(jmodule.data[field]).sort(function(a, b) {
-              return a.split('/').reverse().join('').localeCompare(b.split('/').reverse().join(''));
-            }).forEach(function(key) {
+            Object.keys(jmodule.data[field]).sort(function (a, b) {
+                return a.split('/').reverse().join('').localeCompare(b.split('/').reverse().join(''));
+            }).forEach(function (key) {
                 sortedObj[key] = jmodule.data[field][key]
             })
             jmodule.data[field] = sortedObj
