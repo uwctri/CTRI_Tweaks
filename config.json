@@ -36,10 +36,6 @@
             "description": "Similar to \"@DEFAULT\", but attempts to apply the default any time the feild is made visible (to prevent REDCap errors) and every time the form is loaded."
         },
         {
-            "tag": "@TOMORROWBUTTON",
-            "description": "Adds a \"Tomorrow\" button below date feilds that populates the feild with the next work day."
-        },
-        {
             "tag": "@FUZZY",
             "description": "Perform a fuzzy search on text entered and return possible matches in a popover. By default fuzzy searches on its own variable in all other records. To search on a differant variable use @FUZZY=[example] ."
         },
@@ -109,5 +105,8 @@
             "name": "Use incremental record ID when DAGs enabled",
             "type": "checkbox"
         }
-    ]
+    ],
+    "compatibility": {
+        "redcap-version-min": "13.7.0"
+    }
 }

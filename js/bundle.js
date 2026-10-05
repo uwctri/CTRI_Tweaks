@@ -3,9 +3,9 @@
     const module = ExternalModules.UWMadison.CTRItweaks
     const page = Object.fromEntries(new URLSearchParams(location.search))
     const isDataEntry = location.href.includes("DataEntry/index.php")
-    const isRecordHome = location.href.includes("DataEntry/record_home.php")
+    const isRecordHome = location.href.includes("DataEntry/record_home.php") && page.id
     const isRecordDashboad = location.href.includes("DataEntry/record_status_dashboard.php")
-    const isHomeOrSetup = ["ProjectSetup", "index.php"].includes(location.pathname.split('/')[2])
+    const isHomeOrSetup = ["ProjectSetup", "index.php"].some(v => location.pathname.split('/').includes(v))
 
     const hide_survey_tools = () => {
         let dc = $("#west .x-panel:contains(Data Collection)").first()
@@ -66,10 +66,10 @@
 
     const rename_unverified_record = () => {
         const name = module.project_settings["unverified-name"]
-        if (!isDataEntry || !name)
+        if (!isRecordHome || !name)
             return
         let html = $("td.nowrap:contains(Unverified)").html()
-        $("td.nowrap:contains(Unverified)").html(html.replace('Unverified', name))
+        $("td.nowrap:contains(Unverified)").html(html.replaceAll('Unverified', name))
     }
 
     const show_home_page_alert = () => {
@@ -89,7 +89,12 @@
             let dataSource = typeof field_or_jsonObject == "object" ? field_or_jsonObject : jmodule.data[field_or_jsonObject]
             let notes = dataSource["historic"] || ""
             let importantNotes = ""
-            $.each(dataSource, function (ts, info) {
+            let sortedKeys = Object.keys(dataSource).sort((a, b) => {
+                return new Date(date_mdy2ymd(a.replaceAll('/', '-').split(' ')[0])) - new Date(date_mdy2ymd(b.replaceAll('/', '-').split(' ')[0])); // Sorts in ascending order
+            })
+            $.each(sortedKeys, function (_, key) {
+                let ts = key
+                let info = dataSource[ts]
                 if (["current", "historic"].includes(ts))
                     return
                 let tmp = `${info.author}: ${info.note.replace(/\^/g, '"')}\n\n`
@@ -185,8 +190,9 @@
             .panel-container textarea{
                 border:none;
                 resize: none!important;
-                width:100%;
-                height:100%;
+                width: 100%!important;
+                max-width: 100%!important;
+                height: 100%;
             }
             .panel-container {
                 display: flex;
@@ -246,6 +252,18 @@
             $(`#${field}-tr`).append(notesFieldTemplate.replace('LABEL', label))
             if (!label)
                 $(`#${field}-tr .jsonNotesLabel`).remove()
+            try {
+                let localData = JSON.parse($(`[name=${field}]`).val())
+                Object.assign(jmodule.data[field], localData);
+            } catch (e) { }
+
+            let sortedObj = {}
+            Object.keys(jmodule.data[field]).sort(function (a, b) {
+                return a.split('/').reverse().join('').localeCompare(b.split('/').reverse().join(''));
+            }).forEach(function (key) {
+                sortedObj[key] = jmodule.data[field][key]
+            })
+            jmodule.data[field] = sortedObj
             displayJSONnotes(field)
         })
 
@@ -365,39 +383,6 @@
             })
             $('input').last().change()
         }, wait_time)
-    }
-
-    const at_tomorrowbtn = () => {
-        const formatRedcapDate = (date, format) => {
-            let month = (date.getMonth() + 1).padStart(2, '0')
-            let day = (date.getDate()).padStart(2, '0')
-            let year = date.getFullYear()
-            format = format.split("_").slice(-1)
-            return {
-                "mdy": `${month}-${day}-${year}`,
-                "dmy": `${day}-${month}-${year}`,
-            }[format] ?? `${year}-${month}-${day}`
-        }
-
-        // Returns the Date Object for the next weekday
-        const getNextWeekDay = () => {
-            let t = new Date(new Date().setDate(new Date().getDate() + 1))
-            if (t.getDay() == "6")
-                t.setDate(t.getDate() + 2)
-            return t
-        }
-
-        const buttonTemplate = `
-            <button class= "jqbuttonsm ui-button ui-corner-all ui-widget tomorrowButton" style="margin:5px 0 5px 5px" > Tomorrow</button>`
-
-        $.each(module["@TOMORROWBUTTON"], function () {
-            let $inputBox = $(`input[name = ${this}]`)
-            $inputBox.parent().find('span').before(buttonTemplate)
-            $inputBox.parent().find('.tomorrowButton').on('click', function (event) {
-                event.preventDefault()
-                $inputBox.val(formatRedcapDate(getNextWeekDay(), $inputBox.attr('fv')))
-            })
-        })
     }
 
     const at_missingcode = () => {
@@ -596,7 +581,6 @@
             "@MARKALL": at_matrix_markall,
             "@READONLY2": at_readonly,
             "@DEFAULT2": at_default2,
-            "@TOMORROWBUTTON": at_tomorrowbtn,
             "@MISSINGCODE": at_missingcode,
             "@FUZZY": at_fuzzy
         }, (settingName, func) => {

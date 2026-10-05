@@ -10,7 +10,17 @@ class CTRItweaks extends AbstractExternalModule
 {
     public function redcap_every_page_top($project_id)
     {
-        $this->initModule();
+        if (!defined("USERID"))
+            return;
+
+        try {
+            $this->initModule();
+        } catch (\Exception $e) {
+            // Bail out if we can't initialize the module,
+            // common due to 2fa
+            return;
+        }
+
         $record = $_GET["id"];
 
         // Add / Edit Records Page
@@ -25,7 +35,9 @@ class CTRItweaks extends AbstractExternalModule
         if ($this->isPage("ProjectSetup/index.php") || $this->isPage("index.php"))
             $this->setUIstate($project_id);
 
-        $this->includeJs("js/bundle.js");
+        // Skip Data Entry Form
+        if (!($this->isPage("DataEntry/index.php") && $_GET["id"] && $_GET["page"]))
+            $this->includeJs("js/bundle.js");
     }
 
     public function redcap_data_entry_form($project_id, $record, $instrument)
@@ -125,7 +137,6 @@ class CTRItweaks extends AbstractExternalModule
         $jsonNotes = [];
         $markAll = [];
         $readonly2 = [];
-        $tomorrow = [];
         $missingcode = [];
         $fuzzy = [];
         $default2 = [];
@@ -198,10 +209,6 @@ class CTRItweaks extends AbstractExternalModule
                     $default2[$field_name] = trim($target, '"\' ');
                 }
             }
-            //@TOMORROWBUTTON
-            if (strpos($info['misc'], '@TOMORROWBUTTON') !== false && strpos($info['element_validation_type'], 'date_') !== false) {
-                array_push($tomorrow, $field_name);
-            }
             //@MISSINGCODE
             if (strpos($info['misc'], '@MISSINGCODE') !== false) {
                 $input = stripslashes(trim(explode(' ', explode('@MISSINGCODE=', $info['misc'])[1])[0], ' "'));
@@ -266,7 +273,6 @@ class CTRItweaks extends AbstractExternalModule
             "@MARKALL" => $markAll,
             "@READONLY2" => $readonly2,
             "@DEFAULT2" => $default2,
-            "@TOMORROWBUTTON" => $tomorrow,
             "@MISSINGCODE" => $missingcode,
             "@FUZZY" => $fuzzy
         ]);
@@ -299,7 +305,7 @@ class CTRItweaks extends AbstractExternalModule
     private function getNextRecordID()
     {
         $keys = array_keys(REDCap::getData('array', NULL, REDCap::getRecordIdField()));
-        return end($keys) + 1;
+        return intval(end($keys)) + 1;
     }
 
     private function initModule()
@@ -309,7 +315,7 @@ class CTRItweaks extends AbstractExternalModule
         $settings = [
             "project_settings" => $this->getProjectSettings(),
             "prefix" => $this->getPrefix(),
-            'next_record_id' => $this->getNextRecordID()
+            'next_record_id' => $this->getProjectSetting("stop-dag-rename") == "1" ? $this->getNextRecordID() : "",
         ];
         echo "<script> Object.assign($obj, " . json_encode($settings) . ");</script>";
     }
