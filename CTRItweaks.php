@@ -5,9 +5,6 @@ namespace UWMadison\CTRItweaks;
 use ExternalModules\AbstractExternalModule;
 use REDCap;
 use UIState;
-use Design;
-use MetaData;
-use Project;
 
 class CTRItweaks extends AbstractExternalModule
 {
@@ -15,11 +12,6 @@ class CTRItweaks extends AbstractExternalModule
     {
         $this->initModule();
         $record = $_GET["id"];
-        $report_id = $_GET["report_id"];
-
-        // Custom Config page
-        if ($this->isPage("ExternalModules/manager/project.php") && $project_id)
-            $this->includeJs("js/config.js");
 
         // Add / Edit Records Page
         if ($this->isPage("DataEntry/record_home.php") && is_null($record))
@@ -33,30 +25,11 @@ class CTRItweaks extends AbstractExternalModule
         if ($this->isPage("ProjectSetup/index.php") || $this->isPage("index.php"))
             $this->setUIstate($project_id);
 
-        // View Report Page
-        if (($this->isPage("DataExport/index.php") && $project_id && $report_id && !$_GET["addedit"] && !$_GET["stats_charts"])) {
-
-            // Check printing report
-            $reports = array_map("trim", explode(",", $this->getProjectSetting("check-report")));
-            if (in_array($_GET["report_id"], $reports)) {
-                $this->includeJs("js/lib/pdfmake.min.js");
-                $this->includeJs("js/lib/vfs_fonts.js");
-                $this->loadPaymentConfig(null, $report_id);
-            }
-        }
-
         $this->includeJs("js/bundle.js");
     }
 
     public function redcap_data_entry_form($project_id, $record, $instrument)
     {
-        // Payment load
-        if ($instrument == "payment") {
-            $this->includeJs("js/lib/pdfmake.min.js");
-            $this->includeJs("js/lib/vfs_fonts.js");
-            $this->loadPaymentConfig($record);
-        }
-
         $this->afterLoadActionTags($instrument);
         $this->includeJs("js/bundle.js");
     }
@@ -76,149 +49,11 @@ class CTRItweaks extends AbstractExternalModule
         $this->beforeLoadActionTags($instrument);
     }
 
-    public function redcap_module_ajax($action, $payload, $project_id)
-    {
-        if ($action == "deploy_payment") {
-            $this->deployPaymentInstrument($project_id);
-            return true;
-        }
-        if ($action == "bulk_payment") {
-            return $this->bulkPaymentPrint($project_id, $payload["report"], $payload["write"]);
-        }
-        return false;
-    }
-
-    private function loadPaymentConfig($record, $report = null)
-    {
-        $generalData = [];
-        $dataConfig = [
-            "name" => ["name", "display_name", "full_name", "fullname"],
-            "street1" => ["street1", "address1", "street", "address"],
-            "street2" => ["street2", "address2"],
-            "city" => ["city"],
-            "state" => ["state"],
-            "zip" => ["zip"],
-            "record" => [REDCap::getRecordIdField()]
-        ];
-        $data = REDCap::getData("array", $record, array_merge(...array_values($dataConfig)));
-        foreach ($data as $record_id => $record_data) {
-            foreach ($record_data as $event_id => $event_data) {
-                if ($event_id == "repeat_instances") continue;
-                foreach ($event_data as $field => $val) {
-                    if ($val == "") continue;
-                    foreach ($dataConfig as $alias => $possibleField) {
-                        if (in_array($field, $possibleField)) {
-                            $generalData[$record_id][$alias] = $val;
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-        $generalData = empty($record) ? $generalData : $generalData[$record];
-
-        // Static settings
-        $seed = null;
-        $eventMap = null;
-        if ($report) {
-            $reports = array_map("trim", explode(",", $this->getProjectSetting("check-report")));
-            $index = array_search($report, $reports);
-            $seed = array_map("trim", explode(",", $this->getProjectSetting("check-number")))[$index];
-            $seed = strtolower($seed) == "global" ? $this->getSystemSetting("check-number") : $seed;
-            $eventMap = array_flip(REDCap::getEventNames(false));
-        }
-
-        // Grab signature
-        $sigFile = $this->getProjectSetting("file-signature");
-        $sig64 = "";
-        if ($sigFile) {
-            list($mimeType, $docName, $fileContent) = REDCap::getFile($sigFile);
-            $sig64 = "data:$mimeType;base64," . base64_encode($fileContent);
-        }
-
-        // Pass everything down to JS
-        $this->passArgument([
-            "paymentData" => $generalData,
-            "showLogo" => $this->getProjectSetting("show-logo") == "1",
-            "showVoid" => $this->getProjectSetting("show-void") == "1",
-            "study"  => $this->getProjectSetting("study-name"),
-            "signature" => $sig64,
-            "seed" => $seed,
-            "eventMap" => $eventMap
-        ]);
-        $this->includeJs("js/payment_images.js");
-        $this->includeJs("js/payment.js");
-    }
-
-    private function bulkPaymentPrint($project_id, $report_id, $data)
-    {
-        $instrument = "payment";
-        $new_seed = 0;
-
-        // Grab event knowing that their is only one event with the form
-        $sql = "
-        SELECT B.event_id FROM
-        (SELECT event_id FROM redcap_events_forms where form_name = '$instrument') AS A
-        LEFT JOIN redcap_events_metadata AS B
-        ON A.event_id = B.event_id 
-        LEFT JOIN redcap_events_arms AS C
-        ON B.arm_id = C.arm_id
-        WHERE C.project_id = $project_id;";
-        $result = db_query($sql);
-        $event = db_fetch_assoc($result)["event_id"];
-
-        // Grab the seed values
-        $reports = array_map("trim", explode(",", $this->getProjectSetting("check-report")));
-        $index = array_search($report_id, $reports);
-        $seeds = array_map("trim", explode(",", $this->getProjectSetting("check-number")));
-
-        foreach ($data as $row) {
-            $write[$row["record"]]["repeat_instances"][$event][$instrument][$row["instance"]] = [
-                "check_number" => $row["check"],
-                "check_printed" => "1",
-                "check_date" => date("Y-m-d")
-            ];
-            $new_seed = $row["check"];
-        }
-
-        if (strtolower($seeds["index"]) == "global") {
-            $this->setSystemSetting("check-number", $new_seed);
-        } else {
-            $seeds[$index] = $new_seed;
-            $this->setProjectSetting("check-number", implode(",", $seeds), $project_id);
-        }
-
-        return REDCap::saveData($project_id, "array", $write);
-    }
-
-    private function deployPaymentInstrument($project_id)
-    {
-        // Check if deployed
-        $instruments = array_keys(REDCap::getInstrumentNames(null, $project_id));
-        if (in_array("payment", $instruments)) return;
-
-        // Prep to correct the dd
-        global $Proj;
-        $Proj = new Project($project_id);
-        $dd = Design::excel_to_array($this->getUrl("payment.csv"), ",");
-        db_query("SET AUTOCOMMIT=0");
-        db_query("BEGIN");
-
-        //Create a data dictionary snapshot of the *current* metadata and store the file in the edocs table
-        // This is why we need to define a Project above
-        MetaData::createDataDictionarySnapshot();
-
-        // Update the dd
-        $sql_errors = MetaData::save_metadata($dd, true, false, $project_id);
-        db_query(count($sql_errors) > 0 ? "ROLLBACK" : "COMMIT");
-        db_query("SET AUTOCOMMIT=1");
-    }
-
     private function setUIstate($project_id)
     {
-        if ($this->getProjectSetting("force-save-next-form")) {
-            if (UIState::getUIStateValue($project_id, "form", "submit-btn") != "savenextform")
-                UIState::saveUIStateValue($project_id, "form", "submit-btn", "savenextform");
+        if ($this->getProjectSetting('force-save-next-form')) {
+            if (!empty(USERID) && (UIState::getUIStateValue($project_id, 'form', 'submit-btn') != 'savenextform'))
+                UIState::saveUIStateValue($project_id, 'form', 'submit-btn', 'savenextform');
         }
     }
 
@@ -273,7 +108,8 @@ class CTRItweaks extends AbstractExternalModule
                 $event = $this->getEventIdFromName($targetPid, $event);
             }
             $data = REDCap::getData($targetPid, 'array', $record, $field, $event);
-            $data = end(end($data[$record]));
+            $recordEvents = !empty($data[$record]) ? end($data[$record]) : [];
+            $data = is_array($recordEvents) ? end($recordEvents) : $recordEvents;
             $data = $instance ? $data[$instance] : $data;
             $data = is_array($data) ? json_encode($data) : $data;
             $data = is_bool($data) ? '' : $data;
@@ -309,8 +145,13 @@ class CTRItweaks extends AbstractExternalModule
                     $jsonData = empty($jsonData) ? "{}" : json_encode($jsonData);
                 } else {
                     $data = REDCap::getData($Proj->project_id, 'array', $_GET['id'], $field_name, $_GET['event_id'])[$_GET['id']];
-                    $jsonData = is_null($data) ? null : end(end($data['repeat_instances'][$_GET['event_id']]))[$field_name];
-                    $jsonData = is_null($jsonData) ? $data[$_GET['event_id']][$field_name] : $jsonData;
+                    if (is_null($data) || !is_array($data['repeat_instances'][$_GET['event_id']])) {
+                        $jsonData = $data[$_GET['event_id']][$field_name];
+                    } else {
+                        $repeatInstances = end($data['repeat_instances'][$_GET['event_id']]);
+                        $lastInstance = is_array($repeatInstances) ? end($repeatInstances) : [];
+                        $jsonData = $lastInstance[$field_name];
+                    }
                 }
                 $jsonNotes['noDate'] = (strpos($info['misc'], '@JSONNOTES-NODATE') !== false);
                 $jsonNotes['raw'][$field_name] = $jsonData;
@@ -340,7 +181,13 @@ class CTRItweaks extends AbstractExternalModule
                         $event = REDCap::getEventIdFromUniqueEvent($event);
                     }
                     $target = REDCap::getData($Proj->project_id, 'array', $_GET['id'], $field, $event)[$_GET['id']];
-                    $target = !is_null($target['repeat_instances']) ? end(end($target['repeat_instances'][$event]))[$field] : $target[$event][$field];
+                    if (!is_null($target['repeat_instances']) && is_array($target['repeat_instances'][$event])) {
+                        $repeatInstances = end($target['repeat_instances'][$event]);
+                        $lastInstance = is_array($repeatInstances) ? end($repeatInstances) : [];
+                        $target = $lastInstance[$field];
+                    } else {
+                        $target = $target[$event][$field];
+                    }
                     $default2[$field_name] = $target;
                 } else {
                     preg_match('/"([^"]+)"/', $rhs, $target);
@@ -425,7 +272,7 @@ class CTRItweaks extends AbstractExternalModule
         ]);
 
         if (!empty($fuzzy)) {
-            $this->includeJs('js/lib/fuse.min.js');
+            $this->includeJs('js/fuse.min.js');
         }
     }
 
@@ -451,7 +298,8 @@ class CTRItweaks extends AbstractExternalModule
 
     private function getNextRecordID()
     {
-        return end(array_keys(REDCap::getData('array', NULL, REDCap::getRecordIdField()))) + 1;
+        $keys = array_keys(REDCap::getData('array', NULL, REDCap::getRecordIdField()));
+        return end($keys) + 1;
     }
 
     private function initModule()

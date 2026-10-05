@@ -9,11 +9,7 @@
             "institution": "UW Madison - Center for Tobacco Research and Intervention"
         }
     ],
-    "auth-ajax-actions": [
-        "deploy_payment",
-        "bulk_payment"
-    ],
-    "framework-version": 12,
+    "framework-version": 17,
     "action-tags": [
         {
             "tag": "@MISSINGCODES",
@@ -74,11 +70,6 @@
             "type": "project-id"
         },
         {
-            "key": "support-12-hour-input",
-            "name": "Add 12 hour validation to time fields",
-            "type": "checkbox"
-        },
-        {
             "key": "force-save-next-form",
             "name": "Set all 'Save &...' Buttons to 'Save & Go To Next Form'",
             "type": "checkbox"
@@ -117,69 +108,6 @@
             "key": "stop-dag-rename",
             "name": "Use incremental record ID when DAGs enabled",
             "type": "checkbox"
-        },
-        {
-            "key": "payment-header",
-            "name": "<b>Payment Settings</b>",
-            "type": "descriptive"
-        },
-        {
-            "key": "deploy-payment",
-            "name": "Basic infromation for the check is assumed to exist with names <b>name/full_name/display_name, street/address (1,2), city, state, zip</b>. After adding the instrument to your project you should assign it to one event and enable it as repeating.",
-            "type": "descriptive"
-        },
-        {
-            "key": "study-name",
-            "name": "<b>Study Name</b>",
-            "type": "text"
-        },
-        {
-            "key": "file-signature",
-            "name": "<b>Signature</b><br>Should be 800x255 or similar",
-            "type": "file"
-        },
-        {
-            "key": "show-logo",
-            "name": "<b>Show Logo</b>",
-            "type": "radio",
-            "choices": [
-                {
-                    "value": "1",
-                    "name": "Yes"
-                },
-                {
-                    "value": "0",
-                    "name": "No"
-                }
-            ]
-        },
-        {
-            "key": "show-void",
-            "name": "<b>Show 'Void in 90 days' text</b>",
-            "type": "radio",
-            "choices": [
-                {
-                    "value": "1",
-                    "name": "Yes"
-                },
-                {
-                    "value": "0",
-                    "name": "No"
-                }
-            ]
-        },
-        {
-            "key": "check-report",
-            "name": "<b>Bulk Print Report(s)</b><br>Comma delimited list of Report IDs. Record ID, check memo, and amount should be included on the report",
-            "type": "text"
-        },
-        {
-            "key": "check-number",
-            "name": "<b>Check Number Seed</b><br>Comma delimited list of check numbers to start at for this report. For multi-project check numbers use 'global'",
-            "type": "text"
         }
-    ],
-    "compatibility": {
-        "redcap-version-min": "13.0.1"
-    }
+    ]
 }
